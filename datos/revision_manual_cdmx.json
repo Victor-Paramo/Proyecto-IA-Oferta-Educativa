@@ -1,0 +1,392 @@
+[
+    {
+        "fuente": "VIG_fed_A-C_.pdf",
+        "pagina": 9,
+        "institucion": "CENTRO DE ESTUDIOS ESCÉNICOS",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "LICENCIATURA",
+        "programa": "EN TEATRO",
+        "modalidad": "ESCOLARIZADA",
+        "rvoe_fecha": "DGAIR-2011-02",
+        "razones": [
+            "RVOE/fecha sospechoso: DGAIR-2011-02"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_A-C_.pdf",
+        "pagina": 59,
+        "institucion": "CENTRO UNIVERSITARIO SAN ÁNGEL",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "LICENCIATURA Información a",
+        "programa": "EN DERECHO ctualizada al 30 de abril de 2021",
+        "modalidad": "ESCOLARIZADA",
+        "rvoe_fecha": "20122777/2012-11-15",
+        "razones": [
+            "nivel no reconocido: LICENCIATURA Información a"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_A-C_.pdf",
+        "pagina": 68,
+        "institucion": "COLEGIO INTERNACIONAL DE EDUCACIÓN SUPERIOR",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "IMnAfoESrmTRaÍAción a",
+        "programa": "EN PSICOTERAPIA PSICOANALÍTICA CON NIÑOS, ctualizada al 30 de abril de 2021 PÚBERES Y ADOLESCENTES",
+        "modalidad": "ESCOLARIZADA",
+        "rvoe_fecha": "20170121/2017-03-06",
+        "razones": [
+            "nivel no reconocido: IMnAfoESrmTRaÍAción a"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_I-J_.pdf",
+        "pagina": 8,
+        "institucion": "INSTITUTO DE ENLACES EDUCATIVOS (PEDREGAL)",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "MAESTRÍA",
+        "programa": "EN CIENCIAS DE LA EDUCACIÓN FAMILIAR",
+        "modalidad": "NO ESCOLARIZADA",
+        "rvoe_fecha": "DGAIR-2014-004",
+        "razones": [
+            "RVOE/fecha sospechoso: DGAIR-2014-004"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_I-J_.pdf",
+        "pagina": 8,
+        "institucion": "INSTITUTO DE ENLACES EDUCATIVOS (PEDREGAL)",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "MAESTRÍA",
+        "programa": "EN EDUCACIÓN, NEUROCOGNICIÓN Y APRENDIZAJE",
+        "modalidad": "NO ESCOLARIZADA",
+        "rvoe_fecha": "DGAIR-2014-003",
+        "razones": [
+            "RVOE/fecha sospechoso: DGAIR-2014-003"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_I-J_.pdf",
+        "pagina": 36,
+        "institucion": "INSTITUTO SAE (CONDESA)",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "LICENCIATURA Información a",
+        "programa": "EN CINE DIGITAL Y POST-PRODUCCIÓN ctualizada al 30 de abril de 2021",
+        "modalidad": "ESCOLARIZADA",
+        "rvoe_fecha": "20120637/2012-06-18",
+        "razones": [
+            "nivel no reconocido: LICENCIATURA Información a"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_I-J_.pdf",
+        "pagina": 37,
+        "institucion": "INSTITUTO SUPERIOR DE DURANGO (CDMX)",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "LICENCIATURA Información a",
+        "programa": "EN DISEÑO GRÁFICO ctualizada al 30 de abril de 2021",
+        "modalidad": "ESCOLARIZADA",
+        "rvoe_fecha": "20171795/2017-12-04",
+        "razones": [
+            "nivel no reconocido: LICENCIATURA Información a"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_I-J_.pdf",
+        "pagina": 55,
+        "institucion": "INSTITUTO TECNOLÓGICO Y DE ESTUDIOS SUPERIORES DE MONTERREY, CAMPUS CIUDAD DE MÉXICO",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "LICENCIATURA Información a",
+        "programa": "EN CONTADOR PÚBLICO Y FINANZAS ctualizada al 30 de abril de 2021",
+        "modalidad": "ESCOLARIZADA",
+        "rvoe_fecha": "DECRETO/1952-09-12",
+        "razones": [
+            "nivel no reconocido: LICENCIATURA Información a"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_I-J_.pdf",
+        "pagina": 56,
+        "institucion": "INSTITUTO TECNOLÓGICO Y DE ESTUDIOS SUPERIORES DE MONTERREY, CAMPUS CIUDAD DE MÉXICO",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "LICENCIATURA Información a",
+        "programa": "EN INGENIERO QUÍMICO ADMINISTRADOR ctualizada al 30 de abril de 2021",
+        "modalidad": "ESCOLARIZADA",
+        "rvoe_fecha": "DECRETO/1952-09-12",
+        "razones": [
+            "nivel no reconocido: LICENCIATURA Información a"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_I-J_.pdf",
+        "pagina": 57,
+        "institucion": "INSTITUTO TECNOLÓGICO Y DE ESTUDIOS SUPERIORES DE MONTERREY, CAMPUS CIUDAD DE MÉXICO",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "MAESTRÍA Información a",
+        "programa": "EN EDUCACIÓN CON ESPECIALIDAD EN DERECHO ctualizada al 30 de abril de 2021",
+        "modalidad": "NO ESCOLARIZADA",
+        "rvoe_fecha": "DECRETO/1952-09-12",
+        "razones": [
+            "nivel no reconocido: MAESTRÍA Información a"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_I-J_.pdf",
+        "pagina": 58,
+        "institucion": "INSTITUTO TECNOLÓGICO Y DE ESTUDIOS SUPERIORES DE MONTERREY, CAMPUS CIUDAD DE MÉXICO (U. V.)",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "LICENCIATURA Información a",
+        "programa": "EN INGENIERO INDUSTRIAL Y DE SISTEMAS ctualizada al 30 de abril de 2021",
+        "modalidad": "NO ESCOLARIZADA",
+        "rvoe_fecha": "DECRETO/1952-09-12",
+        "razones": [
+            "nivel no reconocido: LICENCIATURA Información a"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_I-J_.pdf",
+        "pagina": 109,
+        "institucion": "INSTITUTO TECNOLÓGICO Y DE ESTUDIOS SUPERIORES DE MONTERREY, CAMPUS SANTA FE",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "LICENCIATURA Información a",
+        "programa": "EN CONTADURÍA PÚBLICA Y FINANZAS ctualizada al 30 de abril de 2021",
+        "modalidad": "ESCOLARIZADA",
+        "rvoe_fecha": "DECRETO/1952-09-12",
+        "razones": [
+            "nivel no reconocido: LICENCIATURA Información a"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_I-J_.pdf",
+        "pagina": 130,
+        "institucion": "INSTITUTO UNIVERSITARIO DE INVESTIGACIÓN ORTEGA Y GASSET MÉXICO",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "MAESTRÍA",
+        "programa": "EN COMUNICACIÓN",
+        "modalidad": "ESCOLARIZADA",
+        "rvoe_fecha": "20180528-2018-05-02",
+        "razones": [
+            "RVOE/fecha sospechoso: 20180528-2018-05-02"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_I-J_.pdf",
+        "pagina": 130,
+        "institucion": "INSTITUTO UNIVERSITARIO DE INVESTIGACIÓN ORTEGA Y GASSET MÉXICO",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "MAESTRÍA",
+        "programa": "EN EDUCACIÓN PARA UNA CIUDADANÍA GLOBAL",
+        "modalidad": "MIXTA",
+        "rvoe_fecha": "20180529-2018-06-22",
+        "razones": [
+            "RVOE/fecha sospechoso: 20180529-2018-06-22"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_I-J_.pdf",
+        "pagina": 130,
+        "institucion": "INSTITUTO UNIVERSITARIO DE INVESTIGACIÓN ORTEGA Y GASSET MÉXICO",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "MAESTRÍA",
+        "programa": "EN POLÍTICAS PÚBLICAS",
+        "modalidad": "ESCOLARIZADA",
+        "rvoe_fecha": "20180527-2018-05-02",
+        "razones": [
+            "RVOE/fecha sospechoso: 20180527-2018-05-02"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_K-T_.pdf",
+        "pagina": 5,
+        "institucion": "TECNOLÓGICO IBEROAMERICANO COYOACÁN",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "MAESTRÍA",
+        "programa": "EN ADMINISTRACIÓN Y PROCURACIÓN DE JUSTICIA",
+        "modalidad": "ESCOLARIZADA",
+        "rvoe_fecha": "20160340-2016-04-28",
+        "razones": [
+            "RVOE/fecha sospechoso: 20160340-2016-04-28"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_K-T_.pdf",
+        "pagina": 5,
+        "institucion": "TECNOLÓGICO IBEROAMERICANO COYOACÁN",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "MAESTRÍA",
+        "programa": "EN DERECHO DE AMPARO",
+        "modalidad": "ESCOLARIZADA",
+        "rvoe_fecha": "20160341-2016-04-28",
+        "razones": [
+            "RVOE/fecha sospechoso: 20160341-2016-04-28"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_U-Z_.pdf",
+        "pagina": 70,
+        "institucion": "UNIVERSIDAD DE LONDRES (DOCTORES)",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "LICENCIATURA",
+        "programa": "EN PEDAGOGÍA",
+        "modalidad": "ESCOLARIZADA",
+        "rvoe_fecha": "20170246-2017-05-09",
+        "razones": [
+            "RVOE/fecha sospechoso: 20170246-2017-05-09"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_U-Z_.pdf",
+        "pagina": 70,
+        "institucion": "UNIVERSIDAD DE LONDRES (INSURGENTES SUR)",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "LICENCIATURA",
+        "programa": "EN ADMINISTRACIÓN DE EMPRESAS",
+        "modalidad": "ESCOLARIZADA",
+        "rvoe_fecha": "20160689/2016/09-09",
+        "razones": [
+            "RVOE/fecha sospechoso: 20160689/2016/09-09"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_U-Z_.pdf",
+        "pagina": 70,
+        "institucion": "UNIVERSIDAD DE LONDRES (INSURGENTES SUR)",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "LICENCIATURA",
+        "programa": "EN CONTADURÍA",
+        "modalidad": "ESCOLARIZADA",
+        "rvoe_fecha": "20160690/2016/09-09",
+        "razones": [
+            "RVOE/fecha sospechoso: 20160690/2016/09-09"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_U-Z_.pdf",
+        "pagina": 70,
+        "institucion": "UNIVERSIDAD DE LONDRES (INSURGENTES SUR)",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "LICENCIATURA",
+        "programa": "EN FINANZAS",
+        "modalidad": "ESCOLARIZADA",
+        "rvoe_fecha": "20160691/2016/09-09",
+        "razones": [
+            "RVOE/fecha sospechoso: 20160691/2016/09-09"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_U-Z_.pdf",
+        "pagina": 70,
+        "institucion": "UNIVERSIDAD DE LONDRES (INSURGENTES SUR)",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "LICENCIATURA",
+        "programa": "EN MERCADOTECNIA",
+        "modalidad": "ESCOLARIZADA",
+        "rvoe_fecha": "20160692/2016/09-09",
+        "razones": [
+            "RVOE/fecha sospechoso: 20160692/2016/09-09"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_U-Z_.pdf",
+        "pagina": 267,
+        "institucion": "UNIVERSIDAD INTERAMERICANA PARA EL DESARROLLO CAMPUS",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "MAESTRÍA",
+        "programa": "EN ENTRENAMIENTO DEPORTIVO",
+        "modalidad": "ESCOLARIZADA",
+        "rvoe_fecha": "20192044/209-05-14",
+        "razones": [
+            "RVOE/fecha sospechoso: 20192044/209-05-14"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_U-Z_.pdf",
+        "pagina": 378,
+        "institucion": "UNIVERSIDAD TRES CULTURAS PLANTEL TOREO",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "LICENCIATURA",
+        "programa": "EN ADMINISTRACIÓN PÚBLICA",
+        "modalidad": "MIXTA",
+        "rvoe_fecha": "20190366/2019-03-119",
+        "razones": [
+            "RVOE/fecha sospechoso: 20190366/2019-03-119"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_U-Z_.pdf",
+        "pagina": 378,
+        "institucion": "UNIVERSIDAD TRES CULTURAS PLANTEL TOREO",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "LICENCIATURA",
+        "programa": "EN ARQUITECTURA",
+        "modalidad": "ESCOLARIZADA",
+        "rvoe_fecha": "20190362/2019-03-119",
+        "razones": [
+            "RVOE/fecha sospechoso: 20190362/2019-03-119"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_U-Z_.pdf",
+        "pagina": 378,
+        "institucion": "UNIVERSIDAD TRES CULTURAS PLANTEL TOREO",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "LICENCIATURA",
+        "programa": "EN COMERCIO INTERNACIONAL",
+        "modalidad": "MIXTA",
+        "rvoe_fecha": "20190361/2019-03-119",
+        "razones": [
+            "RVOE/fecha sospechoso: 20190361/2019-03-119"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_U-Z_.pdf",
+        "pagina": 378,
+        "institucion": "UNIVERSIDAD TRES CULTURAS PLANTEL TOREO",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "LICENCIATURA",
+        "programa": "EN DISEÑO GRÁFICO",
+        "modalidad": "MIXTA",
+        "rvoe_fecha": "20190365/2019-03-119",
+        "razones": [
+            "RVOE/fecha sospechoso: 20190365/2019-03-119"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_U-Z_.pdf",
+        "pagina": 378,
+        "institucion": "UNIVERSIDAD TRES CULTURAS PLANTEL TOREO",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "LICENCIATURA",
+        "programa": "EN MERCADOTECNIA",
+        "modalidad": "MIXTA",
+        "rvoe_fecha": "20190364/2019-03-119",
+        "razones": [
+            "RVOE/fecha sospechoso: 20190364/2019-03-119"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_U-Z_.pdf",
+        "pagina": 378,
+        "institucion": "UNIVERSIDAD TRES CULTURAS PLANTEL TOREO",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "LICENCIATURA",
+        "programa": "EN PEDAGOGÍA",
+        "modalidad": "MIXTA",
+        "rvoe_fecha": "20190363/2019-03-119",
+        "razones": [
+            "RVOE/fecha sospechoso: 20190363/2019-03-119"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_U-Z_.pdf",
+        "pagina": 404,
+        "institucion": "UNIVERSIDAD VILLANUEVA MONTAÑO",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "DOCTORADO Información a",
+        "programa": "EN DERECHO ctualizada al 30 de abril de 2021",
+        "modalidad": "ESCOLARIZADA",
+        "rvoe_fecha": "20160857/2016-12-16",
+        "razones": [
+            "nivel no reconocido: DOCTORADO Información a"
+        ]
+    }
+]
