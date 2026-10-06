@@ -1,0 +1,158 @@
+[
+    {
+        "fuente": "VIG_fed_A-C_.pdf",
+        "pagina": 9,
+        "institucion": "CENTRO DE ESTUDIOS ESCÉNICOS",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "LICENCIATURA",
+        "programa": "EN TEATRO",
+        "modalidad": "ESCOLARIZADA",
+        "rvoe_fecha": "DGAIR-2011-02",
+        "razones": [
+            "RVOE/fecha sospechoso: DGAIR-2011-02"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_U-Z_.pdf",
+        "pagina": 70,
+        "institucion": "UNIVERSIDAD DE LONDRES (DOCTORES)",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "LICENCIATURA",
+        "programa": "EN PEDAGOGÍA",
+        "modalidad": "ESCOLARIZADA",
+        "rvoe_fecha": "20170246-2017-05-09",
+        "razones": [
+            "RVOE/fecha sospechoso: 20170246-2017-05-09"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_U-Z_.pdf",
+        "pagina": 70,
+        "institucion": "UNIVERSIDAD DE LONDRES (INSURGENTES SUR)",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "LICENCIATURA",
+        "programa": "EN ADMINISTRACIÓN DE EMPRESAS",
+        "modalidad": "ESCOLARIZADA",
+        "rvoe_fecha": "20160689/2016/09-09",
+        "razones": [
+            "RVOE/fecha sospechoso: 20160689/2016/09-09"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_U-Z_.pdf",
+        "pagina": 70,
+        "institucion": "UNIVERSIDAD DE LONDRES (INSURGENTES SUR)",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "LICENCIATURA",
+        "programa": "EN CONTADURÍA",
+        "modalidad": "ESCOLARIZADA",
+        "rvoe_fecha": "20160690/2016/09-09",
+        "razones": [
+            "RVOE/fecha sospechoso: 20160690/2016/09-09"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_U-Z_.pdf",
+        "pagina": 70,
+        "institucion": "UNIVERSIDAD DE LONDRES (INSURGENTES SUR)",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "LICENCIATURA",
+        "programa": "EN FINANZAS",
+        "modalidad": "ESCOLARIZADA",
+        "rvoe_fecha": "20160691/2016/09-09",
+        "razones": [
+            "RVOE/fecha sospechoso: 20160691/2016/09-09"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_U-Z_.pdf",
+        "pagina": 70,
+        "institucion": "UNIVERSIDAD DE LONDRES (INSURGENTES SUR)",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "LICENCIATURA",
+        "programa": "EN MERCADOTECNIA",
+        "modalidad": "ESCOLARIZADA",
+        "rvoe_fecha": "20160692/2016/09-09",
+        "razones": [
+            "RVOE/fecha sospechoso: 20160692/2016/09-09"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_U-Z_.pdf",
+        "pagina": 378,
+        "institucion": "UNIVERSIDAD TRES CULTURAS PLANTEL TOREO",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "LICENCIATURA",
+        "programa": "EN ADMINISTRACIÓN PÚBLICA",
+        "modalidad": "MIXTA",
+        "rvoe_fecha": "20190366/2019-03-119",
+        "razones": [
+            "RVOE/fecha sospechoso: 20190366/2019-03-119"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_U-Z_.pdf",
+        "pagina": 378,
+        "institucion": "UNIVERSIDAD TRES CULTURAS PLANTEL TOREO",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "LICENCIATURA",
+        "programa": "EN ARQUITECTURA",
+        "modalidad": "ESCOLARIZADA",
+        "rvoe_fecha": "20190362/2019-03-119",
+        "razones": [
+            "RVOE/fecha sospechoso: 20190362/2019-03-119"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_U-Z_.pdf",
+        "pagina": 378,
+        "institucion": "UNIVERSIDAD TRES CULTURAS PLANTEL TOREO",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "LICENCIATURA",
+        "programa": "EN COMERCIO INTERNACIONAL",
+        "modalidad": "MIXTA",
+        "rvoe_fecha": "20190361/2019-03-119",
+        "razones": [
+            "RVOE/fecha sospechoso: 20190361/2019-03-119"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_U-Z_.pdf",
+        "pagina": 378,
+        "institucion": "UNIVERSIDAD TRES CULTURAS PLANTEL TOREO",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "LICENCIATURA",
+        "programa": "EN DISEÑO GRÁFICO",
+        "modalidad": "MIXTA",
+        "rvoe_fecha": "20190365/2019-03-119",
+        "razones": [
+            "RVOE/fecha sospechoso: 20190365/2019-03-119"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_U-Z_.pdf",
+        "pagina": 378,
+        "institucion": "UNIVERSIDAD TRES CULTURAS PLANTEL TOREO",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "LICENCIATURA",
+        "programa": "EN MERCADOTECNIA",
+        "modalidad": "MIXTA",
+        "rvoe_fecha": "20190364/2019-03-119",
+        "razones": [
+            "RVOE/fecha sospechoso: 20190364/2019-03-119"
+        ]
+    },
+    {
+        "fuente": "VIG_fed_U-Z_.pdf",
+        "pagina": 378,
+        "institucion": "UNIVERSIDAD TRES CULTURAS PLANTEL TOREO",
+        "estado": "CIUDAD DE MÉXICO",
+        "nivel": "LICENCIATURA",
+        "programa": "EN PEDAGOGÍA",
+        "modalidad": "MIXTA",
+        "rvoe_fecha": "20190363/2019-03-119",
+        "razones": [
+            "RVOE/fecha sospechoso: 20190363/2019-03-119"
+        ]
+    }
+]
