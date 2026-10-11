@@ -1,0 +1,1038 @@
+{
+    "total_nacional": 27054,
+    "total_cdmx": 5312,
+    "licenciaturas_cdmx": 2810,
+    "dependencias": [
+        {
+            "determinantes": [
+                "programa"
+            ],
+            "dependiente": "nivel_estudios",
+            "grupos_analizados": 1681,
+            "grupos_conflictivos": 204,
+            "ejemplos": [
+                {
+                    "clave": [
+                        "EN TEORÍA CRÍTICA"
+                    ],
+                    "valores": [
+                        "DOCTORADO",
+                        "MAESTRÍA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "EN ADMINISTRACIÓN DE EMPRESAS"
+                    ],
+                    "valores": [
+                        "LICENCIATURA",
+                        "MAESTRÍA",
+                        "TÉCNICO SUPERIOR UNIVERSITARIO"
+                    ]
+                },
+                {
+                    "clave": [
+                        "EN CRIMINOLOGÍA Y CRIMINALÍSTICA"
+                    ],
+                    "valores": [
+                        "LICENCIATURA",
+                        "MAESTRÍA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "EN DERECHO"
+                    ],
+                    "valores": [
+                        "DOCTORADO",
+                        "LICENCIATURA",
+                        "MAESTRÍA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "EN INFORMÁTICA"
+                    ],
+                    "valores": [
+                        "ESPECIALIDAD",
+                        "LICENCIATURA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "EN CRIMINALÍSTICA"
+                    ],
+                    "valores": [
+                        "ESPECIALIDAD",
+                        "LICENCIATURA",
+                        "MAESTRÍA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "EN CRIMINOLOGÍA"
+                    ],
+                    "valores": [
+                        "ESPECIALIDAD",
+                        "LICENCIATURA",
+                        "MAESTRÍA",
+                        "TÉCNICO SUPERIOR UNIVERSITARIO"
+                    ]
+                },
+                {
+                    "clave": [
+                        "EN JUICIOS ORALES"
+                    ],
+                    "valores": [
+                        "ESPECIALIDAD",
+                        "MAESTRÍA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "EN MERCADOTECNIA"
+                    ],
+                    "valores": [
+                        "ESPECIALIDAD",
+                        "LICENCIATURA",
+                        "MAESTRÍA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "EN DOCENCIA"
+                    ],
+                    "valores": [
+                        "DOCTORADO",
+                        "ESPECIALIDAD",
+                        "MAESTRÍA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "EN EDUCACIÓN"
+                    ],
+                    "valores": [
+                        "DOCTORADO",
+                        "ESPECIALIDAD",
+                        "LICENCIATURA",
+                        "MAESTRÍA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "EN ADMINISTRACIÓN"
+                    ],
+                    "valores": [
+                        "DOCTORADO",
+                        "ESPECIALIDAD",
+                        "LICENCIATURA",
+                        "MAESTRÍA",
+                        "PROFESIONAL ASOCIADO"
+                    ]
+                },
+                {
+                    "clave": [
+                        "EN CINEMATOGRAFÍA"
+                    ],
+                    "valores": [
+                        "LICENCIATURA",
+                        "PROFESIONAL ASOCIADO"
+                    ]
+                },
+                {
+                    "clave": [
+                        "EN ORTODONCIA"
+                    ],
+                    "valores": [
+                        "ESPECIALIDAD",
+                        "MAESTRÍA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "EN DISEÑO DE INTERIORES"
+                    ],
+                    "valores": [
+                        "LICENCIATURA",
+                        "MAESTRÍA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "EN COMUNICACIÓN DIGITAL"
+                    ],
+                    "valores": [
+                        "ESPECIALIDAD",
+                        "LICENCIATURA",
+                        "MAESTRÍA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "EN AMPARO"
+                    ],
+                    "valores": [
+                        "ESPECIALIDAD",
+                        "MAESTRÍA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "EN ARGUMENTACIÓN JURÍDICA"
+                    ],
+                    "valores": [
+                        "ESPECIALIDAD",
+                        "MAESTRÍA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "EN DERECHO FAMILIAR"
+                    ],
+                    "valores": [
+                        "DOCTORADO",
+                        "MAESTRÍA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "EN DERECHO PENAL"
+                    ],
+                    "valores": [
+                        "DOCTORADO",
+                        "ESPECIALIDAD",
+                        "MAESTRÍA"
+                    ]
+                }
+            ],
+            "prueba": "PROGRAMA -> NIVEL"
+        },
+        {
+            "determinantes": [
+                "institucion"
+            ],
+            "dependiente": "programa",
+            "grupos_analizados": 330,
+            "grupos_conflictivos": 236,
+            "ejemplos": [
+                {
+                    "clave": [
+                        "ACADEMIA INTERNACIONAL DE FORMACIÓN EN CIENCIAS FORENSES"
+                    ],
+                    "valores": [
+                        "EN ADMINISTRACIÓN DE EMPRESAS",
+                        "EN CRIMINOLOGÍA Y CRIMINALÍSTICA",
+                        "EN DERECHO",
+                        "EN INFORMÁTICA",
+                        "EN PSICOLOGÍA CRIMINOLÓGICA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "ALLIANT ESCUELA INTERNACIONAL"
+                    ],
+                    "valores": [
+                        "EN ADMINISTRACIÓN DE EMPRESAS",
+                        "EN MERCADOTECNIA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "CENTRO ADM"
+                    ],
+                    "valores": [
+                        "EN COMUNICACIÓN Y ENTORNOS DIGITALES",
+                        "EN HISTORIA DEL ARTE Y GESTIÓN CULTURAL",
+                        "EN MARKETING Y PRODUCCIÓN DE MEDIOS DIGITALES"
+                    ]
+                },
+                {
+                    "clave": [
+                        "CENTRO CULTURAL ITACA"
+                    ],
+                    "valores": [
+                        "EN ADMINISTRACIÓN",
+                        "EN ADMINISTRACIÓN DE EMPRESAS",
+                        "EN CIENCIAS DE LA EDUCACIÓN",
+                        "EN CONTADURÍA",
+                        "EN DERECHO",
+                        "EN DESARROLLO HUMANO",
+                        "EN EDUCACIÓN",
+                        "EN INGENIERÍA INDUSTRIAL"
+                    ]
+                },
+                {
+                    "clave": [
+                        "CENTRO DE ARTE MEXICANO"
+                    ],
+                    "valores": [
+                        "EN ARTES PLÁSTICAS",
+                        "EN HISTORIA DEL ARTE"
+                    ]
+                },
+                {
+                    "clave": [
+                        "CENTRO DE CULTURA CASA LAMM"
+                    ],
+                    "valores": [
+                        "EN HISTORIA DEL ARTE",
+                        "EN LITERATURA Y CREACIÓN LITERARIA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "CENTRO DE CULTURA CASA LAMM (ROMA)"
+                    ],
+                    "valores": [
+                        "EN APRECIACIÓN CINEMATOGRÁFICA",
+                        "EN HISTORIA DEL ARTE",
+                        "EN LITERATURA Y CREACIÓN LITERARIA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "CENTRO DE DISEÑO, CINE Y TELEVISIÓN"
+                    ],
+                    "valores": [
+                        "EN ARQUITECTURA DE INTERIORES",
+                        "EN CINE Y TELEVISIÓN",
+                        "EN COMUNICACIÓN VISUAL",
+                        "EN DISEÑO INDUSTRIAL",
+                        "EN DISEÑO TEXTIL Y MODA",
+                        "EN MEDIOS DIGITALES Y TECNOLOGÍA",
+                        "EN MERCADOTECNIA Y PUBLICIDAD"
+                    ]
+                },
+                {
+                    "clave": [
+                        "CENTRO DE EDUCACIÓN TECNOLÓGICA Y ARTE"
+                    ],
+                    "valores": [
+                        "EN AUDIO PROFESIONAL",
+                        "EN INGENIERÍA DE AUDIO EN PRODUCCIÓN MUSICAL",
+                        "EN INGENIERÍA DE AUDIO EN REFUERZO SONORO",
+                        "EN INGENIERÍA DE AUDIO PARA CINE Y TELEVISIÓN"
+                    ]
+                },
+                {
+                    "clave": [
+                        "CENTRO DE ESTUDIOS ANGLOMETROPOLITANO"
+                    ],
+                    "valores": [
+                        "EN ADMINISTRACIÓN Y FINANZAS",
+                        "EN PEDAGOGÍA",
+                        "EN PSICOLOGÍA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "CENTRO DE ESTUDIOS ANGLOMETROPOLITANO (TABASCO)"
+                    ],
+                    "valores": [
+                        "EN PSICOLOGÍA",
+                        "EN PSICOPEDAGOGÍA",
+                        "EN TRABAJO SOCIAL"
+                    ]
+                },
+                {
+                    "clave": [
+                        "CENTRO DE ESTUDIOS AVANZADOS DE LAS AMÉRICAS"
+                    ],
+                    "valores": [
+                        "EN ADMINISTRACIÓN",
+                        "EN DERECHO",
+                        "EN DESARROLLO EMPRESARIAL Y DE NEGOCIOS",
+                        "EN MERCADOTECNIA",
+                        "EN NEGOCIOS INTERNACIONALES",
+                        "EN PEDAGOGÍA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "CENTRO DE ESTUDIOS EN CIENCIAS DE LA COMUNICACIÓN, CAMPUS PEDREGAL"
+                    ],
+                    "valores": [
+                        "EN CINE Y TELEVISIÓN",
+                        "EN COMUNICACIÓN",
+                        "EN DISEÑO DE MODA Y MERCADOTECNIA",
+                        "EN DISEÑO GRÁFICO",
+                        "EN MERCADOTECNIA",
+                        "EN PERIODISMO",
+                        "EN PUBLICIDAD",
+                        "EN RELACIONES PÚBLICAS"
+                    ]
+                },
+                {
+                    "clave": [
+                        "CENTRO DE ESTUDIOS SUPERIORES CUICUILCO"
+                    ],
+                    "valores": [
+                        "EN CIENCIAS DE LA COMUNICACIÓN",
+                        "EN CONTADURÍA",
+                        "EN DERECHO"
+                    ]
+                },
+                {
+                    "clave": [
+                        "CENTRO DE ESTUDIOS SUPERIORES DE LA ESCUELA MEXICANA DE TURISMO"
+                    ],
+                    "valores": [
+                        "EN GASTRONOMÍA",
+                        "EN HOTELERÍA Y RESTAURANTERÍA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "CENTRO DE ESTUDIOS SUPERIORES DE SAN ÁNGEL"
+                    ],
+                    "valores": [
+                        "EN ADMINISTRACIÓN DE RESTAURANTES",
+                        "EN ADMINISTRACIÓN HOTELERA",
+                        "EN GASTRONOMÍA Y CIENCIAS DE LOS ALIMENTOS"
+                    ]
+                },
+                {
+                    "clave": [
+                        "CENTRO DE ESTUDIOS SUPERIORES EN CIENCIAS JURÍDICAS Y CRIMINOLÓGICAS"
+                    ],
+                    "valores": [
+                        "EN ADMINISTRACIÓN DE EMPRESAS",
+                        "EN ADMINISTRACIÓN DE INSTITUCIONES PENITENCIARIAS",
+                        "EN CIENCIAS DE LA COMUNICACIÓN",
+                        "EN CONTADURÍA PÚBLICA",
+                        "EN CRIMINALÍSTICA",
+                        "EN DERECHO",
+                        "EN INGENIERÍA MECATRÓNICA",
+                        "EN PEDAGOGÍA",
+                        "EN PSICOPEDAGOGÍA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "PCLEANNTTREOL CDHEA EPSUTLUTDEIPOESC SUPERIORES EN CIENCIAS JURÍDICAS Y CRIMINOLÓGICAS,"
+                    ],
+                    "valores": [
+                        "EN CRIMINALÍSTICA",
+                        "EN DERECHO"
+                    ]
+                },
+                {
+                    "clave": [
+                        "CENTRO DE ESTUDIOS TECNOLÓGICOS Y UNIVERSITARIOS IAMP"
+                    ],
+                    "valores": [
+                        "EN ADMINISTRACIÓN",
+                        "EN CONTADURÍA PÚBLICA",
+                        "EN DERECHO",
+                        "EN MERCADOTECNIA",
+                        "EN SISTEMAS COMPUTACIONALES"
+                    ]
+                },
+                {
+                    "clave": [
+                        "CENTRO DE ESTUDIOS UNIPRE SAN JERÓNIMO"
+                    ],
+                    "valores": [
+                        "EN ADMINISTRACIÓN PÚBLICA",
+                        "EN CRIMINOLOGÍA",
+                        "EN GASTRONOMÍA"
+                    ]
+                }
+            ],
+            "prueba": "INSTITUCION -> PROGRAMA"
+        },
+        {
+            "determinantes": [
+                "institucion",
+                "programa"
+            ],
+            "dependiente": "modalidad",
+            "grupos_analizados": 2282,
+            "grupos_conflictivos": 304,
+            "ejemplos": [
+                {
+                    "clave": [
+                        "CENTRO CULTURAL ITACA",
+                        "EN CONTADURÍA"
+                    ],
+                    "valores": [
+                        "ESCOLARIZADA",
+                        "MIXTA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "CENTRO DE ESTUDIOS SUPERIORES EN CIENCIAS JURÍDICAS Y CRIMINOLÓGICAS",
+                        "EN ADMINISTRACIÓN DE EMPRESAS"
+                    ],
+                    "valores": [
+                        "ESCOLARIZADA",
+                        "NO ESCOLARIZADA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "CENTRO DE ESTUDIOS SUPERIORES EN CIENCIAS JURÍDICAS Y CRIMINOLÓGICAS",
+                        "EN CIENCIAS DE LA COMUNICACIÓN"
+                    ],
+                    "valores": [
+                        "ESCOLARIZADA",
+                        "NO ESCOLARIZADA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "CENTRO DE ESTUDIOS SUPERIORES EN CIENCIAS JURÍDICAS Y CRIMINOLÓGICAS",
+                        "EN CONTADURÍA PÚBLICA"
+                    ],
+                    "valores": [
+                        "ESCOLARIZADA",
+                        "NO ESCOLARIZADA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "CENTRO DE ESTUDIOS SUPERIORES EN CIENCIAS JURÍDICAS Y CRIMINOLÓGICAS",
+                        "EN INGENIERÍA MECATRÓNICA"
+                    ],
+                    "valores": [
+                        "ESCOLARIZADA",
+                        "NO ESCOLARIZADA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "CENTRO UNIVERSITARIO TRILINGÜE",
+                        "EN DERECHO"
+                    ],
+                    "valores": [
+                        "ESCOLARIZADA",
+                        "NO ESCOLARIZADA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "COLEGIO LIBRE DE ESTUDIOS UNIVERSITARIOS CAMPUS DF DOS",
+                        "EN CRIMINOLOGÍA, CRIMINALÍSTICA Y TÉCNICAS PERICIALES"
+                    ],
+                    "valores": [
+                        "ESCOLARIZADA",
+                        "MIXTA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "INSTITUTO CULTURAL DERECHOS HUMANOS",
+                        "EN DERECHO"
+                    ],
+                    "valores": [
+                        "ESCOLARIZADA",
+                        "MIXTA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "INSTITUTO DE EMPRENDEDORES UNIVERSA",
+                        "EN ADMINISTRACIÓN DE EMPRESAS"
+                    ],
+                    "valores": [
+                        "ESCOLARIZADA",
+                        "MIXTA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "INSTITUTO DE EMPRENDEDORES UNIVERSA",
+                        "EN DERECHO"
+                    ],
+                    "valores": [
+                        "ESCOLARIZADA",
+                        "MIXTA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "INSTITUTO DE ESTUDIOS SUPERIORES DEL COLEGIO MAESTRO ISAAC OCHOTERENA",
+                        "EN CIENCIAS ADUANALES Y COMERCIO EXTERIOR"
+                    ],
+                    "valores": [
+                        "ESCOLARIZADA",
+                        "MIXTA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "INSTITUTO DE ESTUDIOS SUPERIORES DEL COLEGIO MAESTRO ISAAC OCHOTERENA",
+                        "EN CONTADURÍA PÚBLICA"
+                    ],
+                    "valores": [
+                        "ESCOLARIZADA",
+                        "MIXTA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "INSTITUTO KUEPA",
+                        "EN ADMINISTRACIÓN DE EMPRESAS"
+                    ],
+                    "valores": [
+                        "ESCOLARIZADA",
+                        "NO ESCOLARIZADA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "INSTITUTO KUEPA",
+                        "EN DERECHO"
+                    ],
+                    "valores": [
+                        "ESCOLARIZADA",
+                        "NO ESCOLARIZADA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "INSTITUTO NACIONAL DE ESTUDIOS SINDICALES Y DE ADMINISTRACIÓN PÚBLICA DE LA F.S.T.S.E.",
+                        "EN DERECHO BUROCRÁTICO"
+                    ],
+                    "valores": [
+                        "ESCOLARIZADA",
+                        "MIXTA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "UNIVERSIDAD ANÁHUAC (CDMX)",
+                        "EN ACTUARIA"
+                    ],
+                    "valores": [
+                        "ESCOLARIZADA",
+                        "MIXTA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "UNIVERSIDAD ANÁHUAC (CDMX)",
+                        "EN ADMINISTRACIÓN TURÍSTICA"
+                    ],
+                    "valores": [
+                        "ESCOLARIZADA",
+                        "MIXTA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "UNIVERSIDAD ANÁHUAC (CDMX)",
+                        "EN COMUNICACIÓN"
+                    ],
+                    "valores": [
+                        "ESCOLARIZADA",
+                        "MIXTA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "UNIVERSIDAD ANÁHUAC (CDMX)",
+                        "EN DERECHO"
+                    ],
+                    "valores": [
+                        "ESCOLARIZADA",
+                        "MIXTA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "UNIVERSIDAD ANÁHUAC (CDMX)",
+                        "EN DIRECCIÓN FINANCIERA"
+                    ],
+                    "valores": [
+                        "ESCOLARIZADA",
+                        "MIXTA"
+                    ]
+                }
+            ],
+            "prueba": "INSTITUCION + PROGRAMA -> MODALIDAD"
+        },
+        {
+            "determinantes": [
+                "institucion",
+                "programa",
+                "modalidad"
+            ],
+            "dependiente": "acuerdo_rvoe_fecha",
+            "grupos_analizados": 2616,
+            "grupos_conflictivos": 123,
+            "ejemplos": [
+                {
+                    "clave": [
+                        "COLEGIO SUPERIOR DE GASTRONOMÍA",
+                        "EN GASTRONOMÍA",
+                        "ESCOLARIZADA"
+                    ],
+                    "valores": [
+                        "20140015/2014-01-27",
+                        "20150415/2015-09-21"
+                    ]
+                },
+                {
+                    "clave": [
+                        "INSTITUTO CARLOS LINDBERGH",
+                        "EN PSICOLOGÍA",
+                        "ESCOLARIZADA"
+                    ],
+                    "valores": [
+                        "20090530/2009-08-10",
+                        "20101097/2010-11-12"
+                    ]
+                },
+                {
+                    "clave": [
+                        "INSTITUTO DE ESTUDIOS SUPERIORES DEL COLEGIO MAESTRO ISAAC OCHOTERENA",
+                        "EN CIENCIAS ADUANALES Y COMERCIO EXTERIOR",
+                        "MIXTA"
+                    ],
+                    "valores": [
+                        "20100887/2010-07-21",
+                        "20190103/2019-02-27"
+                    ]
+                },
+                {
+                    "clave": [
+                        "INSTITUTO DE ESTUDIOS SUPERIORES DEL COLEGIO MAESTRO ISAAC OCHOTERENA",
+                        "EN CRIMINALÍSTICA Y CRIMINOLOGÍA",
+                        "MIXTA"
+                    ],
+                    "valores": [
+                        "20123206/2012-12-03",
+                        "20190097/2019-02-27"
+                    ]
+                },
+                {
+                    "clave": [
+                        "INSTITUTO DE ESTUDIOS SUPERIORES DEL COLEGIO MAESTRO ISAAC OCHOTERENA",
+                        "EN DERECHO",
+                        "MIXTA"
+                    ],
+                    "valores": [
+                        "20080898/2008-06-02",
+                        "20190109/2019-02-27"
+                    ]
+                },
+                {
+                    "clave": [
+                        "INSTITUTO TECNOLÓGICO DE LA CONSTRUCCIÓN",
+                        "EN ADMINISTRACIÓN DE EMPRESAS",
+                        "ESCOLARIZADA"
+                    ],
+                    "valores": [
+                        "2004354/2004-09-01",
+                        "952060/1995-03-07"
+                    ]
+                },
+                {
+                    "clave": [
+                        "INSTITUTO TECNOLÓGICO DE LA CONSTRUCCIÓN",
+                        "EN INGENIERÍA DE CONSTRUCCIÓN",
+                        "ESCOLARIZADA"
+                    ],
+                    "valores": [
+                        "2004355/2004-09-01",
+                        "952359/1995-11-15"
+                    ]
+                },
+                {
+                    "clave": [
+                        "UNIVERSIDAD CHAPULTEPEC (VALLE)",
+                        "EN ADMINISTRACIÓN DE EMPRESAS",
+                        "ESCOLARIZADA"
+                    ],
+                    "valores": [
+                        "20110054/2011-01-28",
+                        "20130209/2013-10-29"
+                    ]
+                },
+                {
+                    "clave": [
+                        "UNIVERSIDAD DE LA COMUNICACIÓN",
+                        "EN PUBLICIDAD",
+                        "ESCOLARIZADA"
+                    ],
+                    "valores": [
+                        "2012054/2001-02-23",
+                        "20180202/2018-02-15"
+                    ]
+                },
+                {
+                    "clave": [
+                        "UNIVERSIDAD DE NEGOCIOS ISEC",
+                        "EN DERECHO",
+                        "ESCOLARIZADA"
+                    ],
+                    "valores": [
+                        "20180822/2018-07-13",
+                        "942165/1994-10-28"
+                    ]
+                },
+                {
+                    "clave": [
+                        "UNIVERSIDAD DE NEGOCIOS ISEC",
+                        "EN NEGOCIOS INTERNACIONALES",
+                        "ESCOLARIZADA"
+                    ],
+                    "valores": [
+                        "20101120/2010-11-25",
+                        "20180820/2018-07-13"
+                    ]
+                },
+                {
+                    "clave": [
+                        "UNIVERSIDAD DEL VALLE DE MÉXICO, CAMPUS CHAPULTEPEC",
+                        "EN PEDAGOGÍA",
+                        "ESCOLARIZADA"
+                    ],
+                    "valores": [
+                        "952055/1995-03-06",
+                        "ACUERDO 131/1988-02-25"
+                    ]
+                },
+                {
+                    "clave": [
+                        "UNIVERSIDAD DEL VALLE DE MÉXICO, CAMPUS CHAPULTEPEC",
+                        "EN RELACIONES INTERNACIONALES",
+                        "ESCOLARIZADA"
+                    ],
+                    "valores": [
+                        "952045/1995-03-06",
+                        "ACUERDO 131/1988-02-25"
+                    ]
+                },
+                {
+                    "clave": [
+                        "UNIVERSIDAD DEL VALLE DE MÉXICO, CAMPUS SAN ÁNGEL",
+                        "EN ADMINISTRACIÓN DE EMPRESAS",
+                        "ESCOLARIZADA"
+                    ],
+                    "valores": [
+                        "83022/1983-02-14",
+                        "ACUERDO 131/1988-02-25"
+                    ]
+                },
+                {
+                    "clave": [
+                        "UNIVERSIDAD DEL VALLE DE MÉXICO, CAMPUS SAN ÁNGEL",
+                        "EN DERECHO",
+                        "ESCOLARIZADA"
+                    ],
+                    "valores": [
+                        "972297/1997-07-29",
+                        "ACUERDO 131/1988-02-25"
+                    ]
+                },
+                {
+                    "clave": [
+                        "UNIVERSIDAD DEL VALLE DE MÉXICO, CAMPUS SAN ÁNGEL",
+                        "EN INGENIERÍA EN SISTEMAS COMPUTACIONALES",
+                        "ESCOLARIZADA"
+                    ],
+                    "valores": [
+                        "952156/1995-03-31",
+                        "ACUERDO 131/1988-02-25"
+                    ]
+                },
+                {
+                    "clave": [
+                        "UNIVERSIDAD DEL VALLE DE MÉXICO, CAMPUS SAN ÁNGEL",
+                        "EN MERCADOTECNIA",
+                        "ESCOLARIZADA"
+                    ],
+                    "valores": [
+                        "952160/1995-03-31",
+                        "ACUERDO 131/1988-02-25"
+                    ]
+                },
+                {
+                    "clave": [
+                        "UNIVERSIDAD DEL VALLE DE MÉXICO, CAMPUS SAN RAFAEL",
+                        "EN ADMINISTRACIÓN DE EMPRESAS TURÍSTICAS",
+                        "ESCOLARIZADA"
+                    ],
+                    "valores": [
+                        "15672/1976-11-29",
+                        "952058/1995-03-06",
+                        "ACUERDO 131/1988-02-25"
+                    ]
+                },
+                {
+                    "clave": [
+                        "UNIVERSIDAD DEL VALLE DE MÉXICO, CAMPUS SAN RAFAEL",
+                        "EN COMERCIO INTERNACIONAL",
+                        "ESCOLARIZADA"
+                    ],
+                    "valores": [
+                        "952179/1995-03-31",
+                        "ACUERDO 131/1988-02-25"
+                    ]
+                },
+                {
+                    "clave": [
+                        "UNIVERSIDAD DEL VALLE DE MÉXICO, CAMPUS SAN RAFAEL",
+                        "EN DERECHO",
+                        "ESCOLARIZADA"
+                    ],
+                    "valores": [
+                        "882289/1988-11-29",
+                        "ACUERDO 131/1988-02-25"
+                    ]
+                }
+            ],
+            "prueba": "INSTITUCION + PROGRAMA + MODALIDAD -> RVOE"
+        },
+        {
+            "determinantes": [
+                "institucion"
+            ],
+            "dependiente": "estado",
+            "grupos_analizados": 2060,
+            "grupos_conflictivos": 12,
+            "ejemplos": [
+                {
+                    "clave": [
+                        "CENTRO DE ESTUDIOS SUPERIORES EN CIENCIAS JURÍDICAS Y CRIMINOLÓGICAS"
+                    ],
+                    "valores": [
+                        "CIUDAD DE MÉXICO",
+                        "ESTADO DE MÉXICO"
+                    ]
+                },
+                {
+                    "clave": [
+                        "PCLEANNTTREOL GDUE SETSATVUOD IBOASZ SUPERIORES EN CIENCIAS JURÍDICAS Y CRIMINOLÓGICAS,"
+                    ],
+                    "valores": [
+                        "ESTADO DE MÉXICO",
+                        "MICHOACÁN"
+                    ]
+                },
+                {
+                    "clave": [
+                        "CENTRO DE ESTUDIOS SUPERIORES EN CIENCIAS JURÍDICAS Y CRIMINOLÓGICAS,"
+                    ],
+                    "valores": [
+                        "PUEBLA",
+                        "SONORA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "CEPNLTARNOT DELE PEUSETUBDLAIOS SUPERIORES EN CIENCIAS JURÍDICAS Y CRIMINOLÓGICAS,"
+                    ],
+                    "valores": [
+                        "PUEBLA",
+                        "SONORA"
+                    ]
+                },
+                {
+                    "clave": [
+                        "INSTITUTO TECNOLÓGICO Y DE ESTUDIOS SUPERIORES DE MONTERREY, CAMPUS"
+                    ],
+                    "valores": [
+                        "AGUASCALIENTES",
+                        "JALISCO",
+                        "MORELOS"
+                    ]
+                },
+                {
+                    "clave": [
+                        "UNIVERSIDAD ANÁHUAC"
+                    ],
+                    "valores": [
+                        "CIUDAD DE MÉXICO",
+                        "ESTADO DE MÉXICO",
+                        "QUINTANA ROO"
+                    ]
+                },
+                {
+                    "clave": [
+                        "UNIVERSIDAD DEL VALLE DE MÉXICO, CAMPUS CIUDAD"
+                    ],
+                    "valores": [
+                        "SONORA",
+                        "TAMAULIPAS"
+                    ]
+                },
+                {
+                    "clave": [
+                        "UNIVERSIDAD DEL VALLE DE MÉXICO, CAMPUS LOMAS VERDES"
+                    ],
+                    "valores": [
+                        "ESTADO DE MÉXICO",
+                        "TABASCO"
+                    ]
+                },
+                {
+                    "clave": [
+                        "UNIVERSIDAD INTERAMERICANA PARA EL DESARROLLO CAMPUS"
+                    ],
+                    "valores": [
+                        "AGUASCALIENTES",
+                        "BAJA CALIFORNIA",
+                        "CAMPECHE",
+                        "CHIAPAS",
+                        "CIUDAD DE MÉXICO",
+                        "COAHUILA",
+                        "DURANGO",
+                        "ESTADO DE MÉXICO",
+                        "GUERRERO",
+                        "HIDALGO",
+                        "JALISCO",
+                        "MICHOACÁN",
+                        "NUEVO LEÓN",
+                        "OAXACA",
+                        "PUEBLA",
+                        "QUINTANA ROO",
+                        "SAN LUIS POTOSÍ",
+                        "SONORA",
+                        "TABASCO",
+                        "TAMAULIPAS",
+                        "VERACRUZ",
+                        "YUCATÁN",
+                        "ZACATECAS"
+                    ]
+                },
+                {
+                    "clave": [
+                        "UNIVERSIDAD INTERAMERICANA PARA EL DESARROLLO, CAMPUS"
+                    ],
+                    "valores": [
+                        "QUINTANA ROO",
+                        "TAMAULIPAS"
+                    ]
+                },
+                {
+                    "clave": [
+                        "UNIVERSIDAD TECNOLÓGICA INTERNACIONAL CAMPUS"
+                    ],
+                    "valores": [
+                        "ESTADO DE MÉXICO",
+                        "HIDALGO"
+                    ]
+                },
+                {
+                    "clave": [
+                        "UNIVERSIDAD UNIVER, PLANTEL VALLARTA (JARDINES)"
+                    ],
+                    "valores": [
+                        "JALISCO",
+                        "SINALOA"
+                    ]
+                }
+            ],
+            "prueba": "INSTITUCION -> ESTADO (NACIONAL)"
+        }
+    ],
+    "rvoe_distintos": 2023,
+    "rvoe_repetidos": 4,
+    "grupos_duplicados": 64,
+    "filas_duplicadas_adicionales": 70
+}
