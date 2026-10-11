@@ -1,0 +1,14 @@
+REVISIÓN DE INSTITUCIONES Y PLANTELES - LICENCIATURAS CDMX
+Denominaciones: 330
+Registros CDMX representados: 2810
+1_CRITICA: 9
+2_ALTA: 67
+3_MEDIA: 69
+4_NORMAL: 185
+Grupos sugeridos con 2+ denominaciones: 41
+
+IMPORTANTE: No se aprobó ni fusionó ninguna institución o plantel.
+Revisar los nombres frente a la fuente PDF antes de rellenar las columnas
+institucion_aprobada, plantel_aprobado y decision_manual.
+La ausencia de plantel explícito no autoriza inventarlo.
+No hay conexión ni modificaciones a PostgreSQL.
