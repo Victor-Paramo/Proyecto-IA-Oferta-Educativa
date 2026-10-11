@@ -6,32 +6,39 @@ Proyecto desarrollado para la asignatura de Inteligencia Artificial.
 
 Desarrollar un sistema para procesar, estructurar y analizar información de la oferta educativa, con énfasis inicial en las licenciaturas disponibles en la Ciudad de México.
 
-El proyecto utiliza como fuente archivos PDF que contienen registros oficiales de instituciones y programas educativos.
+El proyecto utiliza como fuente documentos PDF con registros oficiales de instituciones y programas educativos.
+
+La arquitectura está preparada para ampliar posteriormente la cobertura al resto de México.
 
 ## Proceso realizado
 
-Hasta el momento se han desarrollado las siguientes etapas:
+Hasta el momento se han completado las siguientes etapas:
 
 1. Extracción automática de tablas desde archivos PDF.
-2. Conversión de los registros extraídos a formato JSON.
-3. Integración de los registros procedentes de los diferentes archivos.
-4. Identificación de registros sospechosos y errores producidos durante la extracción.
-5. Revisión de casos particulares contra los documentos originales.
-6. Limpieza y normalización inicial de los datos.
-7. Generación de un archivo JSON limpio para las siguientes etapas del proyecto.
-8. Auditoría estructural para analizar dependencias funcionales, duplicados y relaciones entre atributos.
-9. Elaboración del modelo Entidad–Relación (MER).
-10. Elaboración de una propuesta de modelo relacional para PostgreSQL.
+2. Conversión de la información extraída a formato JSON.
+3. Integración de los registros de diferentes documentos.
+4. Detección y revisión de inconsistencias de extracción.
+5. Limpieza inicial y generación de un JSON consolidado.
+6. Auditoría estructural y análisis de dependencias funcionales.
+7. Elaboración del Modelo Entidad–Relación (MER).
+8. Elaboración del modelo relacional y diseño de la normalización hasta 3FN.
+9. Implementación de la base de datos en PostgreSQL.
+10. Carga de los registros originales y de los catálogos académicos.
+11. Integración de las licenciaturas de CDMX en la capa normalizada.
+12. Primera etapa de consolidación y corrección de instituciones y planteles.
+13. Verificación de integridad referencial y pruebas iniciales de consulta.
 
-## Datos obtenidos
+## Datos procesados
 
-Actualmente se procesaron:
+Se procesaron cuatro documentos PDF, obteniendo:
 
-- **27,054 registros nacionales.**
-- **5,312 registros correspondientes a Ciudad de México.**
-- **2,810 registros de licenciaturas en Ciudad de México.**
+| Conjunto de datos | Registros |
+|---|---:|
+| Registros nacionales | 27,054 |
+| Registros correspondientes a CDMX | 5,312 |
+| Registros de licenciaturas de CDMX | 2,810 |
 
-Después del proceso de limpieza, los niveles de estudios reconocidos son:
+Los niveles académicos identificados son:
 
 - Licenciatura
 - Maestría
@@ -40,71 +47,125 @@ Después del proceso de limpieza, los niveles de estudios reconocidos son:
 - Técnico Superior Universitario
 - Profesional Asociado
 
-Los registros se encuentran consolidados en el archivo `oferta_educativa_limpia.json`.
+Los 27,054 registros nacionales se encuentran almacenados en PostgreSQL dentro de la capa de origen. La normalización activa se concentra en las licenciaturas de Ciudad de México.
 
-## Diseño de la base de datos
+## Arquitectura de la base de datos
 
-Se elaboraron los modelos conceptual y relacional para organizar la información educativa, reducir redundancias y preparar su almacenamiento en PostgreSQL.
+Se implementó una base de datos PostgreSQL 16 denominada `oferta_educativa`, organizada en dos esquemas:
 
-La arquitectura propuesta utiliza una sola base de datos denominada `oferta_educativa`, organizada en dos esquemas:
+- **`origen`:** conserva los registros extraídos de los PDF, los documentos fuente y sus vínculos documentales.
+- **`catalogo`:** almacena las instituciones, planteles, estados, programas académicos, niveles, modalidades, ofertas educativas y autorizaciones.
 
-- **`catalogo`:** destinado a almacenar instituciones, planteles, estados, niveles académicos, programas, modalidades, ofertas educativas y autorizaciones.
-- **`origen`:** destinado a conservar los registros extraídos de los documentos PDF y su procedencia.
-
-Ambos esquemas se relacionan mediante claves foráneas, permitiendo asociar la información normalizada con los registros originales.
+Ambos esquemas pertenecen a la misma base de datos y se relacionan mediante claves foráneas.
 
 ### Modelo Entidad–Relación (MER)
 
-El modelo conceptual identifica las entidades principales, sus atributos, relaciones y cardinalidades.
+El modelo conceptual representa las entidades, sus atributos, las relaciones entre ellas y las cardinalidades.
 
 ![Modelo Entidad–Relación](diagramas/modelo_entidad_relacion.png)
 
 ### Modelo relacional
 
-El modelo relacional representa las tablas propuestas, sus atributos, claves primarias (PK), claves foráneas (FK) y restricciones de unicidad (UQ).
+El modelo relacional muestra las tablas, sus atributos, claves primarias, claves foráneas y restricciones de unicidad.
 
 ![Modelo relacional](diagramas/modelo_relacional.png)
 
 ### Normalización
 
-El diseño contempla la aplicación de los principios de Primera Forma Normal (1FN), Segunda Forma Normal (2FN) y Tercera Forma Normal (3FN).
+El diseño de la capa `catalogo` contempla la aplicación de los principios de Primera, Segunda y Tercera Forma Normal (1FN, 2FN y 3FN).
 
-La separación de instituciones, planteles, programas, niveles académicos y modalidades busca reducir la redundancia y evitar anomalías de inserción, actualización y eliminación.
+Se separaron las entidades académicas para reducir la redundancia y representar correctamente las relaciones entre instituciones, planteles, programas, modalidades y autorizaciones.
 
-Adicionalmente, la capa `origen` permitirá conservar los datos extraídos para facilitar la revisión de inconsistencias y mantener la trazabilidad documental.
+La capa `origen` mantiene los datos documentales para conservar la trazabilidad y facilitar futuras revisiones.
 
-La validación definitiva de la normalización y de las restricciones se realizará durante la implementación y las pruebas de carga.
+## Estado actual de PostgreSQL
+
+Después de la carga inicial y las primeras correcciones, se obtuvieron los siguientes resultados:
+
+| Tabla | Registros |
+|---|---:|
+| `catalogo.institucion` | 258 |
+| `catalogo.plantel` | 326 |
+| `catalogo.estado` | 32 |
+| `catalogo.nivel_academico` | 6 |
+| `catalogo.modalidad` | 3 |
+| `catalogo.programa_academico` | 588 |
+| `catalogo.oferta_educativa` | 2,616 |
+| `catalogo.autorizacion` | 2,740 |
+| `origen.registro_origen` | 27,054 |
+| `origen.vinculo_registro` | 2,810 |
+
+**Nota:** las 2,810 filas documentales de licenciatura de CDMX están vinculadas a 2,616 ofertas educativas en la capa normalizada. Ambos valores representan conceptos diferentes y no deben confundirse.
+
+Los 2,810 vínculos se conservan en estado `REVISAR` mientras continúa la validación de identidades institucionales y autorizaciones.
+
+## Limpieza y mejora de los datos
+
+Se inició una segunda etapa de depuración sobre las entidades normalizadas en PostgreSQL.
+
+Durante esta fase se consolidaron denominaciones de seis instituciones:
+
+- Instituto Tecnológico y de Estudios Superiores de Monterrey.
+- Universidad Tecnológica de México (UNITEC).
+- Universidad de Londres.
+- Universidad Insurgentes.
+- Universidad La Salle.
+- Universidad Panamericana.
+
+Las correcciones se realizaron mediante transacciones SQL, actualizando relaciones entre instituciones y planteles y eliminando registros duplicados únicamente después de comprobar que no contenían referencias necesarias.
+
+Las verificaciones confirmaron que permanecen las 2,616 ofertas educativas, las 2,740 autorizaciones y los 2,810 vínculos documentales.
+
+Las correcciones realizadas se documentan en `limpieza_catalogo_cdmx_historial.md`.
+
+La validación de los casos restantes continúa pendiente.
+
+## Consultas y validaciones
+
+Se implementaron consultas SQL para comprobar:
+
+- La cantidad de registros nacionales y de licenciaturas de CDMX.
+- La integridad de las relaciones entre ofertas y registros originales.
+- La existencia de instituciones y planteles duplicados.
+- La conservación de ofertas, autorizaciones y vínculos después de las correcciones.
+- La búsqueda de licenciaturas por nombre de programa, institución y modalidad.
+
+Las consultas de verificación están disponibles en la carpeta `sql/`.
 
 ## Estructura del proyecto
 
-- `PDFs/`: documentos utilizados como fuente de información.
-- `datos/`: archivos JSON obtenidos durante la extracción, análisis, limpieza y auditoría.
-- `scripts/`: programas de Python utilizados para procesar la información.
-- `diagramas/`: representaciones gráficas de los modelos conceptual y relacional.
-- `.gitignore`: configuración de exclusiones para Git.
-- `README.md`: documentación general del proyecto.
+- `PDFs/`: documentos PDF utilizados como fuente.
+- `datos/`: archivos JSON, CSV y resultados de análisis locales.
+- `diagramas/`: modelos conceptual y relacional.
+- `scripts/`: programas Python de extracción, limpieza, auditoría y carga.
+- `sql/`: instrucciones de creación y verificación de PostgreSQL.
+- `limpieza_catalogo_cdmx_historial.md`: historial de correcciones del catálogo.
+- `.gitignore`: configuración de archivos excluidos del control de versiones.
+- `README.md`: documentación del proyecto.
 
 ## Tecnologías utilizadas
 
 - Python 3.12
 - pdfplumber
 - JSON
-- PostgreSQL (para la etapa de almacenamiento y consulta)
-- Git y GitHub (control de versiones)
+- PostgreSQL 16
+- psycopg2-binary
+- Git y GitHub
 
-## Estado actual
+## Estado del proyecto y siguientes etapas
 
-Se completaron la extracción de datos, la consolidación de los registros, una primera etapa de limpieza y la auditoría estructural.
+**La extracción, la carga documental, el diseño de la base de datos y la primera integración de licenciaturas de CDMX están completados.**
 
-También se elaboraron los diagramas del modelo Entidad–Relación y del modelo relacional propuesto.
+Actualmente se trabaja en mejorar la calidad de las correspondencias institucionales y de los planteles, conservando los datos originales.
 
-Las siguientes etapas consisten en:
+Las próximas etapas son:
 
-1. Revisar las reglas de identificación de instituciones, planteles y ofertas educativas.
-2. Implementar los esquemas y las tablas en PostgreSQL.
-3. Cargar los registros originales conservando su procedencia.
-4. Transformar e integrar los datos en las tablas normalizadas.
-5. Verificar las restricciones de integridad y la consistencia de las relaciones.
-6. Desarrollar las consultas y funcionalidades del sistema de Inteligencia Artificial.
+1. Continuar la limpieza controlada de instituciones y planteles.
+2. Revisar autorizaciones y registros que presentan inconsistencias.
+3. Consolidar y validar las consultas académicas.
+4. Desarrollar la interfaz de búsqueda de licenciaturas de CDMX.
+5. Incorporar las funcionalidades de Inteligencia Artificial.
+6. Realizar pruebas funcionales y documentar los resultados.
+7. Ampliar posteriormente la cobertura a nivel nacional.
 
-La prioridad continúa siendo la oferta de licenciaturas en Ciudad de México, manteniendo una arquitectura que permita incorporar posteriormente información del resto del país.
+**El alcance actual de la aplicación continúa limitado a las licenciaturas de Ciudad de México.**
