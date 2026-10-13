@@ -1,0 +1,25 @@
+pregunta,intencion
+Dónde puedo estudiar Psicología,buscar_programa
+Qué universidades ofrecen Derecho,buscar_programa
+En qué institución puedo estudiar Medicina,buscar_programa
+Dónde imparten Ingeniería en Computación,buscar_programa
+Qué universidades tienen Actuaría,buscar_programa
+Quiero encontrar una licenciatura en Arquitectura,buscar_programa
+Qué carreras ofrece la UNAM,buscar_institucion
+Cuáles son las licenciaturas de la UAM,buscar_institucion
+Qué programas académicos tiene el IPN,buscar_institucion
+Muéstrame las carreras de la Universidad ICEL,buscar_institucion
+Qué puedo estudiar en la Universidad Insurgentes,buscar_institucion
+Qué ofrece la Universidad Panamericana,buscar_institucion
+Cuáles son de modalidad mixta,filtrar_modalidad
+Muéstrame solo las escolarizadas,filtrar_modalidad
+Qué opciones son no escolarizadas,filtrar_modalidad
+Hay programas en modalidad mixta,filtrar_modalidad
+Quiero únicamente opciones presenciales,filtrar_modalidad
+Filtra las carreras por modalidad,filtrar_modalidad
+Me interesa algo relacionado con computación,explorar_area
+Me gustan las matemáticas qué podría estudiar,explorar_area
+Quiero una carrera relacionada con tecnología,explorar_area
+Me interesa trabajar con animales,explorar_area
+Qué puedo estudiar si me gusta la programación,explorar_area
+Busco una profesión relacionada con el arte,explorar_area
