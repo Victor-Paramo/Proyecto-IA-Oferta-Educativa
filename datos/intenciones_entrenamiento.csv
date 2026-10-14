@@ -23,3 +23,60 @@ Quiero una carrera relacionada con tecnología,explorar_area
 Me interesa trabajar con animales,explorar_area
 Qué puedo estudiar si me gusta la programación,explorar_area
 Busco una profesión relacionada con el arte,explorar_area
+
+En qué universidades puedo cursar Contaduría,buscar_programa
+Dónde se imparte la licenciatura en Física,buscar_programa
+Busco universidades que tengan Arquitectura,buscar_programa
+En qué lugares ofrecen la carrera de Enfermería,buscar_programa
+Quiero saber dónde estudiar Diseño Gráfico,buscar_programa
+Qué instituciones imparten Ingeniería Industrial,buscar_programa
+Dónde encuentro la carrera de Actuaría,buscar_programa
+Hay universidades que ofrezcan Relaciones Internacionales,buscar_programa
+En qué escuelas puedo cursar Psicología,buscar_programa
+Necesito encontrar una licenciatura en Economía,buscar_programa
+Dónde puedo inscribirme para estudiar Derecho,buscar_programa
+Qué instituciones tienen Ingeniería Mecatrónica,buscar_programa
+Muéstrame universidades donde impartan Pedagogía,buscar_programa
+En dónde ofrecen Administración de Empresas,buscar_programa
+Qué oferta educativa tiene la Universidad Marista,buscar_institucion
+Dime las carreras disponibles en la Universidad ICEL,buscar_institucion
+Cuáles licenciaturas imparte la Universidad Panamericana,buscar_institucion
+Quiero conocer los programas de la Universidad Insurgentes,buscar_institucion
+Muéstrame la oferta académica del Tecnológico de Monterrey,buscar_institucion
+Qué licenciaturas tiene la Universidad La Salle,buscar_institucion
+En la Universidad de Londres qué puedo estudiar,buscar_institucion
+Qué carreras están disponibles dentro de la UNAM,buscar_institucion
+Necesito consultar las licenciaturas del IPN,buscar_institucion
+Qué opciones académicas ofrece la Universidad Anáhuac,buscar_institucion
+Quiero saber qué programas tiene la Universidad ICEL,buscar_institucion
+Dime las licenciaturas que existen en la UAM,buscar_institucion
+Qué puedo cursar en la Universidad del Valle de México,buscar_institucion
+Muéstrame los programas ofrecidos por la Universidad Latina,buscar_institucion
+De las opciones anteriores cuáles son mixtas,filtrar_modalidad
+Quiero ver solamente las opciones no escolarizadas,filtrar_modalidad
+Filtra los resultados para mostrar las presenciales,filtrar_modalidad
+Hay alguna alternativa en modalidad escolarizada,filtrar_modalidad
+Descarta las carreras que sean mixtas,filtrar_modalidad
+Muéstrame únicamente programas que se estudien en línea,filtrar_modalidad
+Cuáles de estos programas son escolarizados,filtrar_modalidad
+Prefiero estudiar en modalidad mixta,filtrar_modalidad
+Quiero opciones que no requieran asistir diariamente,filtrar_modalidad
+De esa lista cuáles tienen modalidad no escolarizada,filtrar_modalidad
+Necesito filtrar por tipo de modalidad,filtrar_modalidad
+Qué resultados corresponden a modalidad mixta,filtrar_modalidad
+De las carreras encontradas muestra solo las escolarizadas,filtrar_modalidad
+Quiero descartar las opciones no escolarizadas,filtrar_modalidad
+Me interesa construir robots y sistemas automáticos,explorar_area
+Me apasiona investigar cómo funciona el cerebro,explorar_area
+Disfruto programar aplicaciones y resolver problemas,explorar_area
+Me gustan las ciencias naturales y los experimentos,explorar_area
+Quisiera trabajar diseñando edificios,explorar_area
+Me interesa comprender el comportamiento humano,explorar_area
+Disfruto crear videojuegos y animaciones digitales,explorar_area
+Quiero dedicarme al cuidado del medio ambiente,explorar_area
+Me interesa aprender sobre inteligencia artificial,explorar_area
+Soy bueno para los números y el análisis de datos,explorar_area
+Me gustaría trabajar en el área de la salud,explorar_area
+Me gusta diseñar dispositivos electrónicos,explorar_area
+Quisiera dedicarme a investigar fenómenos físicos,explorar_area
+Busco algo relacionado con la comunicación y los medios,explorar_area

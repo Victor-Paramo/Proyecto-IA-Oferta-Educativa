@@ -1,0 +1,25 @@
+pregunta,intencion
+Necesito localizar facultades donde impartan la licenciatura en Economía,buscar_programa
+En qué instituciones está disponible la carrera de Matemáticas Aplicadas,buscar_programa
+Podrías identificar escuelas que enseñen Ingeniería Biomédica,buscar_programa
+Estoy buscando dónde cursar una licenciatura en Trabajo Social,buscar_programa
+Dime en qué universidades se puede estudiar Diseño Industrial,buscar_programa
+Quisiera saber qué centros educativos imparten Ciencias Políticas,buscar_programa
+Puedes enumerar las titulaciones registradas para la Universidad Marista,buscar_institucion
+Necesito consultar el catálogo de licenciaturas de la Universidad del Valle de México,buscar_institucion
+Qué estudios universitarios se encuentran registrados bajo la Universidad La Salle,buscar_institucion
+Me gustaría revisar el listado académico del Instituto Leonardo Bravo,buscar_institucion
+Podrías indicar los programas que pertenecen a la Universidad de Londres,buscar_institucion
+Deseo conocer todas las carreras asociadas a la Universidad Panamericana,buscar_institucion
+De las alternativas que encontraste elimina las que requieren asistencia presencial,filtrar_modalidad
+Conserva únicamente las opciones correspondientes a enseñanza mixta,filtrar_modalidad
+Quiero reducir la lista a licenciaturas que puedan cursarse a distancia,filtrar_modalidad
+De los resultados anteriores excluye los programas no escolarizados,filtrar_modalidad
+Déjame ver solo las carreras cuya modalidad sea escolarizada,filtrar_modalidad
+Podrías limitar las opciones a las que combinan clases presenciales y virtuales,filtrar_modalidad
+Me fascina entender cómo funcionan los satélites y las comunicaciones,explorar_area
+Disfruto analizar información estadística para encontrar patrones,explorar_area
+Quisiera dedicarme a crear prótesis y dispositivos médicos,explorar_area
+Me interesa estudiar cómo prevenir enfermedades en las comunidades,explorar_area
+Tengo facilidad para dibujar y diseñar objetos tridimensionales,explorar_area
+Me atrae investigar el universo y los fenómenos astronómicos,explorar_area
