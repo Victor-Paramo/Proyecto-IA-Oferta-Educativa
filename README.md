@@ -169,3 +169,70 @@ Las próximas etapas son:
 7. Ampliar posteriormente la cobertura a nivel nacional.
 
 **El alcance actual de la aplicación continúa limitado a las licenciaturas de Ciudad de México.**
+
+## Motor de Inteligencia Artificial
+
+El proyecto incorpora un motor de procesamiento de lenguaje natural desarrollado en Python para interpretar consultas sobre la oferta educativa de licenciaturas en Ciudad de México.
+
+### Componentes implementados
+
+| Archivo | Descripción |
+|---|---|
+| `scripts/10_normalizar_consultas.py` | Normaliza preguntas en español, eliminando diferencias de mayúsculas, acentos y puntuación. |
+| `motor_ia/clasificador.py` | Implementa un clasificador de intenciones mediante TF-IDF y regresión logística. |
+| `motor_ia/comparar_modelos.py` | Compara regresión logística, Naive Bayes y SVM lineal mediante validación cruzada y evaluación independiente. |
+| `motor_ia/entidades.py` | Identifica instituciones, programas académicos y modalidades consultando los catálogos de PostgreSQL. |
+| `motor_ia/interpretar_consulta.py` | Integra la clasificación de intenciones con la extracción de entidades y produce una interpretación estructurada de cada pregunta. |
+
+### Clasificación de intenciones
+
+El conjunto de entrenamiento contiene 80 preguntas etiquetadas, distribuidas entre cuatro categorías:
+
+- `buscar_programa`
+- `buscar_institucion`
+- `filtrar_modalidad`
+- `explorar_area`
+
+Se preparó un conjunto independiente de 24 preguntas para evaluar el comportamiento de los algoritmos.
+
+### Resultados experimentales
+
+| Algoritmo | Validación cruzada | Evaluación independiente |
+|---|---:|---:|
+| Regresión logística | 96.25% | 91.67% |
+| Naive Bayes | 92.50% | 87.50% |
+| SVM lineal | 95.00% | 87.50% |
+
+Se seleccionó provisionalmente regresión logística para la integración inicial, debido a su desempeño y facilidad de interpretación.
+
+### Ejecución
+
+Desde la carpeta principal del proyecto, con el entorno virtual y las dependencias instaladas:
+
+**Comparar algoritmos**
+
+```powershell
+.\.venv\Scripts\python.exe motor_ia\comparar_modelos.py
+```
+
+**Probar la extracción de entidades**
+
+```powershell
+.\.venv\Scripts\python.exe motor_ia\entidades.py
+```
+
+**Interpretar consultas completas**
+
+```powershell
+.\.venv\Scripts\python.exe motor_ia\interpretar_consulta.py
+```
+
+Los módulos que acceden a PostgreSQL solicitan la contraseña mediante `getpass()` y utilizan la base de datos local `oferta_educativa`.
+
+### Estado actual
+
+La primera integración del motor de IA permite clasificar la intención del usuario y reconocer instituciones, programas y modalidades a partir de consultas en español.
+
+Todavía están pendientes las funciones de recuperación de ofertas educativas, la búsqueda semántica, la gestión del contexto conversacional y la generación de respuestas fundamentadas.
+
+**Nota:** Los datos oficiales utilizados provienen de documentos de la SEP con información actualizada al 30 de abril de 2021. Los resultados deben interpretarse considerando esa limitación temporal.
