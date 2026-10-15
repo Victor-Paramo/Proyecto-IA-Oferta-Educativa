@@ -409,10 +409,12 @@ El sistema no necesita que la pregunta contenga exactamente el nombre oficial de
 
 Para comparar los embeddings se utiliza la similitud del coseno:
 
+
 $$
-\operatorname{sim}(A,B)=
-\frac{A\cdot B}{\|A\|\|B\|}
+\mathrm{sim}(A,B) =
+\frac{A \cdot B}{\lVert A \rVert \, \lVert B \rVert}
 $$
+
 
 Donde:
 
