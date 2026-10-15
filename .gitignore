@@ -1,23 +1,73 @@
 # Python
 __pycache__/
 *.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 
 # Entornos virtuales
 venv/
 .venv/
 env/
+ENV/
 
 # Editores
 .vscode/
 .idea/
+*.swp
+*.swo
 
 # Windows
 Thumbs.db
 Desktop.ini
+$RECYCLE.BIN/
 
 # macOS
 .DS_Store
+.AppleDouble
 
 # Archivos temporales
 *.tmp
 *.log
+*.bak
+*.temp
+~$*
+
+# Credenciales y configuraciones privadas
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets.json
+credentials.json
+
+# Modelos preentrenados descargados
+modelos_ia/
+
+# Archivos de modelos y pesos
+*.safetensors
+*.bin
+*.pt
+*.pth
+*.ckpt
+*.onnx
+
+# Caché de Hugging Face
+.cache/
+huggingface/
+hf_cache/
+
+# Archivos generados por Jupyter
+.ipynb_checkpoints/
+
+# Archivos de cobertura y pruebas
+.coverage
+htmlcov/
+coverage.xml
+
+# Distribuciones de Python
+build/
+dist/
+*.egg-info/
