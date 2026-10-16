@@ -976,3 +976,110 @@ Posteriormente se realizará la evaluación integral de la aplicación, incluyen
 - **PostgreSQL Global Development Group. (s. f.).** PostgreSQL Documentation. https://www.postgresql.org/docs/
 
 - **OpenAI. (2026).** ChatGPT [Modelo de lenguaje]. Consulta de apoyo para explicaciones técnicas, revisión de integración y preparación de documentación. https://chatgpt.com/
+
+
+## Actualización de la etapa 3: asistente conversacional y orientación por carreras afines (octubre de 2026)
+
+### Objetivo de esta actualización
+
+Integrar las búsquedas estructuradas en PostgreSQL, el clasificador de intenciones, MiniLM y la memoria conversacional para ofrecer respuestas comprensibles sobre licenciaturas registradas en Ciudad de México. El sistema distingue entre **programas directamente identificables por su nombre** y **alternativas académicas afines**.
+
+> **Alcance de los datos:** el catálogo procede de documentos SEP fechados el **30 de abril de 2021**. Las ofertas mostradas son registros históricos, **no disponibilidad verificada para 2026**. Las relaciones entre carreras afines son orientativas y no certifican contenidos de planes de estudio ni salidas profesionales.
+
+### Mejora del clasificador de intenciones
+
+Se conservaron **TF-IDF y regresión logística**, ampliando el conjunto de entrenamiento de **80 a 136 preguntas etiquetadas** y probando una representación que combina palabras y fragmentos de palabras. Se mantienen cuatro intenciones: `buscar_programa`, `buscar_institucion`, `filtrar_modalidad` y `explorar_area`.
+
+| Evaluación | Versión original | Versión mejorada |
+|---|---:|---:|
+| 40 preguntas de diagnóstico | 33/40 (82.50 %) | 37/40 (92.50 %) |
+| 24 preguntas del conjunto independiente anterior | 22/24 (91.67 %) | 22/24 (91.67 %) |
+
+La pregunta «Quiero pronosticar huracanes» pasó de `filtrar_modalidad` a `explorar_area`. El conjunto de 40 preguntas se utilizó para seleccionar la mejora, por lo que **su resultado no constituye una evaluación final independiente**. Estos porcentajes miden **clasificación de intenciones**, no exactitud global del asistente.
+
+Archivos relevantes: `datos/intenciones_entrenamiento.csv`, `datos/intenciones_entrenamiento_original_80.csv`, `datos/pruebas_intenciones_nuevas.csv`, `motor_ia/clasificador.py`, `motor_ia/interpretar_consulta.py` y `scripts/comparar_intenciones_actualizado.py`.
+
+### Recuperación semántica, cobertura temática y alternativas afines
+
+El sistema utiliza el modelo preentrenado `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2` para comparar una pregunta con los **588 nombres de programas** recuperados de PostgreSQL.
+
+La búsqueda incorpora una comprobación de **cobertura temática**: antes de mostrar resultados, revisa si hay programas cuyos títulos contienen indicios explícitos del área. Así se evita presentar coincidencias engañosas, como Gastronomía para una pregunta sobre planetas.
+
+Cuando no existe cobertura directa, el asistente puede **ofrecer** explorar áreas generales afines. Solo tras la confirmación del estudiante (`sí`), consulta las ofertas reales de esas carreras en PostgreSQL. **No presenta las áreas afines como equivalentes a la especialidad solicitada**.
+
+Ejemplo probado con «Quiero pronosticar huracanes»:
+
+1. Identifica el interés en **Meteorología** y explica que no encontró un programa cuyo nombre indique directamente esa especialidad.
+2. Pregunta si el estudiante desea explorar carreras afines.
+3. Tras responder «Sí», recupera las ofertas registradas de **Ingeniería Física** (Universidad Iberoamericana Ciudad de México) y **Matemáticas Aplicadas** (Instituto Tecnológico Autónomo de México); ambas aparecieron como escolarizadas en la prueba realizada.
+4. Permite un seguimiento como «¿Y cuáles de esas opciones son mixtas?». En la prueba no aparecieron ofertas mixtas para esas alternativas.
+
+Estas alternativas se eligieron **por reglas académicas auxiliares**, no mediante una comprobación de planes de estudio. Los resultados dependen del catálogo de 2021.
+
+Archivos relevantes: `motor_ia/busqueda_semantica.py`, `motor_ia/recuperacion_semantica.py`, `motor_ia/validacion_cobertura_tematica.py`, `motor_ia/afinidades_academicas.py` y `motor_ia/contexto.py`.
+
+### Generación de respuestas y contexto
+
+Se incorporó `motor_ia/generador_respuestas.py`, que redacta mensajes a partir de los nombres de instituciones, programas, planteles y modalidades recuperados de PostgreSQL. **No utiliza un segundo modelo generativo** ni inventa universidades u ofertas para completar respuestas.
+
+`app.py` conserva el contexto de la sesión para:
+
+- Consultar modalidades de programas previamente encontrados por MiniLM.
+- Filtrar opciones afines aceptadas por el estudiante.
+- Realizar búsquedas tradicionales por carrera o institución.
+- Cambiar de tema sin conservar filtros que ya no corresponden.
+
+El modo técnico puede activarse mediante `MODO_DIAGNOSTICO = True` en `app.py` para mostrar la intención clasificada y su puntuación.
+
+### Pruebas realizadas
+
+Se ejecutaron **6 pruebas unitarias satisfactorias** mediante `pytest` para las reglas de afinidad y la generación de respuestas. También se verificó manualmente, en una sesión real con PostgreSQL, la siguiente secuencia conversacional:
+
+| Consulta o acción | Resultado observado |
+|---|---|
+| Quiero pronosticar huracanes | Reconoce Meteorología y ofrece consultar áreas afines |
+| Sí | Muestra Ingeniería Física y Matemáticas Aplicadas registradas en el catálogo |
+| ¿Y cuáles de esas opciones son mixtas? | No encuentra ofertas para ese filtro |
+| Me gustaría desarrollar videojuegos y programar mundos virtuales | Recupera cinco programas relacionados con videojuegos |
+| ¿Y cuáles de esas opciones son mixtas? | Recupera dos ofertas mixtas de Instituto SAE |
+| ¿Qué carreras ofrece la Universidad ICEL? | Recupera 313 ofertas |
+| ¿Y cuáles son mixtas? | Recupera 75 ofertas mixtas de ICEL |
+
+Estas pruebas confirman **los escenarios ejecutados**, pero **no garantizan el comportamiento ante cualquier consulta**. La evaluación integral del asistente permanece pendiente.
+
+Ejecutar las pruebas unitarias desde la raíz del proyecto:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest tests/test_afinidades.py -v
+```
+
+Ejecutar el asistente:
+
+```powershell
+.\.venv\Scripts\python.exe app.py
+```
+
+### Instalación manual de MiniLM
+
+Los pesos del modelo **no se incluyen en GitHub**. La carpeta `modelos_ia/` está excluida mediante `.gitignore` porque contiene una copia descargable de un modelo preentrenado y archivos de gran tamaño. El código Python que emplea MiniLM **sí forma parte del proyecto**.
+
+En Windows PowerShell, desde la raíz del repositorio y con el entorno virtual configurado:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install sentence-transformers
+.\.venv\Scripts\python.exe motor_ia\12_probar_embeddings.py
+```
+
+La segunda instrucción descarga el modelo desde Hugging Face en la primera ejecución y lo guarda en `modelos_ia/minilm/`. Después `app.py` lo carga localmente. También se requiere PostgreSQL configurado con la base de datos `oferta_educativa` y las dependencias del proyecto.
+
+**Mejora pendiente:** incorporar la descarga automática del modelo desde `app.py` cuando no exista una copia local. Por ahora el paso manual sigue siendo necesario.
+
+### Limitaciones y siguiente etapa
+
+- El catálogo corresponde a **abril de 2021** y no comprueba vigencia actual.
+- La detección de temas y las afinidades utilizan reglas auxiliares con cobertura limitada; podrían excluir carreras afines cuyos títulos no revelen su relación con la consulta.
+- Las recomendaciones son **orientativas**, no equivalencias académicas ni garantía de formación profesional.
+- Las métricas del clasificador no sustituyen la evaluación integral de recuperación, pertinencia y conversación.
+- Queda pendiente la evaluación sistemática con nuevas preguntas, el análisis de errores y el cierre de documentación y presentación.
+
+La etapa 3 cuenta con una **versión funcional para los escenarios probados**; el siguiente trabajo corresponde a la **evaluación integral de la etapa 4**.

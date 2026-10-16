@@ -1,0 +1,41 @@
+﻿pregunta,intencion
+Quiero buscar una profesión donde investigue el comportamiento de las mareas,explorar_area
+Me encanta comprender por qué suceden los eclipses,explorar_area
+Me gustaría crear prótesis que puedan moverse solas,explorar_area
+Me interesa analizar las tormentas solares,explorar_area
+Quiero entender los cambios de temperatura global,explorar_area
+Quisiera restaurar pinturas de museos,explorar_area
+Me gustaría estudiar organismos microscópicos,explorar_area
+Quiero ser capaz de anticipar temporales en la costa,explorar_area
+Me entusiasma diseñar escenarios para juegos de realidad virtual,explorar_area
+Me interesa producir energía a partir del viento,explorar_area
+¿Dónde ofrecen una licenciatura llamada Trabajo Social?,buscar_programa
+¿Cuál universidad enseña Ingeniería Petrolera?,buscar_programa
+Necesito encontrar escuelas que impartan Bioquímica,buscar_programa
+Muéstrame dónde se cursa Estadística,buscar_programa
+¿Tienen oferta de Licenciatura en Música?,buscar_programa
+¿En qué planteles se imparte Antropología?,buscar_programa
+¿Dónde puedo cursar Ingeniería Aeronáutica?,buscar_programa
+¿Quién tiene Ingeniería Ambiental?,buscar_programa
+Indica las universidades donde enseñan Nutrición,buscar_programa
+¿En qué colegios encuentro Diseño Gráfico?,buscar_programa
+¿Puedes mostrarme lo que imparte la Universidad La Salle?,buscar_institucion
+Me interesa consultar la oferta del Instituto SAE,buscar_institucion
+¿Qué se enseña en Universidad Autónoma Metropolitana?,buscar_institucion
+Solicito todas las carreras de Universidad Insurgentes,buscar_institucion
+Quisiera revisar las licenciaturas de Universidad Tecnológica de México,buscar_institucion
+En la Universidad Anáhuac qué programas existen,buscar_institucion
+Muéstrame el catálogo de Universidad del Valle de México,buscar_institucion
+¿Qué oportunidades académicas tiene la Universidad de Londres?,buscar_institucion
+Dame los programas de Universidad Simón Bolívar,buscar_institucion
+¿Qué se puede cursar en el Centro Universitario Incarnate Word?,buscar_institucion
+Filtra solo las ofertas semipresenciales,filtrar_modalidad
+¿Cuáles se pueden cursar remotamente?,filtrar_modalidad
+Me interesa solo modalidad escolarizada,filtrar_modalidad
+Excluye las de modalidad no escolarizada,filtrar_modalidad
+¿Cuáles de esos programas son mixtos?,filtrar_modalidad
+Solo quiero estudios en el salón de clases,filtrar_modalidad
+Muéstrame las licenciaturas con clases en línea,filtrar_modalidad
+De esa lista quiero las que combinan virtual y presencial,filtrar_modalidad
+¿Y las opciones a distancia?,filtrar_modalidad
+Elige solo los programas de modalidad presencial,filtrar_modalidad
