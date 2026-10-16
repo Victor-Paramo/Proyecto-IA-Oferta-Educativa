@@ -8,7 +8,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, classification_report
 from sklearn.model_selection import train_test_split
-from sklearn.pipeline import Pipeline
+from sklearn.pipeline import Pipeline, FeatureUnion
 
 
 # Localizar el archivo de entrenamiento.
@@ -57,9 +57,15 @@ def entrenar_modelo():
         stratify=intenciones
     )
 
+    # TF-IDF de palabras y caracteres con la misma regresion logistica.
     modelo = Pipeline([
-        ("tfidf", TfidfVectorizer(ngram_range=(1, 2))),
-        ("clasificador", LogisticRegression(max_iter=1000))
+        ("tfidf", FeatureUnion([
+            ("palabras", TfidfVectorizer(ngram_range=(1, 2))),
+            ("caracteres", TfidfVectorizer(
+                analyzer="char_wb", ngram_range=(3, 5)
+            ))
+        ])),
+        ("clasificador", LogisticRegression(max_iter=2000))
     ])
 
     modelo.fit(X_entrenamiento, y_entrenamiento)

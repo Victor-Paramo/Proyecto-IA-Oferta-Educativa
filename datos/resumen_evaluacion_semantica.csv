@@ -1,0 +1,13 @@
+﻿caso,grupo,pertinentes_directos,afines,no_pertinentes,precision_estricta,precision_ampliada,ndcg_5,observacion
+videojuegos,relacionada,3,2,0,0.6,1.0,0.9808,
+robotica,relacionada,2,3,0,0.4,1.0,0.9355,
+psicologia,relacionada,1,3,1,0.2,0.8,0.7808,
+derecho,relacionada,1,0,4,0.2,0.2,1.0,
+arquitectura,relacionada,1,1,3,0.2,0.4,1.0,
+administracion,relacionada,3,2,0,0.6,1.0,0.9445,
+espacio,incierta,0,0,5,0.0,0.0,,sin programas evaluados como pertinentes
+aeroespacial,incierta,0,2,3,0.0,0.4,0.6509,
+indecision,incierta,0,0,5,0.0,0.0,,sin programas evaluados como pertinentes
+trivial,incierta,0,0,5,0.0,0.0,,sin programas evaluados como pertinentes
+meteorologia,incierta,0,0,5,0.0,0.0,,sin programas evaluados como pertinentes
+arqueologia,incierta,0,2,3,0.0,0.4,0.9197,

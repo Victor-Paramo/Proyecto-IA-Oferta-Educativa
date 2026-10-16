@@ -5,7 +5,7 @@ from pathlib import Path
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
-from sklearn.pipeline import Pipeline
+from sklearn.pipeline import Pipeline, FeatureUnion
 
 from motor_ia.entidades import (
     conectar_bd,
@@ -42,9 +42,15 @@ def cargar_entrenamiento():
 def preparar_clasificador():
     preguntas, intenciones = cargar_entrenamiento()
 
+    # TF-IDF de palabras y caracteres; el modelo sigue siendo regresion logistica.
     modelo = Pipeline([
-        ("tfidf", TfidfVectorizer(ngram_range=(1, 2))),
-        ("clasificador", LogisticRegression(max_iter=1000))
+        ("tfidf", FeatureUnion([
+            ("palabras", TfidfVectorizer(ngram_range=(1, 2))),
+            ("caracteres", TfidfVectorizer(
+                analyzer="char_wb", ngram_range=(3, 5)
+            ))
+        ])),
+        ("clasificador", LogisticRegression(max_iter=2000))
     ])
 
     modelo.fit(preguntas, intenciones)

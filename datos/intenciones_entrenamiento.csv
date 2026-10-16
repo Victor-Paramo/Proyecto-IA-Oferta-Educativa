@@ -1,4 +1,4 @@
-pregunta,intencion
+﻿pregunta,intencion
 Dónde puedo estudiar Psicología,buscar_programa
 Qué universidades ofrecen Derecho,buscar_programa
 En qué institución puedo estudiar Medicina,buscar_programa
@@ -23,7 +23,6 @@ Quiero una carrera relacionada con tecnología,explorar_area
 Me interesa trabajar con animales,explorar_area
 Qué puedo estudiar si me gusta la programación,explorar_area
 Busco una profesión relacionada con el arte,explorar_area
-
 En qué universidades puedo cursar Contaduría,buscar_programa
 Dónde se imparte la licenciatura en Física,buscar_programa
 Busco universidades que tengan Arquitectura,buscar_programa
@@ -80,3 +79,59 @@ Me gustaría trabajar en el área de la salud,explorar_area
 Me gusta diseñar dispositivos electrónicos,explorar_area
 Quisiera dedicarme a investigar fenómenos físicos,explorar_area
 Busco algo relacionado con la comunicación y los medios,explorar_area
+Quiero comprender cómo se forman las tormentas,explorar_area
+Me gustaría dedicarme a observar el cielo nocturno,explorar_area
+"Me interesan las nubes, las lluvias y los cambios del tiempo",explorar_area
+Quiero estudiar fenómenos atmosféricos,explorar_area
+Me fascina averiguar cómo se originan los planetas,explorar_area
+Me interesa investigar los restos de seres vivos antiguos,explorar_area
+Quiero trabajar recuperando fósiles prehistóricos,explorar_area
+Me gustaría fabricar vehículos capaces de viajar por el espacio,explorar_area
+Me gustan los satélites y la exploración del universo,explorar_area
+Quisiera construir videojuegos y escenarios interactivos,explorar_area
+Quiero dedicarme a la protección de especies en peligro,explorar_area
+Me interesa analizar ADN y herencia genética,explorar_area
+Quisiera aprender sobre el origen de los volcanes,explorar_area
+Disfruto investigar terremotos y movimientos de la Tierra,explorar_area
+Me gustaría diseñar robots para ayudar en hospitales,explorar_area
+Me interesa crear sistemas inteligentes para automatizar procesos,explorar_area
+Quisiera desarrollar aplicaciones para dispositivos portátiles,explorar_area
+Me atrae analizar el impacto de la contaminación en los océanos,explorar_area
+Me interesa crear música para películas y videojuegos,explorar_area
+Quiero trabajar con personas que tienen dificultades emocionales,explorar_area
+Necesito saber qué campus tienen licenciatura en Matemáticas,buscar_programa
+Quisiera conocer las escuelas donde se ofrece Turismo,buscar_programa
+¿En qué universidad imparten Diseño de Modas?,buscar_programa
+Dime cuáles planteles ofrecen Ingeniería Biomédica,buscar_programa
+Quiero localizar la carrera de Física en la ciudad,buscar_programa
+¿Hay instituciones que tengan licenciatura en Historia?,buscar_programa
+¿Qué lugares cuentan con el programa de Filosofía?,buscar_programa
+Busco una universidad que ofrezca Biotecnología,buscar_programa
+¿En dónde puedo cursar Ciencias Políticas?,buscar_programa
+Necesito instituciones que impartan Ingeniería Civil,buscar_programa
+Indica qué universidades enseñan Psicología Educativa,buscar_programa
+¿Qué planteles tienen la licenciatura en Mercadotecnia?,buscar_programa
+Dame el catálogo académico completo de Universidad Salesiana,buscar_institucion
+Solicito la lista de títulos de la Universidad Panamericana,buscar_institucion
+Quisiera saber qué enseña el Instituto SAE,buscar_institucion
+Consulta qué programas maneja Universidad del Valle de México,buscar_institucion
+Muéstrame las licenciaturas disponibles en Universidad Marista,buscar_institucion
+Quiero conocer la oferta de Instituto Universitario Amerike,buscar_institucion
+Dime qué puedo estudiar dentro de Universidad Anáhuac,buscar_institucion
+Necesito información sobre carreras de Universidad Simón Bolívar,buscar_institucion
+Quiero ver las carreras que tiene la Universidad del Claustro de Sor Juana,buscar_institucion
+¿Qué opciones de licenciatura maneja Universidad ICEL?,buscar_institucion
+"En Universidad de Londres, enséñame sus programas",buscar_institucion
+¿Cuál es la oferta académica de Universidad Intercontinental?,buscar_institucion
+Deja únicamente cursos universitarios en modalidad mixta,filtrar_modalidad
+Prefiero opciones semipresenciales,filtrar_modalidad
+¿Tienes alguna oferta de tipo presencial?,filtrar_modalidad
+Me interesan exclusivamente las licenciaturas no escolarizadas,filtrar_modalidad
+¿Cuáles se pueden cursar en línea?,filtrar_modalidad
+Filtra la búsqueda para ver solo las escuelas con modalidad escolarizada,filtrar_modalidad
+De las carreras encontradas quiero únicamente las de modalidad mixta,filtrar_modalidad
+Necesito ver las ofertas que sean a distancia,filtrar_modalidad
+Descarta los programas de modalidad mixta y conserva los demás,filtrar_modalidad
+¿Y los que son de tipo no escolarizado?,filtrar_modalidad
+Muéstrame solamente las clases presenciales,filtrar_modalidad
+¿Qué licenciaturas hay en sistema híbrido?,filtrar_modalidad

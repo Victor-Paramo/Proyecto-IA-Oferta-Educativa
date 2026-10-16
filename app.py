@@ -30,6 +30,22 @@ from motor_ia.busqueda_semantica import (
 )
 
 from motor_ia.recuperacion_semantica import recuperar_ofertas
+from motor_ia.validacion_respuestas import validar_consulta
+from motor_ia.validacion_cobertura_tematica import (
+    construir_indice,
+    comprobar_cobertura,
+    es_exploracion_tematica
+)
+from motor_ia.afinidades_academicas import buscar_afinidades
+from motor_ia.generador_respuestas import (
+    respuesta_sin_cobertura,
+    respuesta_afinidades,
+    respuesta_programas,
+    respuesta_ofertas,
+)
+
+# Activar para observar las intenciones y puntuaciones durante el desarrollo.
+MODO_DIAGNOSTICO = False
 
 
 def main():
@@ -58,10 +74,14 @@ def main():
             show_progress_bar=True
         )
 
+        # Crear el indice de temas una sola vez a partir del catalogo.
+        indice_tematico = construir_indice(programas_semanticos)
         print("Motor semantico preparado.")
 
         # Crear una memoria para la sesion actual.
         contexto = crear_contexto()
+        # Alternativas afines preparadas para una confirmacion (si/no).
+        opciones_pendientes = None
 
         print("\nSistema preparado.")
 
@@ -77,6 +97,46 @@ def main():
             if not pregunta:
                 continue
 
+            # La solicitud de afines solo se ofrece tras verificar que existen
+            # nombres de programas relacionados de manera indirecta en la BD.
+            if opciones_pendientes is not None:
+                respuesta = normalizar_texto(pregunta)
+                afirmaciones = {
+                    "si", "si por favor", "claro", "adelante", "por supuesto",
+                    "muestrame las opciones", "muestrame las afines",
+                    "quiero ver las afines", "busca opciones afines",
+                    "si muestrame", "si muestrame las opciones",
+                }
+                negativas = {"no", "no gracias", "mejor no", "cancelar"}
+
+                if respuesta in afirmaciones:
+                    pendientes = opciones_pendientes
+                    opciones_pendientes = None
+                    resultados_afines = []
+                    for candidato in pendientes["candidatos"]:
+                        ofertas = buscar_programa(
+                            conexion,
+                            id_programa=candidato["id_programa"]
+                        )
+                        if ofertas:
+                            resultados_afines.append({**candidato, "ofertas": ofertas})
+                    contexto = crear_contexto()
+                    contexto["programas_semanticos"] = [
+                        r["id_programa"] for r in resultados_afines
+                    ]
+                    print("\n" + respuesta_afinidades(
+                        resultados_afines, pendientes["temas"]
+                    ))
+                    continue
+
+                if respuesta in negativas:
+                    opciones_pendientes = None
+                    print("\nDe acuerdo. ¿Qué otro tema académico te interesa?")
+                    continue
+
+                # Otra consulta inicia un tema independiente.
+                opciones_pendientes = None
+
             # Interpretar la pregunta utilizando el motor de IA.
             interpretacion = interpretar_pregunta(
                 pregunta,
@@ -85,8 +145,9 @@ def main():
                 programas
             )
 
-            print("\nIntencion:", interpretacion["intencion"])
-            print("Confianza:", f'{interpretacion["confianza"]:.2%}')
+            if MODO_DIAGNOSTICO:
+                print("\nIntencion:", interpretacion["intencion"])
+                print("Confianza:", f'{interpretacion["confianza"]:.2%}')
             # Conservar los programas semanticos en preguntas de seguimiento.
             if es_seguimiento(pregunta) and contexto["programas_semanticos"]:
                 nuevo_contexto = actualizar_contexto(contexto, interpretacion)
@@ -112,27 +173,63 @@ def main():
                     resultados.extend(ofertas)
 
                 contexto = nuevo_contexto
-                mostrar_contexto(contexto)
-                print(f"\nOfertas encontradas: {len(resultados)}")
-                for oferta in resultados[:15]:
-                    print(
-                        f"- {oferta['institucion']} | "
-                        f"{oferta['programa']} | "
-                        f"{oferta['plantel'] or 'Plantel no especificado'} | "
-                        f"{oferta['modalidad']}"
-                    )
-                if len(resultados) > 15:
-                    print(f"\nMostrando 15 de {len(resultados)} ofertas.")
+                if MODO_DIAGNOSTICO:
+                    mostrar_contexto(contexto)
+                print("\n" + respuesta_ofertas(resultados, contexto))
                 continue
 
+            # Distinguir búsquedas por intereses de filtros de modalidad.
+            # Si el clasificador confunde una consulta temática clara con
+            # filtrar_modalidad, permitir que la revise la cobertura temática.
+            explorar_tema = es_exploracion_tematica(interpretacion)
+
+            # Solicitar aclaraciones cuando faltan datos identificables.
+            # Las preguntas de intereses reconocidos se validan más abajo.
+            if not explorar_tema:
+                mensaje_aclaracion = validar_consulta(interpretacion)
+                if mensaje_aclaracion is not None:
+                    print("\n" + mensaje_aclaracion)
+                    continue
+
             # Procesar consultas sobre intereses y areas academicas.
-            if interpretacion["intencion"] == "explorar_area":
+            if explorar_tema:
+
+                cobertura = comprobar_cobertura(pregunta, indice_tematico)
+                if cobertura["estado"] != "cobertura_directa":
+                    contexto = crear_contexto()
+                    if cobertura["estado"] == "sin_cobertura_directa":
+                        temas = cobertura["temas_prioritarios"]
+                        afines = buscar_afinidades(
+                            temas, programas_semanticos, limite=5
+                        )
+                        opciones_pendientes = (
+                            {"temas": temas, "candidatos": afines}
+                            if afines else None
+                        )
+                        print("\n" + respuesta_sin_cobertura(
+                            temas, bool(afines)
+                        ))
+                    else:
+                        opciones_pendientes = None
+                        print("\n" + cobertura["mensaje"])
+                    continue
+
+                # Buscar dentro de los nombres respaldados por el tema,
+                # no entre las 588 carreras indistintamente.
+                indices_permitidos = [
+                    i for i, (id_programa, _) in enumerate(programas_semanticos)
+                    if id_programa in cobertura["ids_validos"]
+                ]
+                programas_permitidos = [
+                    programas_semanticos[i] for i in indices_permitidos
+                ]
+                vectores_permitidos = vectores_semanticos[indices_permitidos]
 
                 candidatos = buscar_semanticamente(
                     pregunta,
                     modelo_semantico,
-                    programas_semanticos,
-                    vectores_semanticos,
+                    programas_permitidos,
+                    vectores_permitidos,
                     limite=5
                 )
 
@@ -141,28 +238,9 @@ def main():
                     candidatos
                 )
 
-                print("\nPROGRAMAS RELACIONADOS:")
-
-                for posicion, resultado in enumerate(
-                    resultados_semanticos, start=1
-                ):
-                    print(
-                        f"\n{posicion}. {resultado['programa']}"
-                    )
-                    print(
-                        f"Similitud: {resultado['similitud']:.4f}"
-                    )
-                    print(
-                        f"Ofertas registradas: "
-                        f"{resultado['total_ofertas']}"
-                    )
-
-                    for oferta in resultado["ofertas"][:3]:
-                        print(
-                            f"  - {oferta['institucion']} | "
-                            f"{oferta['plantel'] or 'No especificado'} | "
-                            f"{oferta['modalidad']}"
-                        )
+                print("\n" + respuesta_programas(
+                    resultados_semanticos, cobertura["temas_prioritarios"]
+                ))
 
                 # Conservar los identificadores de los programas encontrados.
                 contexto = crear_contexto()
@@ -180,7 +258,8 @@ def main():
                 interpretacion
             )
 
-            mostrar_contexto(nuevo_contexto)
+            if MODO_DIAGNOSTICO:
+                mostrar_contexto(nuevo_contexto)
 
             institucion = nuevo_contexto["institucion"]
             programa = nuevo_contexto["programa"]
@@ -229,20 +308,7 @@ def main():
             # Guardar el contexto de la busqueda realizada.
             contexto = nuevo_contexto
 
-            print(f"\nOfertas encontradas: {len(resultados)}")
-
-            for oferta in resultados[:15]:
-                print(
-                    f"- {oferta['institucion']} | "
-                    f"{oferta['programa']} | "
-                    f"{oferta['plantel'] or 'Plantel no especificado'} | "
-                    f"{oferta['modalidad']}"
-                )
-
-            if len(resultados) > 15:
-                print(
-                    f"\nMostrando 15 de {len(resultados)} ofertas."
-                )
+            print("\n" + respuesta_ofertas(resultados, contexto))
 
 
 if __name__ == "__main__":

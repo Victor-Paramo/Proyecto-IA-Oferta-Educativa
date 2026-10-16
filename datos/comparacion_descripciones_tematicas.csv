@@ -1,0 +1,121 @@
+﻿caso,pregunta,metodo,posicion,id_programa,programa,similitud,areas_auxiliares,etiqueta_0_2,estado_etiqueta
+videojuegos,Me gustaría desarrollar videojuegos y programar mundos virtuales,nombre_original,1,526,EN PROGRAMACIÓN DE VIDEOJUEGOS,0.444150,videojuegos;software,2,etiqueta previa (revisable)
+videojuegos,Me gustaría desarrollar videojuegos y programar mundos virtuales,nombre_original,2,338,EN INGENIERÍA EN ANIMACIÓN Y VIDEOJUEGOS,0.433988,videojuegos;animacion,2,etiqueta previa (revisable)
+videojuegos,Me gustaría desarrollar videojuegos y programar mundos virtuales,nombre_original,3,389,EN INGENIERÍA EN TECNOLOGÍA INTERACTIVA EN ANIMACIÓN DIGITAL,0.416394,animacion,1,etiqueta previa (revisable)
+videojuegos,Me gustaría desarrollar videojuegos y programar mundos virtuales,nombre_original,4,185,EN DESARROLLO DE SOFTWARE INTERACTIVO Y VIDEOJUEGOS,0.412297,videojuegos;software,2,etiqueta previa (revisable)
+videojuegos,Me gustaría desarrollar videojuegos y programar mundos virtuales,nombre_original,5,202,EN DISEÑO DE ANIMACIÓN DIGITAL,0.411031,animacion,1,etiqueta previa (revisable)
+videojuegos,Me gustaría desarrollar videojuegos y programar mundos virtuales,nombre_enriquecido,1,162,EN CREACIÓN ARTÍSTICA PARA VIDEOJUEGOS Y MEDIOS DIGITALES,0.656492,videojuegos,,PENDIENTE: candidato nuevo
+videojuegos,Me gustaría desarrollar videojuegos y programar mundos virtuales,nombre_enriquecido,2,211,EN DISEÑO DE VIDEOJUEGOS,0.652534,videojuegos,,PENDIENTE: candidato nuevo
+videojuegos,Me gustaría desarrollar videojuegos y programar mundos virtuales,nombre_enriquecido,3,526,EN PROGRAMACIÓN DE VIDEOJUEGOS,0.650969,videojuegos;software,2,etiqueta previa (revisable)
+videojuegos,Me gustaría desarrollar videojuegos y programar mundos virtuales,nombre_enriquecido,4,185,EN DESARROLLO DE SOFTWARE INTERACTIVO Y VIDEOJUEGOS,0.621462,videojuegos;software,2,etiqueta previa (revisable)
+videojuegos,Me gustaría desarrollar videojuegos y programar mundos virtuales,nombre_enriquecido,5,338,EN INGENIERÍA EN ANIMACIÓN Y VIDEOJUEGOS,0.604838,videojuegos;animacion,2,etiqueta previa (revisable)
+robotica,Me interesa diseñar circuitos electrónicos y construir robots,nombre_original,1,332,EN INGENIERÍA ELECTRÓNICA,0.509523,electronica,2,etiqueta previa (revisable)
+robotica,Me interesa diseñar circuitos electrónicos y construir robots,nombre_original,2,333,EN INGENIERÍA ELECTRÓNICA Y COMUNICACIONES,0.491722,electronica,1,etiqueta previa (revisable)
+robotica,Me interesa diseñar circuitos electrónicos y construir robots,nombre_original,3,408,EN INGENIERÍA INDUSTRIAL ELECTRÓNICA,0.488581,electronica,1,etiqueta previa (revisable)
+robotica,Me interesa diseñar circuitos electrónicos y construir robots,nombre_original,4,382,EN INGENIERÍA EN SISTEMAS DIGITALES Y ROBÓTICA,0.483739,robotica,2,etiqueta previa (revisable)
+robotica,Me interesa diseñar circuitos electrónicos y construir robots,nombre_original,5,407,EN INGENIERÍA INDUSTRIAL ELÉCTRICA,0.483699,,1,etiqueta previa (revisable)
+robotica,Me interesa diseñar circuitos electrónicos y construir robots,nombre_enriquecido,1,361,EN INGENIERÍA EN MANUFACTURA Y ROBÓTICA,0.691258,robotica,,PENDIENTE: candidato nuevo
+robotica,Me interesa diseñar circuitos electrónicos y construir robots,nombre_enriquecido,2,425,EN INGENIERÍA MECATRÓNICA,0.690598,robotica,,PENDIENTE: candidato nuevo
+robotica,Me interesa diseñar circuitos electrónicos y construir robots,nombre_enriquecido,3,426,EN INGENIERÍA MECATRÓNICA PARA LA MANUFACTURA,0.687873,robotica,,PENDIENTE: candidato nuevo
+robotica,Me interesa diseñar circuitos electrónicos y construir robots,nombre_enriquecido,4,438,EN INGENIERO EN MECATRÓNICA,0.685932,robotica,,PENDIENTE: candidato nuevo
+robotica,Me interesa diseñar circuitos electrónicos y construir robots,nombre_enriquecido,5,363,EN INGENIERÍA EN MECATRÓNICA Y PRODUCCIÓN,0.683895,robotica,,PENDIENTE: candidato nuevo
+psicologia,Me interesa estudiar el comportamiento humano y ayudar a personas con problemas emocionales,nombre_original,1,535,EN PSICOLOGÍA SOCIAL,0.491427,psicologia,1,etiqueta previa (revisable)
+psicologia,Me interesa estudiar el comportamiento humano y ayudar a personas con problemas emocionales,nombre_original,2,530,EN PSICOLOGÍA EDUCATIVA,0.458757,psicologia,1,etiqueta previa (revisable)
+psicologia,Me interesa estudiar el comportamiento humano y ayudar a personas con problemas emocionales,nombre_original,3,531,EN PSICOLOGÍA HUMANISTA,0.421464,psicologia,2,etiqueta previa (revisable)
+psicologia,Me interesa estudiar el comportamiento humano y ayudar a personas con problemas emocionales,nombre_original,4,533,EN PSICOLOGÍA ORGANIZACIONAL,0.393368,psicologia,1,etiqueta previa (revisable)
+psicologia,Me interesa estudiar el comportamiento humano y ayudar a personas con problemas emocionales,nombre_original,5,105,EN CIENCIAS SOCIALES,0.381822,,0,etiqueta previa (revisable)
+psicologia,Me interesa estudiar el comportamiento humano y ayudar a personas con problemas emocionales,nombre_enriquecido,1,530,EN PSICOLOGÍA EDUCATIVA,0.636507,psicologia,1,etiqueta previa (revisable)
+psicologia,Me interesa estudiar el comportamiento humano y ayudar a personas con problemas emocionales,nombre_enriquecido,2,535,EN PSICOLOGÍA SOCIAL,0.621371,psicologia,1,etiqueta previa (revisable)
+psicologia,Me interesa estudiar el comportamiento humano y ayudar a personas con problemas emocionales,nombre_enriquecido,3,534,EN PSICOLOGÍA PSICOANALÍTICA,0.616897,psicologia,,PENDIENTE: candidato nuevo
+psicologia,Me interesa estudiar el comportamiento humano y ayudar a personas con problemas emocionales,nombre_enriquecido,4,533,EN PSICOLOGÍA ORGANIZACIONAL,0.615564,psicologia,1,etiqueta previa (revisable)
+psicologia,Me interesa estudiar el comportamiento humano y ayudar a personas con problemas emocionales,nombre_enriquecido,5,531,EN PSICOLOGÍA HUMANISTA,0.611790,psicologia,2,etiqueta previa (revisable)
+derecho,Quiero trabajar con leyes y defender los derechos de las personas,nombre_original,1,183,EN DERECHOS HUMANOS Y GESTIÓN DE LA PAZ,0.507178,,2,etiqueta previa (revisable)
+derecho,Quiero trabajar con leyes y defender los derechos de las personas,nombre_original,2,59,EN ADMINISTRACIÓN Y RECURSOS HUMANOS,0.433967,administracion,0,etiqueta previa (revisable)
+derecho,Quiero trabajar con leyes y defender los derechos de las personas,nombre_original,3,60,EN ADMINISTRACIÓN Y RESPONSABILIDAD SOCIALES,0.433245,administracion,0,etiqueta previa (revisable)
+derecho,Quiero trabajar con leyes y defender los derechos de las personas,nombre_original,4,23,EN ADMINISTRACIÓN DE RECURSOS HUMANOS,0.391383,administracion,0,etiqueta previa (revisable)
+derecho,Quiero trabajar con leyes y defender los derechos de las personas,nombre_original,5,553,EN RELACIONES PÚBLICAS,0.382355,,0,etiqueta previa (revisable)
+derecho,Quiero trabajar con leyes y defender los derechos de las personas,nombre_enriquecido,1,177,EN DERECHO CON ÉNFASIS EN ECONOMÍA,0.547529,derecho,,PENDIENTE: candidato nuevo
+derecho,Quiero trabajar con leyes y defender los derechos de las personas,nombre_enriquecido,2,178,EN DERECHO CON ÉNFASIS EN FINANZAS,0.545448,derecho,,PENDIENTE: candidato nuevo
+derecho,Quiero trabajar con leyes y defender los derechos de las personas,nombre_enriquecido,3,180,EN DERECHO EMPRESARIAL,0.541023,derecho,,PENDIENTE: candidato nuevo
+derecho,Quiero trabajar con leyes y defender los derechos de las personas,nombre_enriquecido,4,182,EN DERECHO Y CIENCIAS JURÍDICAS,0.535500,derecho,,PENDIENTE: candidato nuevo
+derecho,Quiero trabajar con leyes y defender los derechos de las personas,nombre_enriquecido,5,181,EN DERECHO INTERNACIONAL,0.535051,derecho,,PENDIENTE: candidato nuevo
+arquitectura,Me gustaría diseñar edificios y espacios habitables,nombre_original,1,80,EN ARQUITECTURA Y URBANISMO,0.540080,arquitectura,2,etiqueta previa (revisable)
+arquitectura,Me gustaría diseñar edificios y espacios habitables,nombre_original,2,324,EN INGENIERÍA DE CONSTRUCCIÓN,0.432379,,1,etiqueta previa (revisable)
+arquitectura,Me gustaría diseñar edificios y espacios habitables,nombre_original,3,291,EN GESTIÓN E INNOVACIÓN HOTELERA Y TURÍSTICA,0.400425,turismo,0,etiqueta previa (revisable)
+arquitectura,Me gustaría diseñar edificios y espacios habitables,nombre_original,4,586,INTERNACIONAL EN ADMINISTRACIÓN DE HOTELES Y COMPLEJOS TURÍSTICOS,0.389682,administracion;turismo,0,etiqueta previa (revisable)
+arquitectura,Me gustaría diseñar edificios y espacios habitables,nombre_original,5,195,EN DIRECCIÓN DE HOTELES,0.379863,turismo,0,etiqueta previa (revisable)
+arquitectura,Me gustaría diseñar edificios y espacios habitables,nombre_enriquecido,1,75,EN ARQUITECTURA,0.727641,arquitectura,,PENDIENTE: candidato nuevo
+arquitectura,Me gustaría diseñar edificios y espacios habitables,nombre_enriquecido,2,76,EN ARQUITECTURA DE INTERIORES,0.727032,arquitectura,,PENDIENTE: candidato nuevo
+arquitectura,Me gustaría diseñar edificios y espacios habitables,nombre_enriquecido,3,77,EN ARQUITECTURA DE INTERIORES Y AMBIENTACIÓN,0.720859,arquitectura,,PENDIENTE: candidato nuevo
+arquitectura,Me gustaría diseñar edificios y espacios habitables,nombre_enriquecido,4,78,EN ARQUITECTURA Y AMBIENTACIÓN DE INTERIORES,0.718666,arquitectura,,PENDIENTE: candidato nuevo
+arquitectura,Me gustaría diseñar edificios y espacios habitables,nombre_enriquecido,5,80,EN ARQUITECTURA Y URBANISMO,0.714896,arquitectura,2,etiqueta previa (revisable)
+administracion,Me interesa gestionar empresas y organizar negocios,nombre_original,1,36,EN ADMINISTRACIÓN EMPRESARIAL,0.685591,administracion,2,etiqueta previa (revisable)
+administracion,Me interesa gestionar empresas y organizar negocios,nombre_original,2,180,EN DERECHO EMPRESARIAL,0.649565,derecho,1,etiqueta previa (revisable)
+administracion,Me interesa gestionar empresas y organizar negocios,nombre_original,3,6,EN ADMINISTRACIÓN DE EMPRESAS,0.646565,administracion,2,etiqueta previa (revisable)
+administracion,Me interesa gestionar empresas y organizar negocios,nombre_original,4,56,EN ADMINISTRACIÓN Y LIDERAZGO EMPRESARIAL,0.632758,administracion,2,etiqueta previa (revisable)
+administracion,Me interesa gestionar empresas y organizar negocios,nombre_original,5,159,EN CONTADURÍA Y GESTIÓN EMPRESARIAL,0.623219,administracion,1,etiqueta previa (revisable)
+administracion,Me interesa gestionar empresas y organizar negocios,nombre_enriquecido,1,8,EN ADMINISTRACIÓN DE EMPRESAS DE ENTRETENIMIENTO,0.709447,administracion,,PENDIENTE: candidato nuevo
+administracion,Me interesa gestionar empresas y organizar negocios,nombre_enriquecido,2,159,EN CONTADURÍA Y GESTIÓN EMPRESARIAL,0.709239,administracion,1,etiqueta previa (revisable)
+administracion,Me interesa gestionar empresas y organizar negocios,nombre_enriquecido,3,13,EN ADMINISTRACIÓN DE HOSPITALIDAD,0.704701,administracion,,PENDIENTE: candidato nuevo
+administracion,Me interesa gestionar empresas y organizar negocios,nombre_enriquecido,4,14,EN ADMINISTRACIÓN DE INSTITUCIONES PENITENCIARIAS,0.701701,administracion,,PENDIENTE: candidato nuevo
+administracion,Me interesa gestionar empresas y organizar negocios,nombre_enriquecido,5,41,EN ADMINISTRACIÓN INDUSTRIAL,0.700968,administracion,,PENDIENTE: candidato nuevo
+espacio,Me interesa investigar planetas y explorar el espacio exterior,nombre_original,1,461,EN INTERNACIONAL EN GASTRONOMÍA,0.370456,gastronomia,0,etiqueta previa (revisable)
+espacio,Me interesa investigar planetas y explorar el espacio exterior,nombre_original,2,281,EN GASTRONOMÍA INTERNACIONAL,0.362707,gastronomia,0,etiqueta previa (revisable)
+espacio,Me interesa investigar planetas y explorar el espacio exterior,nombre_original,3,581,EN TURISMO INTERNACIONAL,0.306819,turismo,0,etiqueta previa (revisable)
+espacio,Me interesa investigar planetas y explorar el espacio exterior,nombre_original,4,456,EN INNOVACIÓN TURÍSTICA Y GASTRONÓMICA,0.283607,turismo,0,etiqueta previa (revisable)
+espacio,Me interesa investigar planetas y explorar el espacio exterior,nombre_original,5,551,EN RELACIONES INTERNACIONALES,0.272296,,0,etiqueta previa (revisable)
+espacio,Me interesa investigar planetas y explorar el espacio exterior,nombre_enriquecido,1,76,EN ARQUITECTURA DE INTERIORES,0.317593,arquitectura,,PENDIENTE: candidato nuevo
+espacio,Me interesa investigar planetas y explorar el espacio exterior,nombre_enriquecido,2,75,EN ARQUITECTURA,0.315038,arquitectura,,PENDIENTE: candidato nuevo
+espacio,Me interesa investigar planetas y explorar el espacio exterior,nombre_enriquecido,3,77,EN ARQUITECTURA DE INTERIORES Y AMBIENTACIÓN,0.314014,arquitectura,,PENDIENTE: candidato nuevo
+espacio,Me interesa investigar planetas y explorar el espacio exterior,nombre_enriquecido,4,404,EN INGENIERÍA FÍSICA,0.313555,fisica,,PENDIENTE: candidato nuevo
+espacio,Me interesa investigar planetas y explorar el espacio exterior,nombre_enriquecido,5,79,EN ARQUITECTURA Y TECNOLOGÍAS SUSTENTABLES,0.312866,arquitectura,,PENDIENTE: candidato nuevo
+aeroespacial,Quiero diseñar cohetes y naves espaciales,nombre_original,1,324,EN INGENIERÍA DE CONSTRUCCIÓN,0.340952,,0,etiqueta previa (revisable)
+aeroespacial,Quiero diseñar cohetes y naves espaciales,nombre_original,2,406,EN INGENIERÍA INDUSTRIAL E INNOVACIÓN TECNOLÓGICA,0.326137,,1,etiqueta previa (revisable)
+aeroespacial,Quiero diseñar cohetes y naves espaciales,nombre_original,3,74,EN ARQUITECTO CONSTRUCTOR,0.318708,,0,etiqueta previa (revisable)
+aeroespacial,Quiero diseñar cohetes y naves espaciales,nombre_original,4,407,EN INGENIERÍA INDUSTRIAL ELÉCTRICA,0.303593,,1,etiqueta previa (revisable)
+aeroespacial,Quiero diseñar cohetes y naves espaciales,nombre_original,5,313,EN INGENIERÍA AMBIENTAL,0.295982,,0,etiqueta previa (revisable)
+aeroespacial,Quiero diseñar cohetes y naves espaciales,nombre_enriquecido,1,426,EN INGENIERÍA MECATRÓNICA PARA LA MANUFACTURA,0.439651,robotica,,PENDIENTE: candidato nuevo
+aeroespacial,Quiero diseñar cohetes y naves espaciales,nombre_enriquecido,2,425,EN INGENIERÍA MECATRÓNICA,0.434953,robotica,,PENDIENTE: candidato nuevo
+aeroespacial,Quiero diseñar cohetes y naves espaciales,nombre_enriquecido,3,363,EN INGENIERÍA EN MECATRÓNICA Y PRODUCCIÓN,0.431346,robotica,,PENDIENTE: candidato nuevo
+aeroespacial,Quiero diseñar cohetes y naves espaciales,nombre_enriquecido,4,362,EN INGENIERÍA EN MECATRÓNICA,0.427706,robotica,,PENDIENTE: candidato nuevo
+aeroespacial,Quiero diseñar cohetes y naves espaciales,nombre_enriquecido,5,438,EN INGENIERO EN MECATRÓNICA,0.425800,robotica,,PENDIENTE: candidato nuevo
+indecision,"Quiero estudiar algo, pero todavía no sé qué",nombre_original,1,98,EN CIENCIAS DE LA EDUCACIÓN,0.500249,,0,etiqueta previa (revisable)
+indecision,"Quiero estudiar algo, pero todavía no sé qué",nombre_original,2,530,EN PSICOLOGÍA EDUCATIVA,0.494395,psicologia,0,etiqueta previa (revisable)
+indecision,"Quiero estudiar algo, pero todavía no sé qué",nombre_original,3,504,EN NEUROEDUCACIÓN,0.468670,,0,etiqueta previa (revisable)
+indecision,"Quiero estudiar algo, pero todavía no sé qué",nombre_original,4,243,EN EDUCACIÓN,0.468037,,0,etiqueta previa (revisable)
+indecision,"Quiero estudiar algo, pero todavía no sé qué",nombre_original,5,513,EN PEDAGOGÍA E INNOVACIÓN EDUCATIVA,0.444663,,0,etiqueta previa (revisable)
+indecision,"Quiero estudiar algo, pero todavía no sé qué",nombre_enriquecido,1,98,EN CIENCIAS DE LA EDUCACIÓN,0.500249,,0,etiqueta previa (revisable)
+indecision,"Quiero estudiar algo, pero todavía no sé qué",nombre_enriquecido,2,504,EN NEUROEDUCACIÓN,0.468670,,0,etiqueta previa (revisable)
+indecision,"Quiero estudiar algo, pero todavía no sé qué",nombre_enriquecido,3,243,EN EDUCACIÓN,0.468037,,0,etiqueta previa (revisable)
+indecision,"Quiero estudiar algo, pero todavía no sé qué",nombre_enriquecido,4,513,EN PEDAGOGÍA E INNOVACIÓN EDUCATIVA,0.444663,,0,etiqueta previa (revisable)
+indecision,"Quiero estudiar algo, pero todavía no sé qué",nombre_enriquecido,5,249,EN EDUCACIÓN Y DESARROLLO INSTITUCIONAL,0.416113,,,PENDIENTE: candidato nuevo
+trivial,"Hola, ¿cómo estás hoy?",nombre_original,1,129,EN COMUNICACIÓN,0.316212,,0,etiqueta previa (revisable)
+trivial,"Hola, ¿cómo estás hoy?",nombre_original,2,303,EN HUMANIDADES,0.314385,,0,etiqueta previa (revisable)
+trivial,"Hola, ¿cómo estás hoy?",nombre_original,3,492,EN MÚSICA,0.289399,,0,etiqueta previa (revisable)
+trivial,"Hola, ¿cómo estás hoy?",nombre_original,4,142,EN COMUNICACIÓN Y MEDIOS,0.286554,,0,etiqueta previa (revisable)
+trivial,"Hola, ¿cómo estás hoy?",nombre_original,5,578,EN TURISMO,0.282160,turismo,0,etiqueta previa (revisable)
+trivial,"Hola, ¿cómo estás hoy?",nombre_enriquecido,1,129,EN COMUNICACIÓN,0.316212,,0,etiqueta previa (revisable)
+trivial,"Hola, ¿cómo estás hoy?",nombre_enriquecido,2,303,EN HUMANIDADES,0.314385,,0,etiqueta previa (revisable)
+trivial,"Hola, ¿cómo estás hoy?",nombre_enriquecido,3,492,EN MÚSICA,0.289399,,0,etiqueta previa (revisable)
+trivial,"Hola, ¿cómo estás hoy?",nombre_enriquecido,4,142,EN COMUNICACIÓN Y MEDIOS,0.286554,,0,etiqueta previa (revisable)
+trivial,"Hola, ¿cómo estás hoy?",nombre_enriquecido,5,297,EN HISTORIA,0.281122,,,PENDIENTE: candidato nuevo
+meteorologia,Quiero pronosticar huracanes y estudiar la atmósfera,nombre_original,1,281,EN GASTRONOMÍA INTERNACIONAL,0.499177,gastronomia,0,etiqueta previa (revisable)
+meteorologia,Quiero pronosticar huracanes y estudiar la atmósfera,nombre_original,2,461,EN INTERNACIONAL EN GASTRONOMÍA,0.455939,gastronomia,0,etiqueta previa (revisable)
+meteorologia,Quiero pronosticar huracanes y estudiar la atmósfera,nombre_original,3,280,EN GASTRONOMÍA,0.410791,gastronomia,0,etiqueta previa (revisable)
+meteorologia,Quiero pronosticar huracanes y estudiar la atmósfera,nombre_original,4,199,EN DISEÑO DE AMBIENTES ARQUITECTÓNICOS,0.337809,,0,etiqueta previa (revisable)
+meteorologia,Quiero pronosticar huracanes y estudiar la atmósfera,nombre_original,5,421,EN INGENIERÍA MECÁNICA ELÉCTRICA,0.336977,,0,etiqueta previa (revisable)
+meteorologia,Quiero pronosticar huracanes y estudiar la atmósfera,nombre_enriquecido,1,199,EN DISEÑO DE AMBIENTES ARQUITECTÓNICOS,0.337809,,0,etiqueta previa (revisable)
+meteorologia,Quiero pronosticar huracanes y estudiar la atmósfera,nombre_enriquecido,2,421,EN INGENIERÍA MECÁNICA ELÉCTRICA,0.336977,,0,etiqueta previa (revisable)
+meteorologia,Quiero pronosticar huracanes y estudiar la atmósfera,nombre_enriquecido,3,461,EN INTERNACIONAL EN GASTRONOMÍA,0.312495,gastronomia,0,etiqueta previa (revisable)
+meteorologia,Quiero pronosticar huracanes y estudiar la atmósfera,nombre_enriquecido,4,423,EN INGENIERÍA MECÁNICA Y ELÉCTRICA,0.307709,,,PENDIENTE: candidato nuevo
+meteorologia,Quiero pronosticar huracanes y estudiar la atmósfera,nombre_enriquecido,5,106,EN CIENCIAS TEOLÓGICAS,0.301613,,,PENDIENTE: candidato nuevo
+arqueologia,Me gustaría excavar fósiles y estudiar dinosaurios,nombre_original,1,88,EN BIOTECNOLOGÍA,0.404298,,1,etiqueta previa (revisable)
+arqueologia,Me gustaría excavar fósiles y estudiar dinosaurios,nombre_original,2,79,EN ARQUITECTURA Y TECNOLOGÍAS SUSTENTABLES,0.366541,arquitectura,0,etiqueta previa (revisable)
+arqueologia,Me gustaría excavar fósiles y estudiar dinosaurios,nombre_original,3,433,EN INGENIERO EN BIOTECNOLOGÍA,0.356711,,1,etiqueta previa (revisable)
+arqueologia,Me gustaría excavar fósiles y estudiar dinosaurios,nombre_original,4,315,EN INGENIERÍA BIOMÉDICA,0.322276,,0,etiqueta previa (revisable)
+arqueologia,Me gustaría excavar fósiles y estudiar dinosaurios,nombre_original,5,284,EN GERONTOLOGÍA,0.321532,,0,etiqueta previa (revisable)
+arqueologia,Me gustaría excavar fósiles y estudiar dinosaurios,nombre_enriquecido,1,88,EN BIOTECNOLOGÍA,0.404298,,1,etiqueta previa (revisable)
+arqueologia,Me gustaría excavar fósiles y estudiar dinosaurios,nombre_enriquecido,2,433,EN INGENIERO EN BIOTECNOLOGÍA,0.356711,,1,etiqueta previa (revisable)
+arqueologia,Me gustaría excavar fósiles y estudiar dinosaurios,nombre_enriquecido,3,315,EN INGENIERÍA BIOMÉDICA,0.322276,,0,etiqueta previa (revisable)
+arqueologia,Me gustaría excavar fósiles y estudiar dinosaurios,nombre_enriquecido,4,284,EN GERONTOLOGÍA,0.321532,,0,etiqueta previa (revisable)
+arqueologia,Me gustaría excavar fósiles y estudiar dinosaurios,nombre_enriquecido,5,106,EN CIENCIAS TEOLÓGICAS,0.320458,,,PENDIENTE: candidato nuevo
