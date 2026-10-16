@@ -1,4 +1,4 @@
-# Proyecto de Inteligencia Artificial – Oferta Educativa
+# Proyecto de Inteligencia Artificial – Oferta Educativa Ciudad de México 2.0
 
 Proyecto desarrollado para la asignatura de Inteligencia Artificial.
 
@@ -9,6 +9,16 @@ Desarrollar un sistema para procesar, estructurar y analizar información de la 
 El proyecto utiliza como fuente documentos PDF con registros oficiales de instituciones y programas educativos.
 
 La arquitectura está preparada para ampliar posteriormente la cobertura al resto de México.
+
+## Estado actual del proyecto (octubre de 2026)
+
+El proyecto dispone de un **prototipo conversacional funcional** para consultar licenciaturas de Ciudad de México registradas en documentos SEP de **abril de 2021**. Combina PostgreSQL, clasificación de intenciones, búsqueda semántica con MiniLM, comprobación de cobertura temática, alternativas académicas afines y memoria de sesión. Los resultados describen registros históricos, **no disponibilidad comprobada para 2026**.
+
+- **Preparación y base de datos:** extracción, normalización, carga y verificaciones de integridad realizadas.
+- **Etapa 3 — motor conversacional:** funcionalidades principales integradas y probadas en escenarios concretos; quedan limitaciones de interpretación y alcance temático.
+- **Etapa 4 — evaluación final y entrega:** pendiente una batería independiente de consultas, análisis de errores, documentación final y demostración.
+
+Las cifras de evaluación del clasificador **no representan la exactitud del asistente completo**. Las reglas temáticas y de afinidad son auxiliares; no describen oficialmente los planes de estudio.
 
 ## Proceso realizado
 
@@ -27,6 +37,20 @@ Hasta el momento se han completado las siguientes etapas:
 11. Integración de las licenciaturas de CDMX en la capa normalizada.
 12. Primera etapa de consolidación y corrección de instituciones y planteles.
 13. Verificación de integridad referencial y pruebas iniciales de consulta.
+14. Consolidación adicional de nombres institucionales, planteles y programas; conservación de la trazabilidad documental.
+15. Preparación de preguntas de entrenamiento y evaluación para el clasificador de intenciones.
+16. Comparación de regresión logística, Naive Bayes y SVM lineal.
+17. Implementación del reconocimiento de instituciones, programas y modalidades.
+18. Desarrollo de consultas parametrizadas a PostgreSQL para recuperar ofertas.
+19. Incorporación de MiniLM para buscar carreras por similitud semántica.
+20. Implementación de contexto conversacional y filtros de seguimiento.
+21. Evaluación exploratoria de recomendaciones semánticas mediante etiquetas de pertinencia 0, 1 y 2.
+22. Desarrollo de reglas de cobertura temática para evitar coincidencias engañosas en áreas no respaldadas directamente por el catálogo.
+23. Ampliación del entrenamiento de intenciones de 80 a 136 preguntas y prueba de TF-IDF de palabras y caracteres.
+24. Incorporación de alternativas académicas afines verificadas en PostgreSQL, previa confirmación del estudiante.
+25. Generación de respuestas conversacionales y pruebas unitarias y de integración de los principales flujos.
+
+Los pasos 1–13 documentan la preparación de datos y la base de datos; los pasos 14–25 describen su evolución hacia el asistente conversacional. Este registro conserva **el orden de desarrollo**, no implica que todas las funciones estén libres de errores.
 
 ## Datos procesados
 
@@ -78,9 +102,11 @@ Se separaron las entidades académicas para reducir la redundancia y representar
 
 La capa `origen` mantiene los datos documentales para conservar la trazabilidad y facilitar futuras revisiones.
 
-## Estado actual de PostgreSQL
+## Estado del catálogo en PostgreSQL
 
-Después de la carga inicial y las primeras correcciones, se obtuvieron los siguientes resultados:
+### Corte inicial de la normalización (registro histórico)
+
+Después de la carga inicial y las primeras correcciones, se obtuvieron los siguientes resultados. **Esta tabla corresponde a ese corte y no debe confundirse con un conteo actualizado en tiempo real:**
 
 | Tabla | Registros |
 |---|---:|
@@ -97,7 +123,13 @@ Después de la carga inicial y las primeras correcciones, se obtuvieron los sigu
 
 **Nota:** las 2,810 filas documentales de licenciatura de CDMX están vinculadas a 2,616 ofertas educativas en la capa normalizada. Ambos valores representan conceptos diferentes y no deben confundirse.
 
-Los 2,810 vínculos se conservan en estado `REVISAR` mientras continúa la validación de identidades institucionales y autorizaciones.
+En este corte inicial, los 2,810 vínculos se conservaron en estado `REVISAR` mientras continuaba la validación de identidades institucionales y autorizaciones. Su estado más reciente debe verificarse en PostgreSQL.
+
+### Consolidación posterior y alcance de las búsquedas
+
+En las iteraciones posteriores se reportaron **226 instituciones consolidadas** y **588 nombres de programas** para la capa de consulta, junto con **2,616 ofertas normalizadas** y **2,810 vínculos a registros de origen**. Es importante no sumar registros de origen con ofertas normalizadas: representan conceptos diferentes.
+
+Las cantidades exactas pueden variar si se realizan nuevas correcciones; para confirmar el estado actual se deben ejecutar consultas de conteo sobre la base de datos local.
 
 ## Limpieza y mejora de los datos
 
@@ -118,7 +150,7 @@ Las verificaciones confirmaron que permanecen las 2,616 ofertas educativas, las 
 
 Las correcciones realizadas se documentan en `limpieza_catalogo_cdmx_historial.md`.
 
-La validación de los casos restantes continúa pendiente.
+Las verificaciones y correcciones adicionales se registraron progresivamente; los casos no resueltos deben consultarse en el historial y en los datos actuales de PostgreSQL.
 
 ## Consultas y validaciones
 
@@ -139,6 +171,11 @@ Las consultas de verificación están disponibles en la carpeta `sql/`.
 - `diagramas/`: modelos conceptual y relacional.
 - `scripts/`: programas Python de extracción, limpieza, auditoría y carga.
 - `sql/`: instrucciones de creación y verificación de PostgreSQL.
+- `motor_ia/`: clasificador, interpretación, búsqueda semántica, cobertura temática, afinidades y generación de respuestas.
+- `funciones/`: consultas parametrizadas de programas, instituciones y modalidades.
+- `tests/`: pruebas automatizadas de los componentes conversacionales.
+- `app.py`: punto de entrada del asistente de consola.
+- `modelos_ia/`: pesos descargados localmente de MiniLM (**excluidos de Git**).
 - `limpieza_catalogo_cdmx_historial.md`: historial de correcciones del catálogo.
 - `.gitignore`: configuración de archivos excluidos del control de versiones.
 - `README.md`: documentación del proyecto.
@@ -150,15 +187,19 @@ Las consultas de verificación están disponibles en la carpeta `sql/`.
 - JSON
 - PostgreSQL 16
 - psycopg2-binary
+- scikit-learn (TF-IDF y regresión logística)
+- Sentence Transformers y MiniLM multilingüe (embeddings)
+- PyTorch (ejecución de MiniLM a través de sus dependencias)
+- pytest (pruebas automatizadas)
 - Git y GitHub
 
-## Estado del proyecto y siguientes etapas
+## Evolución del proyecto y siguientes etapas
 
-**La extracción, la carga documental, el diseño de la base de datos y la primera integración de licenciaturas de CDMX están completados.**
+**La extracción, la carga documental, el diseño de la base de datos y la integración inicial de licenciaturas de CDMX se realizaron.** En etapas posteriores también se implementó el asistente conversacional descrito más adelante.
 
-Actualmente se trabaja en mejorar la calidad de las correspondencias institucionales y de los planteles, conservando los datos originales.
+### Plan inicial (conservado como historial)
 
-Las próximas etapas son:
+Al concluir las primeras fases de normalización, se había definido el siguiente plan:
 
 1. Continuar la limpieza controlada de instituciones y planteles.
 2. Revisar autorizaciones y registros que presentan inconsistencias.
@@ -168,9 +209,13 @@ Las próximas etapas son:
 6. Realizar pruebas funcionales y documentar los resultados.
 7. Ampliar posteriormente la cobertura a nivel nacional.
 
-**El alcance actual de la aplicación continúa limitado a las licenciaturas de Ciudad de México.**
+**Alcance vigente del prototipo:** consultas sobre licenciaturas de Ciudad de México disponibles en el catálogo histórico consultado. La cobertura nacional sigue siendo una posibilidad de ampliación, no una función actual.
 
-## Motor de Inteligencia Artificial
+### Pendientes actuales
+
+La recuperación SQL, MiniLM, la gestión de contexto y las respuestas conversacionales **ya se implementaron**. El trabajo siguiente se concentra en la evaluación integral independiente (etapa 4), corrección de errores detectados, documentación final, posible automatización de la descarga de MiniLM y presentación.
+
+## Motor de inteligencia artificial — primera versión (histórico)
 
 El proyecto incorpora un motor de procesamiento de lenguaje natural desarrollado en Python para interpretar consultas sobre la oferta educativa de licenciaturas en Ciudad de México.
 
@@ -186,7 +231,7 @@ El proyecto incorpora un motor de procesamiento de lenguaje natural desarrollado
 
 ### Clasificación de intenciones
 
-El conjunto de entrenamiento contiene 80 preguntas etiquetadas, distribuidas entre cuatro categorías:
+El **conjunto inicial** de entrenamiento contenía 80 preguntas etiquetadas, distribuidas entre cuatro categorías. Posteriormente se amplió a 136; los resultados de esa actualización se encuentran al final de este documento:
 
 - `buscar_programa`
 - `buscar_institucion`
@@ -203,46 +248,41 @@ Se preparó un conjunto independiente de 24 preguntas para evaluar el comportami
 | Naive Bayes | 92.50% | 87.50% |
 | SVM lineal | 95.00% | 87.50% |
 
-Se seleccionó provisionalmente regresión logística para la integración inicial, debido a su desempeño y facilidad de interpretación.
+En esta comparación inicial se seleccionó provisionalmente la regresión logística, debido a su desempeño y facilidad de interpretación; posteriormente se mantuvo y amplió el entrenamiento.
 
 ### Ejecución
 
 Desde la carpeta principal del proyecto, con el entorno virtual y las dependencias instaladas:
 
 **Comparar algoritmos**
-
 ```powershell
 .\.venv\Scripts\python.exe motor_ia\comparar_modelos.py
 ```
-
 **Probar la extracción de entidades**
-
 ```powershell
 .\.venv\Scripts\python.exe motor_ia\entidades.py
 ```
-
 **Interpretar consultas completas**
-
 ```powershell
 .\.venv\Scripts\python.exe motor_ia\interpretar_consulta.py
 ```
-
 Los módulos que acceden a PostgreSQL solicitan la contraseña mediante `getpass()` y utilizan la base de datos local `oferta_educativa`.
 
-### Estado actual
+### Estado de la primera versión (histórico)
 
-La primera integración del motor de IA permite clasificar la intención del usuario y reconocer instituciones, programas y modalidades a partir de consultas en español.
+La primera integración del motor de IA permitió clasificar la intención del usuario y reconocer instituciones, programas y modalidades a partir de consultas en español.
 
-Todavía están pendientes las funciones de recuperación de ofertas educativas, la búsqueda semántica, la gestión del contexto conversacional y la generación de respuestas fundamentadas.
+**En ese momento** aún estaban pendientes la recuperación de ofertas, la búsqueda semántica, el contexto conversacional y las respuestas fundamentadas. **Esos componentes se desarrollaron después**, como se documenta en los apartados de la etapa 3 y su actualización.
 
 **Nota:** Los datos oficiales utilizados provienen de documentos de la SEP con información actualizada al 30 de abril de 2021. Los resultados deben interpretarse considerando esa limitación temporal.
 
-
 ---
 
-# Etapa 3. Integración del motor de inteligencia artificial
+## Etapa 3. Desarrollo inicial y experimentos (registro histórico)
 
-## 1. Objetivo
+> Este apartado conserva los experimentos, valores y problemas de la **primera integración**. Algunas limitaciones descritas aquí se resolvieron más adelante; para el estado más reciente, consulta la actualización final de la etapa 3. No confundir la puntuación inicial de MiniLM con las respuestas del prototipo actual.
+
+### 1. Objetivo
 
 Durante esta etapa se desarrolló e integró el motor de inteligencia artificial del proyecto **Oferta Educativa Ciudad de México 2.0**, con el objetivo de permitir que los estudiantes consulten programas académicos mediante preguntas formuladas en lenguaje natural.
 
@@ -261,13 +301,13 @@ Por tanto, los resultados corresponden a los registros disponibles en esas fuent
 
 ---
 
-## 2. Desarrollo del clasificador de intenciones
+### 2. Desarrollo del clasificador de intenciones
 
 Se desarrolló un modelo de clasificación supervisada mediante la biblioteca **scikit-learn**.
 
 El propósito del clasificador es identificar qué desea consultar el estudiante y seleccionar el procedimiento adecuado para obtener una respuesta.
 
-### 2.1. Técnicas utilizadas
+#### 2.1. Técnicas utilizadas
 
 Se utilizaron:
 
@@ -276,11 +316,11 @@ Se utilizaron:
 - `LogisticRegression`: clasificación supervisada de intenciones.
 - Normalización de texto para facilitar el procesamiento.
 
-El clasificador fue entrenado con **80 preguntas etiquetadas**.
+En la versión inicial, el clasificador fue entrenado con **80 preguntas etiquetadas**; después se amplió a 136.
 
 También se preparó un conjunto independiente de **24 preguntas de evaluación**.
 
-### 2.2. Intenciones reconocidas
+#### 2.2. Intenciones reconocidas
 
 | Intención | Descripción |
 |---|---|
@@ -289,7 +329,7 @@ También se preparó un conjunto independiente de **24 preguntas de evaluación*
 | `filtrar_modalidad` | Buscar programas según su modalidad de estudio. |
 | `explorar_area` | Identificar carreras relacionadas con los intereses del estudiante. |
 
-### 2.3. Comparación de algoritmos
+#### 2.3. Comparación de algoritmos
 
 Se evaluaron tres algoritmos de clasificación:
 
@@ -315,7 +355,7 @@ Dado que el conjunto independiente contiene 24 preguntas, será necesario amplia
 
 ---
 
-## 3. Reconocimiento de entidades
+### 3. Reconocimiento de entidades
 
 Se implementó un módulo de reconocimiento de entidades que utiliza los catálogos almacenados en PostgreSQL.
 
@@ -327,7 +367,7 @@ Las entidades identificadas son:
 
 El procedimiento incluye normalización de texto y comparación con los nombres existentes en la base de datos.
 
-### 3.1. Modalidades reconocidas
+#### 3.1. Modalidades reconocidas
 
 El sistema trabaja con tres modalidades:
 
@@ -343,13 +383,13 @@ El reconocimiento de entidades proporciona identificadores que posteriormente se
 
 ---
 
-## 4. Funciones de recuperación mediante PostgreSQL
+### 4. Funciones de recuperación mediante PostgreSQL
 
 Se incorporaron funciones específicas para recuperar información del catálogo académico.
 
 Estas funciones se encuentran dentro del directorio `funciones/`.
 
-### 4.1. Archivos desarrollados
+#### 4.1. Archivos desarrollados
 
 | Archivo | Responsabilidad |
 |---|---|
@@ -359,7 +399,7 @@ Estas funciones se encuentran dentro del directorio `funciones/`.
 
 Las funciones utilizan consultas SQL parametrizadas sobre las tablas normalizadas de PostgreSQL.
 
-### 4.2. Información recuperada
+#### 4.2. Información recuperada
 
 Las consultas permiten obtener:
 
@@ -377,7 +417,7 @@ Cuando el nombre de un plantel no se encuentra registrado en la fuente, se utili
 
 ---
 
-## 5. Incorporación de búsqueda semántica con MiniLM
+### 5. Incorporación de búsqueda semántica con MiniLM
 
 Para permitir consultas basadas en intereses, se incorporó la biblioteca **Sentence Transformers**.
 
@@ -385,9 +425,9 @@ Se utilizó el modelo multilingüe previamente entrenado:
 
 `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`
 
-Este modelo permite transformar textos en vectores numéricos llamados *embeddings*.
+Este modelo permite transformar textos en vectores numéricos llamados **embeddings**.
 
-### 5.1. ¿Qué son los embeddings?
+#### 5.1. ¿Qué son los embeddings?
 
 Los embeddings son representaciones vectoriales que permiten comparar textos mediante operaciones matemáticas.
 
@@ -405,29 +445,27 @@ Puede compararse con nombres de programas académicos como:
 
 El sistema no necesita que la pregunta contenga exactamente el nombre oficial de una carrera.
 
-### 5.2. Similitud del coseno
+#### 5.2. Similitud del coseno
 
 Para comparar los embeddings se utiliza la similitud del coseno:
-
 
 $$
 \mathrm{sim}(A,B) =
 \frac{A \cdot B}{\lVert A \rVert \, \lVert B \rVert}
 $$
 
-
 Donde:
 
 - $A$ es el vector correspondiente a la pregunta.
 - $B$ es el vector correspondiente a un programa académico.
 - $A\cdot B$ representa el producto punto.
-- $\|A\|$ y $\|B\|$ representan las normas de los vectores.
+- $\lVert A \rVert$ y $\lVert B \rVert$ representan las normas de los vectores.
 
 Los programas se ordenan según sus puntuaciones de similitud.
 
 Estas puntuaciones permiten establecer un orden de recuperación, pero no representan probabilidades de que una carrera sea adecuada para un estudiante.
 
-### 5.3. Programas utilizados
+#### 5.3. Programas utilizados
 
 La búsqueda semántica trabaja con **588 nombres distintos de programas académicos** recuperados del catálogo de PostgreSQL.
 
@@ -435,7 +473,7 @@ Los embeddings de estos programas se calculan al iniciar la aplicación y se reu
 
 De esta manera, no es necesario volver a calcular los embeddings del catálogo por cada pregunta.
 
-### 5.4. Archivos incorporados
+#### 5.4. Archivos incorporados
 
 | Archivo | Función |
 |---|---|
@@ -447,9 +485,9 @@ La utilización de MiniLM como modelo preentrenado fue consultada y autorizada p
 
 ---
 
-## 6. Instalación manual del modelo MiniLM
+### 6. Instalación manual del modelo MiniLM
 
-### 6.1. ¿Por qué MiniLM no se incluye en GitHub?
+#### 6.1. ¿Por qué MiniLM no se incluye en GitHub?
 
 **Los archivos del modelo MiniLM no se almacenan directamente en este repositorio.**
 
@@ -470,7 +508,7 @@ Se encuentra excluida mediante el archivo `.gitignore`.
 
 Esto significa que el repositorio conserva los programas necesarios para utilizar MiniLM, pero no incluye los parámetros descargados del modelo neuronal.
 
-### 6.2. Requisitos previos
+#### 6.2. Requisitos previos
 
 Para utilizar MiniLM es necesario contar con:
 
@@ -482,40 +520,32 @@ Para utilizar MiniLM es necesario contar con:
 
 Los siguientes comandos están preparados para ejecutarse desde PowerShell, dentro de la carpeta principal del proyecto.
 
-### 6.3. Instalar Sentence Transformers
+#### 6.3. Instalar Sentence Transformers
 
 Si la biblioteca todavía no está instalada, ejecutar:
-
 ```powershell
 .\.venv\Scripts\python.exe -m pip install sentence-transformers
 ```
-
 Esta biblioteca permite cargar modelos preentrenados y generar embeddings.
 
-### 6.4. Crear las carpetas locales
+#### 6.4. Crear las carpetas locales
 
 Crear la carpeta donde se guardará el modelo:
-
 ```powershell
 mkdir modelos_ia
 ```
-
 Después crear la subcarpeta:
-
 ```powershell
 mkdir modelos_ia\minilm
 ```
-
 Si ambas carpetas ya existen, no es necesario repetir estos pasos.
 
-### 6.5. Descargar el modelo
+#### 6.5. Descargar el modelo
 
 Ejecutar:
-
 ```powershell
 .\.venv\Scripts\python.exe motor_ia\12_probar_embeddings.py
 ```
-
 Durante la primera ejecución, el programa descarga desde Hugging Face el modelo:
 
 `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`
@@ -528,48 +558,39 @@ La descarga puede tardar varios minutos, dependiendo de la conexión a Internet.
 
 Una vez descargado, el modelo puede utilizarse localmente sin repetir el procedimiento.
 
-### 6.6. Comprobar la instalación
+#### 6.6. Comprobar la instalación
 
 La ejecución correcta debe mostrar mensajes semejantes a:
-
 ```text
 Modelo guardado correctamente.
-
 Cantidad de textos: 3
 Dimensiones de cada vector: 384
 ```
-
 El programa también presenta las similitudes calculadas entre tres textos utilizados como ejemplos.
 
-### 6.7. Ejecutar la búsqueda semántica
+#### 6.7. Ejecutar la búsqueda semántica
 
 Para probar MiniLM con los programas reales de PostgreSQL:
-
 ```powershell
 .\.venv\Scripts\python.exe motor_ia\busqueda_semantica.py
 ```
-
 Este programa permite escribir preguntas sobre intereses y consultar los programas académicos con mayor similitud.
 
 Para ejecutar la recuperación de instituciones:
-
 ```powershell
 .\.venv\Scripts\python.exe motor_ia\recuperacion_semantica.py
 ```
-
 En esta prueba se muestran programas académicos, instituciones, planteles y modalidades registrados.
 
-### 6.8. Ejecutar el asistente completo
+#### 6.8. Ejecutar el asistente completo
 
 Después de instalar MiniLM y configurar PostgreSQL:
-
 ```powershell
 .\.venv\Scripts\python.exe app.py
 ```
-
 El sistema solicita la contraseña de PostgreSQL y prepara los modelos necesarios para procesar las preguntas.
 
-### 6.9. Mejora futura: descarga automática
+#### 6.9. Mejora futura: descarga automática
 
 En una actualización posterior se implementará la descarga automática de MiniLM.
 
@@ -587,7 +608,7 @@ Por el momento, la instalación debe realizarse mediante el procedimiento manual
 
 ---
 
-## 7. Integración del motor de IA en app.py
+### 7. Integración del motor de IA en app.py
 
 El archivo `app.py` funciona como punto de entrada del asistente conversacional.
 
@@ -601,7 +622,7 @@ Durante el inicio de la aplicación se realizan las siguientes operaciones:
 6. Inicializar la memoria conversacional.
 7. Esperar preguntas del estudiante.
 
-### 7.1. Procesamiento de preguntas
+#### 7.1. Procesamiento de preguntas
 
 Cuando el estudiante escribe una pregunta, el sistema identifica la intención y las entidades correspondientes.
 
@@ -611,49 +632,47 @@ Si identifica la intención `explorar_area`, utiliza MiniLM para localizar progr
 
 Posteriormente, PostgreSQL permite recuperar las instituciones y modalidades correspondientes.
 
-### 7.2. Flujo general
-
+#### 7.2. Flujo general
 ```text
 Pregunta del estudiante
-         |
-         v
+         |
+         v
 Clasificador de intenciones
-         |
-         v
+         |
+         v
 Reconocimiento de entidades
-         |
-         v
+         |
+         v
 Seleccion del procedimiento
-         |
-         +---------------------------+
-         |                           |
-         v                           v
-Busqueda SQL                  Busqueda con MiniLM
-         |                           |
-         |                           v
-         |                    Programas relacionados
-         |                           |
-         |                           v
-         |                    Recuperacion SQL
-         |                           |
-         +-------------+-------------+
-                       |
-                       v
-              Ofertas educativas
-                       |
-                       v
-              Respuesta al usuario
+         |
+         +---------------------------+
+         |                           |
+         v                           v
+Busqueda SQL                  Busqueda con MiniLM
+         |                           |
+         |                           v
+         |                    Programas relacionados
+         |                           |
+         |                           v
+         |                    Recuperacion SQL
+         |                           |
+         +-------------+-------------+
+                       |
+                       v
+              Ofertas educativas
+                       |
+                       v
+              Respuesta al usuario
 ```
-
 El sistema utiliza PostgreSQL como fuente de información para verificar los programas e instituciones recuperados.
 
 ---
 
-## 8. Memoria y contexto conversacional
+### 8. Memoria y contexto conversacional
 
 Se amplió el módulo `motor_ia/contexto.py` para conservar información relevante de las consultas anteriores.
 
-### 8.1. Contexto tradicional
+#### 8.1. Contexto tradicional
 
 El sistema puede conservar:
 
@@ -673,7 +692,7 @@ Por ejemplo:
 
 El sistema conserva la institución Universidad ICEL y aplica el filtro de modalidad mixta.
 
-### 8.2. Contexto semántico
+#### 8.2. Contexto semántico
 
 Se incorporó la capacidad de conservar los identificadores de los programas encontrados mediante MiniLM.
 
@@ -697,7 +716,7 @@ El sistema consulta únicamente las ofertas mixtas correspondientes a los progra
 
 El sistema conserva los mismos programas, pero cambia el filtro a modalidad escolarizada.
 
-### 8.3. Cambio de tema
+#### 8.3. Cambio de tema
 
 Cuando el estudiante formula una pregunta independiente, se inicia un nuevo contexto.
 
@@ -711,11 +730,11 @@ La memoria implementada funciona durante la sesión actual de ejecución del pro
 
 ---
 
-## 9. Pruebas de integración
+### 9. Pruebas de integración
 
 Se realizaron pruebas utilizando PowerShell, Python y PostgreSQL.
 
-### 9.1. Búsqueda semántica sobre videojuegos
+#### 9.1. Búsqueda semántica sobre videojuegos
 
 **Pregunta:**
 
@@ -745,7 +764,7 @@ Posteriormente se identificaron las instituciones correspondientes:
 
 Esta prueba permitió comprobar la recuperación de programas relacionados con una descripción de intereses sin utilizar nombres exactos de carreras.
 
-### 9.2. Búsqueda semántica sobre electrónica y robótica
+#### 9.2. Búsqueda semántica sobre electrónica y robótica
 
 **Pregunta:**
 
@@ -765,7 +784,7 @@ Los resultados mostraron programas relacionados principalmente con electrónica,
 
 Sin embargo, la pertinencia de cada programa deberá evaluarse posteriormente, ya que la similitud semántica no garantiza que todas las opciones recuperadas satisfagan los intereses del estudiante.
 
-### 9.3. Seguimiento semántico: modalidad mixta
+#### 9.3. Seguimiento semántico: modalidad mixta
 
 **Pregunta:**
 
@@ -785,7 +804,7 @@ El sistema conservó los cinco programas previamente encontrados y recuperó **3
 
 Todas las ofertas recuperadas correspondieron a modalidad MIXTA.
 
-### 9.4. Seguimiento semántico: modalidad escolarizada
+#### 9.4. Seguimiento semántico: modalidad escolarizada
 
 **Pregunta:**
 
@@ -805,7 +824,7 @@ El sistema conservó los cinco programas anteriores y recuperó **5 ofertas educ
 
 Todas las ofertas correspondieron a modalidad ESCOLARIZADA.
 
-### 9.5. Cambio de tema: Universidad ICEL
+#### 9.5. Cambio de tema: Universidad ICEL
 
 **Pregunta:**
 
@@ -821,7 +840,7 @@ El sistema abandonó el contexto semántico de videojuegos y realizó una nueva 
 
 Esto permitió comprobar que el cambio de tema funciona en el caso probado.
 
-### 9.6. Seguimiento tradicional: Universidad ICEL
+#### 9.6. Seguimiento tradicional: Universidad ICEL
 
 **Pregunta:**
 
@@ -835,7 +854,7 @@ Esto permitió comprobar que el cambio de tema funciona en el caso probado.
 
 El sistema conservó Universidad ICEL como institución y aplicó correctamente la modalidad MIXTA.
 
-### 9.7. Resumen de resultados
+#### 9.7. Resumen de resultados
 
 | Prueba | Resultado | Estado |
 |---|---|---|
@@ -850,11 +869,11 @@ Los resultados corresponden a pruebas funcionales concretas y no representan una
 
 ---
 
-## 10. Limitaciones identificadas
+### 10. Limitaciones identificadas
 
 Durante el desarrollo se identificaron aspectos que todavía requieren mejoras.
 
-### 10.1. Confianza del clasificador
+#### 10.1. Confianza del clasificador
 
 Algunas preguntas fueron clasificadas con niveles de confianza relativamente bajos.
 
@@ -868,7 +887,7 @@ Aunque estas consultas fueron interpretadas correctamente, es necesario estudiar
 
 Las puntuaciones del clasificador tampoco deben interpretarse automáticamente como probabilidades perfectamente calibradas.
 
-### 10.2. Pertinencia semántica
+#### 10.2. Pertinencia semántica
 
 MiniLM identifica programas mediante similitud vectorial, pero el programa con mayor puntuación no siempre será la opción más adecuada.
 
@@ -879,27 +898,25 @@ Se necesita evaluar:
 - Los resultados poco relacionados con los intereses.
 - Los casos en los que conviene solicitar información adicional.
 
-Actualmente, el sistema utiliza los cinco programas con mayor similitud, sin aplicar todavía un criterio de rechazo validado experimentalmente.
+En este experimento inicial, el sistema devolvía los cinco nombres de mayor similitud sin comprobar cobertura temática. Más adelante se incorporó una comprobación conservadora de cobertura y un flujo de carreras afines; esto **no sustituye** una evaluación integral independiente.
 
-### 10.3. Preguntas ambiguas
+#### 10.3. Preguntas ambiguas
 
 Se requiere mejorar la identificación de preguntas que no contienen información suficiente para ejecutar una búsqueda confiable.
 
 En esos casos, el asistente deberá solicitar aclaraciones antes de mostrar resultados.
 
-### 10.4. Respuestas sin evidencia
+#### 10.4. Respuestas sin evidencia
 
 Es necesario fortalecer los mecanismos para reconocer situaciones en las que no existan programas pertinentes en el catálogo.
 
 El sistema no debe presentar una recomendación como confiable únicamente porque obtuvo una puntuación de similitud mayor que las demás.
 
-### 10.5. Respuestas conversacionales
+#### 10.5. Respuestas conversacionales
 
-La aplicación actualmente presenta resultados principalmente mediante mensajes y listas en la terminal.
+En esta versión, la aplicación presentaba principalmente listados técnicos en terminal. Posteriormente se desarrolló un generador de respuestas conversacionales, aún dentro de la consola.
 
-Se requiere mejorar la presentación para ofrecer respuestas más naturales y comprensibles.
-
-### 10.6. Alcance temporal del catálogo
+#### 10.6. Alcance temporal del catálogo
 
 Los datos utilizados proceden de documentos SEP fechados el 30 de abril de 2021.
 
@@ -907,9 +924,9 @@ La aplicación debe informar esta limitación para evitar que los estudiantes in
 
 ---
 
-## 11. Mejoras pendientes para concluir la etapa 3
+### 11. Mejoras pendientes para concluir la etapa 3
 
-Las siguientes actividades permanecen pendientes:
+Al terminar este corte inicial, se habían identificado las siguientes actividades pendientes (se conservan como historial):
 
 1. Incorporar mecanismos de manejo de preguntas ambiguas.
 2. Evaluar criterios para rechazar resultados semánticos poco pertinentes.
@@ -922,7 +939,7 @@ Estos cambios deberán desarrollarse sin afectar las búsquedas y el contexto co
 
 ---
 
-## 12. Estado actual del proyecto
+### 12. Estado actual del proyecto
 
 Al finalizar este avance, se cuenta con un prototipo funcional que integra:
 
@@ -937,13 +954,13 @@ El sistema puede:
 - Conservar resultados anteriores para aplicar filtros de modalidad.
 - Reconocer cambios de tema en los casos probados.
 
-La etapa 3 continúa en desarrollo y requiere mejorar el tratamiento de ambigüedades y la validación de resultados.
+En este corte aún faltaban controles de ambigüedad y cobertura; varias mejoras se implementaron después y se describen en la actualización de octubre de 2026.
 
 Posteriormente se realizará la evaluación integral de la aplicación, incluyendo al menos 20 consultas, documentación de resultados y preparación de la demostración final.
 
 ---
 
-## 13. Herramientas y tecnologías utilizadas
+### 13. Herramientas y tecnologías utilizadas
 
 | Herramienta | Aplicación en el proyecto |
 |---|---|
@@ -961,24 +978,19 @@ Posteriormente se realizará la evaluación integral de la aplicación, incluyen
 
 ---
 
-## 14. Referencias técnicas
+### 14. Referencias técnicas
 
 - **Secretaría de Educación Pública (SEP). (2021).** Documentos de oferta educativa utilizados como fuentes originales del catálogo, con fecha del 30 de abril de 2021.
-
-- **Pedregosa, F., et al. (2011).** Scikit-learn: Machine Learning in Python. *Journal of Machine Learning Research, 12*, 2825-2830. https://scikit-learn.org/
-
-- **Reimers, N., y Gurevych, I. (2019).** Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks. *Proceedings of EMNLP-IJCNLP*. https://arxiv.org/abs/1908.10084
-
+- **Pedregosa, F., et al. (2011).** Scikit-learn: Machine Learning in Python. **Journal of Machine Learning Research, 12**, 2825-2830. https://scikit-learn.org/
+- **Reimers, N., y Gurevych, I. (2019).** Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks. **Proceedings of EMNLP-IJCNLP**. https://arxiv.org/abs/1908.10084
 - **Sentence Transformers. (s. f.).** Sentence Transformers Documentation. https://www.sbert.net/
-
 - **Hugging Face. (s. f.).** sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2. https://huggingface.co/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
-
 - **PostgreSQL Global Development Group. (s. f.).** PostgreSQL Documentation. https://www.postgresql.org/docs/
-
 - **OpenAI. (2026).** ChatGPT [Modelo de lenguaje]. Consulta de apoyo para explicaciones técnicas, revisión de integración y preparación de documentación. https://chatgpt.com/
 
+## Etapa 3. Actualización más reciente: asistente conversacional y carreras afines (octubre de 2026)
 
-## Actualización de la etapa 3: asistente conversacional y orientación por carreras afines (octubre de 2026)
+> Esta sección describe el **estado funcional más reciente probado** y complementa el historial anterior. El cierre formal y la medición de desempeño del asistente completo corresponden a la etapa 4.
 
 ### Objetivo de esta actualización
 
@@ -1048,28 +1060,22 @@ Se ejecutaron **6 pruebas unitarias satisfactorias** mediante `pytest` para las 
 Estas pruebas confirman **los escenarios ejecutados**, pero **no garantizan el comportamiento ante cualquier consulta**. La evaluación integral del asistente permanece pendiente.
 
 Ejecutar las pruebas unitarias desde la raíz del proyecto:
-
 ```powershell
 .\.venv\Scripts\python.exe -m pytest tests/test_afinidades.py -v
 ```
-
 Ejecutar el asistente:
-
 ```powershell
 .\.venv\Scripts\python.exe app.py
 ```
-
 ### Instalación manual de MiniLM
 
 Los pesos del modelo **no se incluyen en GitHub**. La carpeta `modelos_ia/` está excluida mediante `.gitignore` porque contiene una copia descargable de un modelo preentrenado y archivos de gran tamaño. El código Python que emplea MiniLM **sí forma parte del proyecto**.
 
 En Windows PowerShell, desde la raíz del repositorio y con el entorno virtual configurado:
-
 ```powershell
 .\.venv\Scripts\python.exe -m pip install sentence-transformers
 .\.venv\Scripts\python.exe motor_ia\12_probar_embeddings.py
 ```
-
 La segunda instrucción descarga el modelo desde Hugging Face en la primera ejecución y lo guarda en `modelos_ia/minilm/`. Después `app.py` lo carga localmente. También se requiere PostgreSQL configurado con la base de datos `oferta_educativa` y las dependencias del proyecto.
 
 **Mejora pendiente:** incorporar la descarga automática del modelo desde `app.py` cuando no exista una copia local. Por ahora el paso manual sigue siendo necesario.
@@ -1083,3 +1089,5 @@ La segunda instrucción descarga el modelo desde Hugging Face en la primera ejec
 - Queda pendiente la evaluación sistemática con nuevas preguntas, el análisis de errores y el cierre de documentación y presentación.
 
 La etapa 3 cuenta con una **versión funcional para los escenarios probados**; el siguiente trabajo corresponde a la **evaluación integral de la etapa 4**.
+
+**Incidencia observada al cierre de esta versión:** saludos y despedidas informales pueden recibir el mensaje genérico de falta de tema académico. Es una limitación de interacción pendiente de revisar; no invalida los casos de búsqueda académica comprobados.
