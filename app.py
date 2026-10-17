@@ -15,7 +15,8 @@ from motor_ia.contexto import (
     crear_contexto,
     actualizar_contexto,
     mostrar_contexto,
-    es_seguimiento
+    es_seguimiento,
+    es_seguimiento_estructurado
 )
 
 from funciones.buscar_programa import buscar_programa
@@ -31,12 +32,19 @@ from motor_ia.busqueda_semantica import (
 
 from motor_ia.recuperacion_semantica import recuperar_ofertas
 from motor_ia.validacion_respuestas import validar_consulta
+from motor_ia.interaccion_general import detectar_interaccion_general
 from motor_ia.validacion_cobertura_tematica import (
     construir_indice,
     comprobar_cobertura,
-    es_exploracion_tematica
+    es_exploracion_tematica,
+    detectar_temas
 )
 from motor_ia.afinidades_academicas import buscar_afinidades
+from motor_ia.interpretar_modalidades import (
+    analizar_modalidades,
+    mensaje_aclaracion_modalidad,
+    ajustar_interpretacion,
+)
 from motor_ia.generador_respuestas import (
     respuesta_sin_cobertura,
     respuesta_afinidades,
@@ -137,12 +145,37 @@ def main():
                 # Otra consulta inicia un tema independiente.
                 opciones_pendientes = None
 
+            # Interacciones generales y datos fuera del alcance. Se comprueban
+            # antes del clasificador para evitar búsquedas irrelevantes.
+            interaccion = detectar_interaccion_general(pregunta)
+            if interaccion is not None:
+                print("\n" + interaccion["mensaje"])
+                if interaccion["cerrar"]:
+                    print("Programa finalizado.")
+                    break
+                # Una cortesía o solicitud general no borra el contexto vigente.
+                continue
+
             # Interpretar la pregunta utilizando el motor de IA.
             interpretacion = interpretar_pregunta(
                 pregunta,
                 modelo,
                 instituciones,
                 programas
+            )
+
+            # Reconocer modalidades expresadas en lenguaje natural,
+            # incluso si el clasificador eligió una intención distinta.
+            analisis_modalidad = analizar_modalidades(pregunta)
+            aclaracion_modalidad = mensaje_aclaracion_modalidad(analisis_modalidad)
+            if aclaracion_modalidad is not None:
+                print("\n" + aclaracion_modalidad)
+                continue
+
+            interpretacion = ajustar_interpretacion(
+                interpretacion,
+                analisis_modalidad,
+                tiene_tema=bool(detectar_temas(pregunta)),
             )
 
             if MODO_DIAGNOSTICO:
@@ -178,14 +211,25 @@ def main():
                 print("\n" + respuesta_ofertas(resultados, contexto))
                 continue
 
+            # Una referencia como "esa licenciatura" conserva el programa y la
+            # institucion anteriores, aunque el clasificador no los extraiga
+            # de nuevo. No debe entrar a exploracion tematica ni perderse en
+            # la validacion de una consulta aislada.
+            seguimiento_estructurado = es_seguimiento_estructurado(
+                pregunta, contexto
+            )
+
             # Distinguir búsquedas por intereses de filtros de modalidad.
-            # Si el clasificador confunde una consulta temática clara con
-            # filtrar_modalidad, permitir que la revise la cobertura temática.
-            explorar_tema = es_exploracion_tematica(interpretacion)
+            # Si hay un seguimiento estructurado, conservamos la consulta
+            # anterior en lugar de reencaminarla a MiniLM.
+            explorar_tema = (
+                False if seguimiento_estructurado
+                else es_exploracion_tematica(interpretacion)
+            )
 
             # Solicitar aclaraciones cuando faltan datos identificables.
             # Las preguntas de intereses reconocidos se validan más abajo.
-            if not explorar_tema:
+            if not explorar_tema and not seguimiento_estructurado:
                 mensaje_aclaracion = validar_consulta(interpretacion)
                 if mensaje_aclaracion is not None:
                     print("\n" + mensaje_aclaracion)
@@ -238,16 +282,32 @@ def main():
                     candidatos
                 )
 
+                # Si la pregunta también pidió una modalidad, aplicarla
+                # a las ofertas de estos programas, no a todo el catálogo.
+                modalidad_pedida = interpretacion.get("modalidad")
+                if modalidad_pedida is not None:
+                    for resultado in resultados_semanticos:
+                        resultado["ofertas"] = [
+                            oferta for oferta in resultado["ofertas"]
+                            if oferta["modalidad"] == modalidad_pedida
+                        ]
+                        resultado["total_ofertas"] = len(resultado["ofertas"])
+                    resultados_semanticos = [
+                        resultado for resultado in resultados_semanticos
+                        if resultado["ofertas"]
+                    ]
+
                 print("\n" + respuesta_programas(
                     resultados_semanticos, cobertura["temas_prioritarios"]
                 ))
 
                 # Conservar los identificadores de los programas encontrados.
                 contexto = crear_contexto()
+                contexto["modalidad"] = modalidad_pedida
                 contexto["programas_semanticos"] = [
                     resultado["id_programa"]
                     for resultado in resultados_semanticos
-                    if resultado["total_ofertas"] > 0
+                    if resultado["ofertas"]
                 ]
 
                 continue

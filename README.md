@@ -1091,3 +1091,213 @@ La segunda instrucción descarga el modelo desde Hugging Face en la primera ejec
 La etapa 3 cuenta con una **versión funcional para los escenarios probados**; el siguiente trabajo corresponde a la **evaluación integral de la etapa 4**.
 
 **Incidencia observada al cierre de esta versión:** saludos y despedidas informales pueden recibir el mensaje genérico de falta de tema académico. Es una limitación de interacción pendiente de revisar; no invalida los casos de búsqueda académica comprobados.
+
+
+---
+
+# Etapa 4. Correcciones posteriores a la evaluación integral
+
+## 1. Objetivo
+
+Después de realizar la evaluación integral inicial de 30 preguntas, se identificaron errores relacionados con la interpretación de modalidades, las negaciones, la memoria conversacional y las interacciones cotidianas.
+
+La evaluación inicial obtuvo:
+
+| Resultado | Preguntas | Porcentaje |
+|---|---:|---:|
+| Correctas | 16 | 53.3 % |
+| Parciales | 3 | 10.0 % |
+| Incorrectas | 11 | 36.7 % |
+| **Total** | **30** | **100 %** |
+
+Con estos resultados se inició una etapa de corrección para mejorar el funcionamiento del asistente sin sustituir el clasificador, MiniLM ni la estructura de PostgreSQL.
+
+## 2. Corrección 1. Modalidades y negaciones
+
+Se mejoró la interpretación de modalidades expresadas en lenguaje natural.
+
+Se incorporó el módulo:
+
+`motor_ia/interpretar_modalidades.py`
+
+Este módulo permite distinguir entre las modalidades que el estudiante solicita y aquellas que rechaza explícitamente.
+
+### Casos corregidos
+
+- "Totalmente desde casa" se interpreta como modalidad NO ESCOLARIZADA.
+- "No quiero modalidad mixta; busco únicamente escolarizada" selecciona ESCOLARIZADA.
+- "No quiero modalidad mixta" solicita una aclaración cuando no se especifica otra modalidad.
+- Las consultas por instituciones y los filtros de modalidad continúan funcionando.
+
+### Resultados observados
+
+| Consulta | Resultado |
+|---|---|
+| Carreras totalmente desde casa | 189 ofertas no escolarizadas |
+| Solo modalidad escolarizada | 1,657 ofertas escolarizadas |
+| Carreras de Universidad ICEL | 313 ofertas |
+| Ofertas mixtas de Universidad ICEL | 75 ofertas |
+| Rechazo de modalidad mixta sin alternativa | Solicita aclaración |
+
+Se incorporó el archivo de pruebas:
+
+`tests/test_modalidades.py`
+
+**Resultado: 14 pruebas unitarias satisfactorias.**
+
+## 3. Corrección 2. Memoria y contexto conversacional
+
+Se actualizaron:
+
+- `motor_ia/contexto.py`
+- `app.py`
+
+El objetivo fue corregir la pérdida de contexto cuando el estudiante hace referencia a carreras, instituciones o resultados mencionados anteriormente.
+
+### Problemas corregidos
+
+Anteriormente, una pregunta como:
+
+> Ahora muéstrame las opciones mixtas.
+
+Podía provocar una búsqueda de todas las ofertas mixtas del catálogo, perdiendo la lista de programas de la conversación.
+
+También se presentaba un problema con preguntas como:
+
+> ¿Esa licenciatura se puede cursar en modalidad mixta?
+
+El sistema podía olvidar la carrera y la institución consultadas previamente.
+
+### Comportamiento actualizado
+
+Ahora el asistente puede:
+
+1. Conservar las carreras encontradas mediante MiniLM.
+2. Cambiar la modalidad sin perder la lista de programas.
+3. Mantener la institución y la carrera cuando el estudiante utiliza referencias como "esa licenciatura".
+4. Reconocer consultas independientes e iniciar un nuevo contexto.
+
+### Pruebas de integración
+
+| Consulta | Resultado |
+|---|---|
+| Interés en videojuegos | 5 programas relacionados |
+| Seguimiento escolarizado | 4 ofertas |
+| Ahora muéstrame las opciones mixtas | 1 oferta de Instituto SAE |
+| Ingeniería en Animación y Videojuegos en Universidad Panamericana | 1 oferta escolarizada |
+| ¿Esa licenciatura se puede cursar en modalidad mixta? | No se encontraron ofertas con esos filtros |
+
+Se incorporó:
+
+`tests/test_contexto_conversacional.py`
+
+**Resultado: 18 pruebas unitarias satisfactorias.**
+
+También se repitieron las 14 pruebas de modalidades, sin detectar regresiones en los casos evaluados.
+
+## 4. Corrección 3. Interacción cotidiana y preguntas fuera del alcance
+
+Se incorporó el módulo:
+
+`motor_ia/interaccion_general.py`
+
+También se actualizaron:
+
+- `motor_ia/validacion_respuestas.py`
+- `app.py`
+
+El objetivo fue permitir que el asistente reconozca expresiones conversacionales básicas y detecte consultas sobre información que no está disponible en el catálogo.
+
+### Funcionalidades incorporadas
+
+**Saludos:** reconoce expresiones como "Hola", "Buenas" y "Buenos días".
+
+**Agradecimientos:** responde a mensajes como "Gracias" y "Muchas gracias, me ayudaste".
+
+**Despedidas:** identifica expresiones como "Adiós" y "Hasta luego".
+
+**Orientación inicial:** solicita información sobre los intereses académicos del estudiante cuando todavía no tiene suficientes datos.
+
+**Descripción de capacidades:** puede explicar qué tipos de consultas académicas permite realizar.
+
+**Consultas fuera del alcance:** reconoce preguntas sobre colegiaturas, costos, inscripciones y otros datos económicos no disponibles en los registros utilizados.
+
+### Ejemplos de comportamiento
+
+| Pregunta | Comportamiento |
+|---|---|
+| Hola | Saluda y ofrece ayuda |
+| Quisiera orientación para elegir una licenciatura | Pregunta por los intereses del estudiante |
+| ¿Cuánto cuesta la colegiatura? | Explica que no dispone de información confiable sobre costos |
+| ¿Qué carreras ofrece Universidad ICEL? | Ejecuta la búsqueda académica |
+| ¿Y cuáles son mixtas? | Conserva el contexto de Universidad ICEL |
+| Muchas gracias, me ayudaste | Responde al agradecimiento |
+
+El asistente no debe inventar precios ni confundir una consulta económica con una búsqueda académica.
+
+Se incorporó:
+
+`tests/test_interaccion_general.py`
+
+**Resultado: 31 pruebas unitarias satisfactorias.**
+
+## 5. Resultados de las pruebas automáticas
+
+Se ejecutaron las pruebas mediante `pytest` en Python 3.12.
+
+| Módulo evaluado | Pruebas superadas |
+|---|---:|
+| Modalidades y negaciones | 14 |
+| Contexto conversacional | 18 |
+| Interacción general | 31 |
+| **Total** | **63** |
+
+**Resultado: 63 pruebas automáticas satisfactorias.**
+
+Comandos utilizados:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest tests\test_modalidades.py -v
+```
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest tests\test_contexto_conversacional.py -v
+```
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest tests\test_interaccion_general.py -v
+```
+
+Adicionalmente, se realizaron pruebas manuales con PostgreSQL para comprobar la integración del asistente.
+
+Las pruebas unitarias y las comprobaciones manuales permiten verificar los casos ejecutados, pero no garantizan que el sistema responda correctamente ante cualquier pregunta.
+
+## 6. Consideraciones técnicas
+
+Durante estas correcciones:
+
+- Se conservó el clasificador de intenciones basado en TF-IDF y regresión logística, entrenado con 136 preguntas.
+- Se mantuvo MiniLM como modelo de búsqueda semántica.
+- No se modificaron los pesos preentrenados de MiniLM.
+- No se alteró la estructura ni el contenido de PostgreSQL.
+- Se conservaron las restricciones de cobertura del catálogo SEP de abril de 2021.
+- Se incorporaron pruebas automáticas para comprobar el funcionamiento de las correcciones.
+
+Las respuestas académicas continúan basándose en los registros disponibles en PostgreSQL, mientras que las respuestas sociales y las aclaraciones se construyen mediante reglas y mensajes definidos en Python.
+
+## 7. Estado actual y trabajo pendiente
+
+Se completaron las primeras tres correcciones derivadas de la evaluación integral:
+
+- [x] Corrección 1. Modalidades y negaciones.
+- [x] Corrección 2. Referencias y memoria conversacional.
+- [x] Corrección 3. Saludos, despedidas y preguntas fuera del alcance.
+- [ ] Corrección 4. Ampliación de la comprensión de intereses académicos.
+
+La cuarta corrección abordará expresiones relacionadas con Matemáticas, Meteorología, Astronomía, Satélites, Ingeniería Aeronáutica y otras áreas identificadas como problemáticas durante la evaluación.
+
+Posteriormente se realizará una nueva evaluación para comprobar las mejoras y detectar posibles errores de regresión.
+
+**Nota:** los resultados de las 30 preguntas corresponden a la evaluación inicial, anterior a estas correcciones. Todavía no se ha calculado una nueva exactitud global del asistente.
+
+El proyecto continúa en la **etapa 4: corrección de errores, evaluación y preparación de la entrega final**.

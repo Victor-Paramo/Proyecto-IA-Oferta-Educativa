@@ -3,6 +3,7 @@
 No estima la pertinencia de los resultados de MiniLM; esa tarea sigue pendiente.
 """
 from motor_ia.entidades import normalizar_texto
+from motor_ia.interaccion_general import detectar_interaccion_general
 
 
 def validar_consulta(interpretacion):
@@ -13,9 +14,10 @@ def validar_consulta(interpretacion):
     programa = interpretacion["programa"]
     modalidad = interpretacion["modalidad"]
 
-    # Un saludo no expresa un interes academico.
-    if texto in {"hola", "buenos dias", "buenas tardes", "buenas noches", "gracias"}:
-        return "Hola. ¿Que carrera, institucion o area de interes deseas consultar?"
+    # Mantener el mismo tratamiento si este validador se utiliza por separado.
+    interaccion = detectar_interaccion_general(interpretacion["pregunta"])
+    if interaccion is not None:
+        return interaccion["mensaje"]
 
     # Consultas sin intereses o criterios suficientes.
     vagas = {

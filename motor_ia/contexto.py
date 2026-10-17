@@ -16,26 +16,48 @@ def crear_contexto():
 def es_seguimiento(pregunta):
     texto = normalizar_texto(pregunta)
 
-    expresiones = [
-        "y cuales",
-        "y cuales de esas",
-        "de esas",
-        "de esos",
-        "de las anteriores",
-        "de los anteriores",
-        "de esas opciones",
-        "de esos resultados",
-        "de esa lista",
-        "de esas carreras",
-        "de las opciones anteriores",
-        "ahora solo",
-        "y las",
-        "y los"
-    ]
+    # Las referencias a resultados anteriores pueden aparecer en cualquier
+    # parte de la pregunta, no necesariamente al principio.
+    referencias = (
+        "esa licenciatura", "esta licenciatura", "esa carrera", "esta carrera",
+        "ese programa", "este programa", "esas opciones", "esos resultados",
+        "esas carreras", "esos programas", "las opciones anteriores",
+        "las anteriores", "los anteriores", "de esa lista", "de esas",
+        "de esos", "de las anteriores", "de los anteriores",
+    )
+    if any(referencia in texto for referencia in referencias):
+        return True
 
-    return any(
-        texto.startswith(expresion)
-        for expresion in expresiones
+    # Seguimientos cortos que mantienen el tema de la conversacion.
+    inicios = (
+        "y cuales", "y las", "y los", "ahora solo",
+        "solo las", "solo los", "y que opciones",
+    )
+    if texto.startswith(inicios):
+        return True
+
+    # 'Ahora muestrame las opciones mixtas' es un seguimiento, pero
+    # 'Ahora muestrame las carreras de Arquitectura' puede ser un tema nuevo.
+    comienzos = (
+        "ahora muestrame", "muestrame", "ahora quiero ver",
+        "ahora dime", "puedes mostrarme",
+    )
+    marcadores = (
+        "las opciones", "los resultados", "las anteriores",
+        "los anteriores", "esas", "esos", "de antes",
+    )
+    return texto.startswith(comienzos) and any(
+        marcador in texto for marcador in marcadores
+    )
+
+
+def es_seguimiento_estructurado(pregunta, contexto):
+    """Permite reutilizar la ultima carrera o universidad, sin confundirla
+    con una lista de programas recomendados por MiniLM."""
+    return (
+        es_seguimiento(pregunta)
+        and not contexto["programas_semanticos"]
+        and (contexto["institucion"] is not None or contexto["programa"] is not None)
     )
 
 
