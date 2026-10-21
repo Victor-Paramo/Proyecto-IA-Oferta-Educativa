@@ -32,6 +32,7 @@ DESPEDIDAS = {
     "adios", "adios hablamos despues", "hasta luego", "hasta pronto",
     "nos vemos", "nos vemos luego", "hasta manana", "hasta la proxima",
     "me despido", "chao", "bye", "gracias adios",
+    "nos vemos pronto", "gracias por la orientacion nos vemos pronto",
 }
 
 AYUDA = {
@@ -82,7 +83,58 @@ def detectar_interaccion_general(pregunta):
             "cerrar": False,
         }
 
-    if texto in DESPEDIDAS:
+    # El catálogo SEP no aporta convocatorias, requisitos ni montos de becas.
+    # Se comprueba antes de buscar la carrera mencionada en la misma pregunta.
+    if (
+        re.search(r"\bbecas?\b", texto)
+        or re.search(r"\b(?:apoyos? economicos?|financiamiento educativo)\b", texto)
+    ):
+        return {
+            "mensaje": (
+                "No tengo información verificada sobre becas, convocatorias, "
+                "requisitos ni apoyos económicos en el catálogo SEP consultado. "
+                "No puedo indicar a cuáles puedes postularte. Para información "
+                "actualizada, revisa los canales oficiales de la institución "
+                "o de la convocatoria. Sí puedo mostrar las carreras registradas."
+            ),
+            "cerrar": False,
+        }
+
+    # No confundir datos históricos de abril de 2021 con oferta vigente.
+    # La pregunta sobre vigencia puede mencionar una carrera o universidad.
+    pregunta_de_vigencia = (
+        re.search(r"\b(?:vigencia|vigentes?|actualizad[oa]s?)\b", texto)
+        or re.search(r"\b(?:siguen? (?:ofreciendo|impartiendo)|todavia (?:se )?(?:ofrecen|imparten))\b", texto)
+        or re.search(r"\b(?:actualmente|este ano|en 2026|hoy en dia)\b", texto)
+        and re.search(
+            r"\b(?:carreras?|licenciaturas?|programas?|ofertas?|universidades?|"
+            r"instituciones?|escuelas?|estudios?|imparten|ofrecen|estudiar)\b",
+            texto,
+        )
+        or re.search(r"\b(?:de que ano|de cuando|que tan recientes?) (?:son )?(?:los )?(?:datos|registros)\b", texto)
+    )
+    if pregunta_de_vigencia:
+        return {
+            "mensaje": (
+                "Mi catálogo procede de registros SEP del 30 de abril de 2021. "
+                "No puedo verificar si esas carreras, modalidades o instituciones "
+                "siguen ofertándose actualmente. Confirma la vigencia directamente "
+                "con cada institución o con fuentes oficiales actualizadas. "
+                "Puedo consultar los registros históricos que sí tengo."
+            ),
+            "cerrar": False,
+        }
+
+    # Despedidas compuestas con agradecimientos, sin interceptar preguntas como
+    # 'Gracias, ¿cuáles son mixtas?' que deben continuar su búsqueda normal.
+    despedida_con_gracias = re.fullmatch(
+        r"(?:muchas gracias|gracias|gracias por (?:la orientacion|tu ayuda|todo)) "
+        r"(?:nos vemos(?: pronto| luego)?|hasta luego|hasta pronto|adios|"
+        r"hablamos (?:pronto|despues))",
+        texto,
+    ) is not None
+
+    if texto in DESPEDIDAS or despedida_con_gracias:
         return {
             "mensaje": "¡Hasta luego! Espero que la información te haya sido útil.",
             "cerrar": True,

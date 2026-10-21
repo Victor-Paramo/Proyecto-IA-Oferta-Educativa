@@ -68,19 +68,35 @@ SENALES = {
     "fisica": (
         r"\bfisica\b", r"\bteoria cuantica\b",
     ),
+    "matematicas": (
+        r"\bmatematic[a-z]*\b", r"\blogica matematica\b",
+        r"\bproblemas? de logica\b", r"\brazonamiento logico\b",
+        r"\blogica\b",
+    ),
     "astronomia": (
         r"\bastronomia\b", r"\bastrofisica\b", r"\bplanetas?\b",
         r"\bexoplanetas?\b", r"\bestrellas?\b", r"\bcosmos\b",
         r"\bespacio exterior\b", r"\bexploracion espacial\b",
     ),
     "aeroespacial": (
-        r"\baeroespacial\b", r"\baeronautic[a-z]*\b",
-        r"\bastronautic[a-z]*\b", r"\bcohetes?\b",
-        r"\bnaves? espaciales?\b", r"\bingenieria espacial\b",
+        r"\baeroespacial\b", r"\bastronautic[a-z]*\b",
+        r"\bcohetes?\b", r"\bnaves? espaciales?\b",
+        r"\bingenieria espacial\b", r"\bsondas? espaciales?\b",
+        r"\bsatelites?\b", r"\btecnologia espacial\b",
+    ),
+    "aeronautica": (
+        r"\baeronautic[a-z]*\b", r"\baeronaves?\b",
+        r"\baviones?\b", r"\baviacion\b",
+        r"\bdisen[a-z]* (?:de )?aviones?\b",
     ),
     "meteorologia": (
         r"\bmeteorologia\b", r"\bhuracanes?\b", r"\batmosfera\b",
         r"\bclimatologia\b", r"\bpronostic\w* (?:el )?clima\b",
+        r"\bnubes? de tormenta\b", r"\bformacion de nubes\b",
+        r"\btormentas? (?:tropicales?|electricas?|en la costa)\b",
+        r"\bpronostic\w* (?:nubes?|tormentas?|lluvias?)\b",
+        r"\bfenomenos? atmosferic[a-z]*\b",
+        r"\btornados?\b", r"\bciclones? tropicales?\b",
     ),
     "arqueologia": (
         r"\barqueologia\b", r"\barqueolog[a-z]*\b",
@@ -92,6 +108,19 @@ SENALES = {
     ),
     "geologia": (
         r"\bgeologia\b", r"\bgeolog[oa]s?\b", r"\brocas? y minerales\b",
+        r"\bterremotos?\b", r"\bsismos?\b", r"\bvolcanes?\b",
+        r"\berupcion(?:es)? volcanicas?\b", r"\bplacas? tectonicas?\b",
+        r"\bactividad sismica\b", r"\bgeociencias\b",
+        r"\bciencias de la tierra\b",
+    ),
+    # La referencia a datos debe ser temática: no basta mencionar un número.
+    "ciencia_datos": (
+        r"\bciencia(?:s)? de datos\b", r"\banalisis de datos\b",
+        r"\banalitica de datos\b", r"\bmineria de datos\b",
+        r"\bbig data\b", r"\bmodelos? predictivos?\b",
+        r"\b(?:usar|utilizar|analizar|estudiar|procesar|trabajar con)\s+datos\b"
+        r".{0,110}\b(?:patrones?|predicciones?|predecir|pronosticar)\b",
+        r"\bdescubrir patrones?\b.{0,65}\b(?:datos|informacion)\b",
     ),
 }
 
@@ -115,6 +144,7 @@ def detectar_temas(pregunta):
 # Ejemplo: "programar videojuegos" -> videojuegos, no software genérico.
 ESPECIALIDADES_PRIORITARIAS = {
     "videojuegos": ("software",),
+    "ciencia_datos": ("software",),
 }
 
 
@@ -130,8 +160,10 @@ def priorizar_temas(temas):
 # Expresiones que indican intereses o actividades, no un filtro de modalidad.
 # Es una regla auxiliar: no reemplaza al clasificador ni sus puntuaciones.
 PATRON_INTERES = re.compile(
-    r"^(?:quiero|quisiera|deseo|me interesa|me gustaria|"
-    r"me llama la atencion|me apasiona|busco aprender)\b"
+    r"^(?:(?:cambiando de tema|cambio de tema|por otro lado)[, ]+)?"
+    r"(?:quiero|quisiera|deseo|me interesa|me gustaria|"
+    r"me gustan|me encanta|me llama la atencion|me apasiona|"
+    r"busco aprender)\b"
 )
 
 
@@ -144,7 +176,12 @@ def es_exploracion_tematica(interpretacion):
     if interpretacion["intencion"] == "explorar_area":
         return True
 
-    if interpretacion["intencion"] != "filtrar_modalidad":
+    # El clasificador puede confundir una expresión vocacional con cualquiera
+    # de las tres intenciones estructuradas. Solo recuperamos la ruta temática
+    # si realmente existe una señal de interés Y no hay filtros explícitos.
+    if interpretacion["intencion"] not in (
+        "filtrar_modalidad", "buscar_programa", "buscar_institucion"
+    ):
         return False
 
     if any(interpretacion.get(clave) is not None
@@ -163,9 +200,12 @@ def es_exploracion_tematica(interpretacion):
 PISTAS_TITULO = {
     "astronomia": (r"\bastronomia\b", r"\bastrofisica\b"),
     "aeroespacial": (
-        r"\baeroespacial\b", r"\baeronautic[a-z]*\b",
-        r"\bastronautic[a-z]*\b", r"\bingenieria espacial\b",
+        r"\baeroespacial\b", r"\bastronautic[a-z]*\b",
+        r"\bingenieria espacial\b", r"\bingenieria de satelites\b",
         r"\bcohetes?\b", r"\bnaves? espaciales?\b",
+    ),
+    "aeronautica": (
+        r"\baeronautic[a-z]*\b", r"\bingenieria en aeronaves\b",
     ),
     "arqueologia": (r"\barqueologia\b", r"\barqueolog[a-z]*\b"),
     "paleontologia": (r"\bpaleontologia\b", r"\bpaleontolog[a-z]*\b"),
@@ -188,16 +228,11 @@ def construir_indice(programas):
             area for area, patrones in PISTAS_TITULO.items()
             if any(p.search(titulo) for p in patrones)
         }
-        # No deducir astronomía a partir de "ingeniería aeroespacial",
-        # ni arqueología a partir de "paleontología", o viceversa.
-        for general, especifica in (
-            ("astronomia", "aeroespacial"),
-            ("arqueologia", "paleontologia"),
-        ):
-            if general not in especialidades:
-                areas.discard(general)
-            if especifica not in especialidades:
-                areas.discard(especifica)
+        # Estas áreas requieren una pista explícita en el título: una carrera
+        # de Astronomía no es equivalente a Aeronáutica o Ingeniería Espacial.
+        # Tampoco se considera Arqueología equivalente a Paleontología.
+        for especialidad in PISTAS_TITULO:
+            areas.discard(especialidad)
         areas.update(especialidades)
 
         for area in sorted(areas):

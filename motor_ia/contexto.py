@@ -1,4 +1,6 @@
 
+import re
+
 from motor_ia.entidades import normalizar_texto
 
 
@@ -16,11 +18,32 @@ def crear_contexto():
 def es_seguimiento(pregunta):
     texto = normalizar_texto(pregunta)
 
+    # Un cambio de tema explícito debe iniciar un contexto nuevo aunque
+    # mencione la universidad anterior ("dejemos esa universidad").
+    if texto.startswith((
+        "dejemos", "olvidemos", "cambiemos", "cambiando de tema"
+    )):
+        return False
+
+    # "Y si prefiero una modalidad mixta" conserva el ámbito anterior.
+    # Exigimos una modalidad explícita para no heredar instituciones cuando
+    # el estudiante cambia de carrera ("Y si prefiero Psicología").
+    if re.match(r"^(?:y\s+)?si\s+(?:prefiero|quiero|quisiera|elijo|cambio)\b", texto):
+        if re.search(
+            r"\b(?:modalidad(?:es)?|mixt[oa]s?|semipresencial(?:es)?|"
+            r"escolarizad[oa]s?|presencial(?:es)?|a distancia|"
+            r"en linea|desde casa)\b",
+            texto,
+        ):
+            return True
+
     # Las referencias a resultados anteriores pueden aparecer en cualquier
     # parte de la pregunta, no necesariamente al principio.
     referencias = (
         "esa licenciatura", "esta licenciatura", "esa carrera", "esta carrera",
-        "ese programa", "este programa", "esas opciones", "esos resultados",
+        "ese programa", "este programa", "esa institucion", "esta institucion",
+        "esa universidad", "esta universidad", "ese instituto", "este instituto",
+        "dicha institucion", "dicha universidad", "esas opciones", "esos resultados",
         "esas carreras", "esos programas", "las opciones anteriores",
         "las anteriores", "los anteriores", "de esa lista", "de esas",
         "de esos", "de las anteriores", "de los anteriores",

@@ -22,7 +22,12 @@ EXPRESIONES = {
     "NO ESCOLARIZADA": (
         r"\bno escolarizad[oa]s?\b",
         r"\ba distancia\b", r"\ben linea\b", r"\bonline\b",
-        r"\bvirtual(?:es)?\b", r"\bremot[oa]s?\b",
+        # "virtual" solo indica modalidad cuando acompana terminos educativos.
+        # No confundir "mundos virtuales" o "realidad virtual" con clases en linea.
+        r"\b(?:modalidad|clases?|cursos?|estudios?|licenciaturas?|carreras?|ofertas?|educacion|ensenanza|formacion)\s+virtual(?:es)?\b",
+        r"\b(?:estudiar|cursar)\s+(?:de\s+)?(?:forma|manera|modalidad)\s+virtual\b",
+        r"\b(?:estudiar|cursar)\s+virtualmente\b",
+        r"\bremot[oa]s?\b",
         r"\bdesde (?:mi |la )?casa\b", r"\bpor internet\b",
         r"\bsin (?:tener que )?(?:ir|asistir) (?:a clases|al campus|a la universidad)\b",
     ),

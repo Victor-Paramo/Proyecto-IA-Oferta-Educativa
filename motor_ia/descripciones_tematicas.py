@@ -30,10 +30,15 @@ AREAS = (
     ("turismo", r"\bturismo\b|\bturistic[a-z]*\b|\bhotelera\b|\bhoteles\b", "turismo y servicios de hospitalidad"),
     ("medicina", r"\bmedicina\b|\benfermeria\b", "salud, medicina y cuidados de enfermeria"),
     ("fisica", r"\bfisica\b", "fisica y fenomenos del mundo natural"),
-    ("astronomia", r"\bastronomia\b|\bastrofisica\b|\baeroespacial\b", "astronomia, astrofisica o tecnologia aeroespacial, segun el nombre"),
+    ("matematicas", r"\bmatematic[a-z]*\b", "matematicas y razonamiento matematico"),
+    ("astronomia", r"\bastronomia\b|\bastrofisica\b", "astronomia y astrofisica"),
+    ("aeroespacial", r"\baeroespacial\b|\bastronautic[a-z]*\b|\bingenieria espacial\b", "ingenieria y tecnologia aeroespacial"),
+    ("aeronautica", r"\baeronautic[a-z]*\b", "ingenieria aeronautica y aeronaves"),
     ("meteorologia", r"\bmeteorologia\b|\batmosferic[a-z]*\b|\bclimatologia\b", "meteorologia, atmosfera y clima"),
-    ("arqueologia", r"\barqueologia\b|\bpaleontologia\b", "arqueologia o paleontologia, segun el nombre"),
-    ("geologia", r"\bgeologia\b", "geologia y ciencias de la Tierra"),
+    ("arqueologia", r"\barqueologia\b", "arqueologia y estudio de vestigios arqueologicos"),
+    ("paleontologia", r"\bpaleontologia\b", "paleontologia y estudio de fosiles"),
+    ("geologia", r"\bgeologia\b|\bgeociencias\b|\bciencias de la tierra\b", "geologia y ciencias de la Tierra"),
+    ("ciencia_datos", r"\bciencia(?:s)? de datos\b|\banalisis de datos\b|\banalitica de datos\b|\bmineria de datos\b", "ciencia de datos y analisis de informacion"),
 )
 
 

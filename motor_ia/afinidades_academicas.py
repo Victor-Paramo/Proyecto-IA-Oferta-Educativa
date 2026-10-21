@@ -22,6 +22,8 @@ AREAS_AFINES = {
     'aeroespacial': ('mecanica', 'fisica', 'matematicas'),
     'paleontologia': ('geologia', 'biologia'),
     'arqueologia': ('antropologia', 'historia'),
+    'geologia': ('fisica', 'matematicas', 'biologia'),
+    'ciencia_datos': ('matematicas', 'software'),
 }
 
 # Coincidencias CONSERVADORAS sobre el nombre completo del programa.
@@ -56,6 +58,11 @@ PATRONES_TITULO = {
     'historia': (
         r'^(?:en )?historia$',
     ),
+    'software': (
+        r'^(?:en )?ingenieria (?:en |de )?software$',
+        r'^(?:en )?ingenieria (?:en )?desarrollo de software$',
+        r'^(?:en )?informatica$',
+    ),
 }
 
 PATRONES = {
@@ -76,6 +83,9 @@ NOMBRES_AREAS = {
     'biologia': 'Biología',
     'antropologia': 'Antropología',
     'historia': 'Historia',
+    'geologia': 'Geología y ciencias de la Tierra',
+    'ciencia_datos': 'Ciencia de datos',
+    'software': 'Software e informática',
 }
 
 
