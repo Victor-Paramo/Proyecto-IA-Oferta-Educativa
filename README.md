@@ -12,13 +12,16 @@ La arquitectura está preparada para ampliar posteriormente la cobertura al rest
 
 ## Estado actual del proyecto (octubre de 2026)
 
-El proyecto dispone de un **prototipo conversacional funcional** para consultar licenciaturas de Ciudad de México registradas en documentos SEP de **abril de 2021**. Combina PostgreSQL, clasificación de intenciones, búsqueda semántica con MiniLM, comprobación de cobertura temática, alternativas académicas afines y memoria de sesión. Los resultados describen registros históricos, **no disponibilidad comprobada para 2026**.
+El proyecto cuenta con un **prototipo conversacional funcional en Python**, orientado a la consulta de licenciaturas de Ciudad de México mediante información almacenada en PostgreSQL. Integra clasificación de intenciones con TF-IDF y regresión logística, reconocimiento de entidades, búsqueda semántica mediante MiniLM, cobertura temática, identificación de carreras afines, control de modalidades, respuestas estructuradas y memoria conversacional de sesión.
 
-- **Preparación y base de datos:** extracción, normalización, carga y verificaciones de integridad realizadas.
-- **Etapa 3 — motor conversacional:** funcionalidades principales integradas y probadas en escenarios concretos; quedan limitaciones de interpretación y alcance temático.
-- **Etapa 4 — evaluación final y entrega:** pendiente una batería independiente de consultas, análisis de errores, documentación final y demostración.
+- **Preparación y base de datos:** extracción y depuración de documentos SEP, normalización, carga y verificaciones de integridad realizadas. La capa de consulta comprende **588 nombres de programas** y **2,616 ofertas educativas normalizadas**, vinculadas con los registros documentales de origen.
+- **Etapa 3 — motor conversacional:** implementación de los componentes principales y pruebas de integración con PostgreSQL. Se conservan las restricciones de cobertura y la distinción entre coincidencias directas y alternativas académicas afines.
+- **Etapa 4 — evaluación y mejora:** realizada una evaluación inicial de **30 consultas** (16 correctas, 3 parciales y 11 incorrectas); tras las correcciones, su reevaluación obtuvo **28 correctas, 2 parciales y 0 incorrectas**. Una evaluación posterior de **20 consultas diferentes** obtuvo **11 correctas, 1 parcial y 8 incorrectas**, y permitió identificar nuevos errores. Estos ocho casos se corrigieron y superaron su comprobación repetida. La ejecución más reciente de la batería automatizada registró **185 pruebas satisfactorias**.
+- **Trabajo pendiente:** realizar una nueva evaluación con consultas inéditas después de las últimas correcciones, comprobar la instalación reproducible del modelo MiniLM, consolidar la documentación de resultados y preparar la demostración final.
 
-Las cifras de evaluación del clasificador **no representan la exactitud del asistente completo**. Las reglas temáticas y de afinidad son auxiliares; no describen oficialmente los planes de estudio.
+**Alcance y validez:** la fuente consultada corresponde a registros SEP del **30 de abril de 2021**; los resultados no acreditan la vigencia de programas ni modalidades en 2026. Las relaciones temáticas y las áreas afines son criterios auxiliares inferidos del nombre de los programas, no descripciones oficiales de planes de estudio.
+
+**Interpretación de las métricas:** el 93.3 % de la reevaluación de 30 consultas corresponde a preguntas conocidas que orientaron las correcciones; el 55 % de la evaluación de 20 consultas es el resultado original observado antes de corregir sus errores. Ninguno de estos porcentajes constituye una medida general de exactitud para todas las preguntas posibles. Los apartados siguientes conservan resultados históricos de etapas anteriores; la actualización más reciente se documenta al final de este archivo.
 
 ## Proceso realizado
 
@@ -1301,3 +1304,71 @@ Posteriormente se realizará una nueva evaluación para comprobar las mejoras y 
 **Nota:** los resultados de las 30 preguntas corresponden a la evaluación inicial, anterior a estas correcciones. Todavía no se ha calculado una nueva exactitud global del asistente.
 
 El proyecto continúa en la **etapa 4: corrección de errores, evaluación y preparación de la entrega final**.
+
+---
+
+## Etapa 4. Evaluaciones integrales y correcciones posteriores (octubre de 2026)
+
+### Alcance de la evaluación
+
+Se realizó una evaluación funcional del asistente integrado, considerando interpretación de preguntas, recuperación de ofertas desde PostgreSQL, pertinencia temática, uso de modalidades, memoria conversacional y respuestas ante consultas fuera del alcance del catálogo. Las comprobaciones se efectuaron con preguntas consecutivas para observar la conservación o el reemplazo del contexto según correspondiera.
+
+### Evaluación inicial de 30 consultas y reevaluación
+
+La primera evaluación identificó errores en la interpretación de modalidades, negaciones, referencias conversacionales, expresiones de interés académico y mensajes generales. Tras implementar correcciones, se repitieron las mismas 30 consultas para detectar cambios en los resultados.
+
+| Clasificación | Evaluación inicial | Reevaluación de las mismas consultas |
+|---|---:|---:|
+| Correctas | 16 | 28 |
+| Parciales | 3 | 2 |
+| Incorrectas | 11 | 0 |
+| Total | 30 | 30 |
+
+La proporción de respuestas correctas pasó de **53.3 % a 93.3 %** en este conjunto conocido. El resultado posterior indica mejora en los escenarios usados para desarrollar y verificar las correcciones; **no equivale a una estimación independiente de generalización**.
+
+Las dos respuestas parciales se relacionaron con la diferenciación entre programas directamente coincidentes y alternativas afines en consultas sobre Psicología y diseño de mecánicas para videojuegos.
+
+### Evaluación con 20 consultas diferentes
+
+Para observar el comportamiento ante formulaciones distintas, se preparó una segunda batería de 20 preguntas, distribuida en cuatro bloques de cinco interacciones. Las consultas abarcaron búsquedas por institución y programa, cambios de modalidad, referencias contextuales, intereses especializados y preguntas sin información disponible en la fuente.
+
+| Resultado inicial | Consultas | Porcentaje |
+|---|---:|---:|
+| Correctas | 11 | 55 % |
+| Parciales | 1 | 5 % |
+| Incorrectas | 8 | 40 % |
+| **Total** | **20** | **100 %** |
+
+Esta evaluación permitió identificar limitaciones de generalización que no se habían manifestado en las 30 preguntas previamente corregidas. Sus calificaciones **se conservaron sin modificación**, aun después de corregir los errores.
+
+### Correcciones a partir de la segunda evaluación
+
+Las mejoras se implementaron mediante reglas auxiliares comprobables, sin modificar los pesos de MiniLM ni la estructura de PostgreSQL:
+
+1. **Referencias conversacionales.** Se amplió la detección de seguimientos para conservar la institución en consultas como «¿Y si prefiero una modalidad mixta?» y «¿Qué opciones de esa institución son presenciales?». En las pruebas con PostgreSQL se recuperaron **149 ofertas mixtas** de la Universidad del Valle de México y **6 ofertas escolarizadas** del Instituto SAE, respectivamente, sin extender la consulta al catálogo completo.
+2. **Intereses académicos.** Se amplió la interpretación de expresiones vinculadas con tornados, terremotos, volcanes y análisis de datos. El sistema reconoció Meteorología y Geología como áreas de interés sin atribuirles programas no encontrados; para Ciencia de Datos se recuperaron programas registrados de **Ciencia de Datos** e **Ingeniería en Ciencia de Datos**.
+3. **Desambiguación de modalidades.** Se corrigió la interpretación de «mundos virtuales», que anteriormente se confundía con una modalidad no escolarizada. La búsqueda volvió a recuperar **cinco programas relacionados con videojuegos**, incluidos registros en modalidades mixta y escolarizada. La expresión «clases virtuales» continúa interpretándose como un criterio de modalidad.
+4. **Consultas generales y límites documentales.** Se añadieron controles para preguntas sobre becas y vigencia de programas, así como despedidas que incluyen agradecimientos. Ante datos no disponibles, el asistente informa sus limitaciones en lugar de presentar cantidades, convocatorias o vigencias sin verificación.
+
+### Verificación de las correcciones
+
+Los ocho casos calificados como incorrectos en la evaluación independiente se repitieron después de implementar los ajustes y **los ocho ofrecieron respuestas satisfactorias**. La repetición constituye una comprobación de reparación de casos conocidos; **no reemplaza ni modifica el resultado original de 11/20 respuestas correctas**.
+
+La ejecución completa más reciente de las pruebas automatizadas con `pytest` registró:
+
+```text
+185 passed
+```
+
+Este resultado corresponde a las pruebas automáticas disponibles en esa versión, incluidas verificaciones de modalidades, contexto, interacción general y cobertura temática. Adicionalmente se realizaron pruebas manuales con la base de datos PostgreSQL real. Las pruebas automatizadas no constituyen por sí solas una medición de la calidad de todas las respuestas posibles.
+
+### Limitaciones y actividades pendientes
+
+- **Generalización:** falta aplicar una nueva batería inédita después de las últimas modificaciones, sin utilizar sus preguntas para ajustar el sistema antes de medirlo.
+- **Cobertura académica:** la detección de intereses y las afinidades dependen parcialmente de patrones explícitos y de los nombres oficiales del catálogo; esto puede dejar sin reconocer consultas legítimas o áreas de especialización no expresadas en los títulos.
+- **Evidencia documental:** no se dispone de verificación de planes de estudio, becas, costos ni vigencia de las ofertas para 2026. La información de abril de 2021 se presenta como histórica.
+- **Reproducibilidad:** permanece pendiente automatizar la descarga inicial de MiniLM cuando no se encuentre almacenado localmente, y comprobar la instalación desde un entorno limpio.
+- **Entrega:** consolidación de resultados, revisión final de documentación y preparación de la presentación y demostración del asistente.
+
+La versión descrita corresponde a un **prototipo funcional sometido a evaluaciones iterativas**. Los resultados de pruebas conocidas y los de evaluaciones diferentes se reportan por separado para mantener la trazabilidad metodológica.
+
