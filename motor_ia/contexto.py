@@ -16,7 +16,7 @@ def crear_contexto():
 
 # Comprobar si una pregunta hace referencia a la consulta anterior.
 def es_seguimiento(pregunta):
-    texto = normalizar_texto(pregunta)
+    texto = normalizar_texto(pregunta).lstrip("¿¡?!.,:; ")
 
     # Un cambio de tema explícito debe iniciar un contexto nuevo aunque
     # mencione la universidad anterior ("dejemos esa universidad").
@@ -46,6 +46,7 @@ def es_seguimiento(pregunta):
         "dicha institucion", "dicha universidad", "esas opciones", "esos resultados",
         "esas carreras", "esos programas", "las opciones anteriores",
         "las anteriores", "los anteriores", "de esa lista", "de esas",
+        "sus planteles", "sus campus",
         "de esos", "de las anteriores", "de los anteriores",
     )
     if any(referencia in texto for referencia in referencias):
@@ -55,6 +56,7 @@ def es_seguimiento(pregunta):
     inicios = (
         "y cuales", "y las", "y los", "ahora solo",
         "solo las", "solo los", "y que opciones",
+        "y hay alguna", "y hay algunas", "que opciones hay en modalidad",
     )
     if texto.startswith(inicios):
         return True
@@ -85,14 +87,17 @@ def es_seguimiento_estructurado(pregunta, contexto):
 
 
 # Actualizar los filtros de la conversacion.
-def actualizar_contexto(contexto, interpretacion):
+def actualizar_contexto(contexto, interpretacion, conservar=None):
     pregunta = interpretacion["pregunta"]
     institucion = interpretacion["institucion"]
     programa = interpretacion["programa"]
     modalidad = interpretacion["modalidad"]
 
-    # Los seguimientos conservan los filtros anteriores.
-    if es_seguimiento(pregunta):
+    # La decisión de continuidad del orquestador tiene prioridad sobre
+    # las pistas literales; ambas deben producir el mismo contexto.
+    if conservar is None:
+        conservar = es_seguimiento(pregunta)
+    if conservar:
         nuevo = contexto.copy()
     else:
         # Una nueva consulta comienza con filtros vacios.

@@ -65,14 +65,35 @@ def detectar_interaccion_general(pregunta):
     if not texto:
         return None
 
-    # Datos no incluidos en el catálogo. Prioritario incluso si se nombra
-    # una carrera o institución: no fingir que PostgreSQL almacena precios.
-    if (
+    # Detectar conjuntamente solicitudes económicas antes de las respuestas
+    # individuales. Las dos consultas pueden aparecer en una misma pregunta.
+    solicita_costos = bool(
         re.search(r"\b(colegiaturas?|mensualidades?|precios?|costos?|aranceles?)\b", texto)
         or re.search(r"\bcuanto (?:cuesta|cuestan|vale|valen|cobran)\b", texto)
         or re.search(r"\bcuanto se paga\b", texto)
         or re.search(r"\b(?:costo|precio) de (?:la |las |el |los )?(?:inscripcion|matricula)\b", texto)
-    ):
+    )
+    solicita_becas = bool(
+        re.search(r"\bbecas?\b", texto)
+        or re.search(r"\b(?:apoyos? economicos?|financiamiento educativo)\b", texto)
+    )
+
+    if solicita_costos and solicita_becas:
+        return {
+            "mensaje": (
+                "No tengo información verificada sobre costos, colegiaturas "
+                "o pagos, ni sobre becas, convocatorias o apoyos económicos "
+                "en el catálogo SEP consultado. No puedo indicar precios "
+                "ni becas disponibles. Para conocer estos datos, consulta "
+                "las fuentes oficiales de la institución y las convocatorias "
+                "vigentes. Sí puedo mostrar programas y modalidades registrados."
+            ),
+            "cerrar": False,
+        }
+
+    # Datos no incluidos en el catálogo. Prioritario incluso si se nombra
+    # una carrera o institución: no fingir que PostgreSQL almacena precios.
+    if solicita_costos:
         return {
             "mensaje": (
                 "No tengo información de costos, colegiaturas o pagos en el "
@@ -85,10 +106,7 @@ def detectar_interaccion_general(pregunta):
 
     # El catálogo SEP no aporta convocatorias, requisitos ni montos de becas.
     # Se comprueba antes de buscar la carrera mencionada en la misma pregunta.
-    if (
-        re.search(r"\bbecas?\b", texto)
-        or re.search(r"\b(?:apoyos? economicos?|financiamiento educativo)\b", texto)
-    ):
+    if solicita_becas:
         return {
             "mensaje": (
                 "No tengo información verificada sobre becas, convocatorias, "
@@ -128,7 +146,7 @@ def detectar_interaccion_general(pregunta):
     # Despedidas compuestas con agradecimientos, sin interceptar preguntas como
     # 'Gracias, ¿cuáles son mixtas?' que deben continuar su búsqueda normal.
     despedida_con_gracias = re.fullmatch(
-        r"(?:muchas gracias|gracias|gracias por (?:la orientacion|tu ayuda|todo)) "
+        r"(?:muchas gracias(?: por (?:la informacion|tu ayuda|la orientacion))?|gracias|gracias por (?:la orientacion|la informacion|tu ayuda|todo)) "
         r"(?:nos vemos(?: pronto| luego)?|hasta luego|hasta pronto|adios|"
         r"hablamos (?:pronto|despues))",
         texto,
@@ -155,7 +173,17 @@ def detectar_interaccion_general(pregunta):
             "cerrar": False,
         }
 
-    if texto in AYUDA:
+    # Preguntas sobre capacidades acompañadas de un saludo. Se admite solo
+    # una consulta general completa, sin interceptar búsquedas académicas.
+    consulta_ayuda = re.fullmatch(
+        r"(?:(?:hola|buenas|buenos dias|buenas tardes|buenas noches) )?"
+        r"(?:que puedes hacer|en que (?:me )?puedes ayudar|"
+        r"en que me puede ayudar (?:este |el )?asistente|"
+        r"como me puedes ayudar|que sabes hacer|como funcionas|"
+        r"que consultas puedo hacer|para que sirves)",
+        texto,
+    ) is not None
+    if texto in AYUDA or consulta_ayuda:
         return {
             "mensaje": (
                 "Puedo buscar carreras y universidades, filtrar modalidades y "

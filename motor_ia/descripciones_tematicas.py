@@ -39,6 +39,12 @@ AREAS = (
     ("paleontologia", r"\bpaleontologia\b", "paleontologia y estudio de fosiles"),
     ("geologia", r"\bgeologia\b|\bgeociencias\b|\bciencias de la tierra\b", "geologia y ciencias de la Tierra"),
     ("ciencia_datos", r"\bciencia(?:s)? de datos\b|\banalisis de datos\b|\banalitica de datos\b|\bmineria de datos\b", "ciencia de datos y analisis de informacion"),
+    ("biomedica", r"\bbiomedic[a-z]*\b|\bingenieria medica\b", "ingenieria biomedica"),
+    ("biotecnologia", r"\bbiotecnologia\b|\bbiotecnologic[a-z]*\b", "biotecnologia"),
+    ("astrobiologia", r"\bastrobiologia\b", "astrobiologia y estudio de la vida extraterrestre"),
+    ("genetica", r"\bgenetic[a-z]*\b|\bgenomica\b", "genetica y genomica"),
+    ("realidad_aumentada", r"\brealidad aumentada\b", "realidad aumentada"),
+    ("telecomunicaciones", r"\btelecomunicaciones?\b|\btelematica\b", "telecomunicaciones y telematica"),
 )
 
 

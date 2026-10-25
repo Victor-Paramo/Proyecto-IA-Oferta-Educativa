@@ -12,16 +12,16 @@ La arquitectura está preparada para ampliar posteriormente la cobertura al rest
 
 ## Estado actual del proyecto (octubre de 2026)
 
-El proyecto cuenta con un **prototipo conversacional funcional en Python**, orientado a la consulta de licenciaturas de Ciudad de México mediante información almacenada en PostgreSQL. Integra clasificación de intenciones con TF-IDF y regresión logística, reconocimiento de entidades, búsqueda semántica mediante MiniLM, cobertura temática, identificación de carreras afines, control de modalidades, respuestas estructuradas y memoria conversacional de sesión.
+Se dispone de un **prototipo conversacional funcional en Python** para consultar la oferta de licenciaturas de Ciudad de México registrada en documentos de la Secretaría de Educación Pública (SEP). La aplicación integra PostgreSQL, clasificación supervisada de intenciones mediante TF-IDF y regresión logística, reconocimiento de entidades, búsqueda semántica con MiniLM multilingüe, controles de cobertura temática, alternativas académicas afines, filtros de modalidad y memoria conversacional durante la sesión.
 
-- **Preparación y base de datos:** extracción y depuración de documentos SEP, normalización, carga y verificaciones de integridad realizadas. La capa de consulta comprende **588 nombres de programas** y **2,616 ofertas educativas normalizadas**, vinculadas con los registros documentales de origen.
-- **Etapa 3 — motor conversacional:** implementación de los componentes principales y pruebas de integración con PostgreSQL. Se conservan las restricciones de cobertura y la distinción entre coincidencias directas y alternativas académicas afines.
-- **Etapa 4 — evaluación y mejora:** realizada una evaluación inicial de **30 consultas** (16 correctas, 3 parciales y 11 incorrectas); tras las correcciones, su reevaluación obtuvo **28 correctas, 2 parciales y 0 incorrectas**. Una evaluación posterior de **20 consultas diferentes** obtuvo **11 correctas, 1 parcial y 8 incorrectas**, y permitió identificar nuevos errores. Estos ocho casos se corrigieron y superaron su comprobación repetida. La ejecución más reciente de la batería automatizada registró **185 pruebas satisfactorias**.
-- **Trabajo pendiente:** realizar una nueva evaluación con consultas inéditas después de las últimas correcciones, comprobar la instalación reproducible del modelo MiniLM, consolidar la documentación de resultados y preparar la demostración final.
+- **Datos y persistencia:** se completaron los procesos de extracción, normalización, carga y verificación. La capa de consulta comprende **588 nombres de programas académicos** y **2,616 ofertas educativas normalizadas**, vinculadas con sus registros documentales de origen.
+- **Etapa 3 — integración del motor conversacional:** se implementaron y probaron las búsquedas estructuradas y semánticas, la recuperación de información desde PostgreSQL, la generación de respuestas basadas en registros y la administración del contexto.
+- **Etapa 4 — evaluación y estabilización funcional:** se realizaron una evaluación inicial de 30 consultas y tres baterías posteriores de 20 consultas, además de pruebas exploratorias y de regresión. Las evaluaciones detectaron limitaciones en la interpretación temática, las consultas con múltiples restricciones y el seguimiento conversacional. Se introdujeron correcciones y se verificaron los escenarios conocidos afectados. **La última ejecución completa de `pytest` registró 266 pruebas satisfactorias, sin fallos**, y una prueba final de regresión conversacional de cinco turnos produjo cinco respuestas satisfactorias.
+- **Estado de la implementación:** la validación funcional de los escenarios corregidos permite establecer un corte estable del motor conversacional. La instalación reproducible desde un entorno limpio, la automatización de la descarga de MiniLM, la interfaz gráfica de escritorio y la preparación de los entregables finales constituyen actividades posteriores.
 
-**Alcance y validez:** la fuente consultada corresponde a registros SEP del **30 de abril de 2021**; los resultados no acreditan la vigencia de programas ni modalidades en 2026. Las relaciones temáticas y las áreas afines son criterios auxiliares inferidos del nombre de los programas, no descripciones oficiales de planes de estudio.
+**Alcance documental:** los datos proceden de registros SEP del **30 de abril de 2021**. La aplicación no acredita la vigencia de los programas, las modalidades o las instituciones en 2026. Las relaciones temáticas y las alternativas afines son criterios auxiliares inferidos de los nombres académicos y no equivalen a una revisión oficial de planes de estudio.
 
-**Interpretación de las métricas:** el 93.3 % de la reevaluación de 30 consultas corresponde a preguntas conocidas que orientaron las correcciones; el 55 % de la evaluación de 20 consultas es el resultado original observado antes de corregir sus errores. Ninguno de estos porcentajes constituye una medida general de exactitud para todas las preguntas posibles. Los apartados siguientes conservan resultados históricos de etapas anteriores; la actualización más reciente se documenta al final de este archivo.
+**Interpretación de resultados:** las tasas observadas en evaluaciones distintas no constituyen una medición universal de exactitud. Los casos repetidos después de una corrección se consideran pruebas de regresión y no sustituyen las calificaciones originales. El desarrollo experimental y los resultados de cada corte se conservan en las secciones históricas y en la actualización final de este documento.
 
 ## Proceso realizado
 
@@ -1372,3 +1372,72 @@ Este resultado corresponde a las pruebas automáticas disponibles en esa versió
 
 La versión descrita corresponde a un **prototipo funcional sometido a evaluaciones iterativas**. Los resultados de pruebas conocidas y los de evaluaciones diferentes se reportan por separado para mantener la trazabilidad metodológica.
 
+---
+
+## Etapa 4. Actualización de cierre de la validación funcional (octubre de 2026)
+
+### Objetivo y metodología
+
+La etapa 4 se orientó a evaluar el funcionamiento integral del prototipo conversacional y a corregir errores de interpretación, recuperación de datos y conservación del contexto. Se emplearon conjuntos de preguntas elaborados en diferentes momentos, conversaciones de varios turnos y pruebas automatizadas de regresión. Las evaluaciones realizadas antes de cada corrección conservaron sus resultados originales; los casos repetidos se utilizaron exclusivamente para comprobar cambios de comportamiento.
+
+La evaluación funcional consideró la identificación de programas e instituciones, la aplicación de modalidades, la exploración semántica de intereses, la detección de consultas sin evidencia suficiente, las solicitudes fuera del alcance documental y la continuidad entre preguntas sucesivas. Las respuestas se contrastaron con los resultados observados en la ejecución de la aplicación conectada a PostgreSQL.
+
+### Resultados de evaluación
+
+| Conjunto de evaluación | Correctas | Parciales | Incorrectas | Pendientes de verificación | Consideración metodológica |
+|---|---:|---:|---:|---:|---|
+| Evaluación integral inicial (30 consultas) | 16 | 3 | 11 | 0 | Resultado original |
+| Repetición de las 30 consultas tras las primeras correcciones | 28 | 2 | 0 | 0 | Reevaluación de casos conocidos |
+| Primera batería independiente (20 consultas) | 11 | 1 | 8 | 0 | Resultado original |
+| Segunda batería independiente (20 consultas) | 13 | 2 | 5 | 0 | Resultado original |
+| Tercera batería de 20 consultas, clasificación provisional | 9 | 2 | 6 | 3 | Evaluación exploratoria con casos pendientes de validación de pertinencia |
+
+La **segunda batería independiente** obtuvo un **65 % de respuestas estrictamente correctas** (13 de 20), antes de aplicar sus correcciones. La tercera batería identificó fallos adicionales mediante formulaciones de seguimiento y combinaciones de filtros; sus resultados provisionales se registran por separado y no se recalifican retroactivamente. Las cifras de la tabla corresponden a distintas versiones del prototipo y a conjuntos de preguntas diferentes; no representan un experimento controlado de comparación entre versiones.
+
+### Incidencias identificadas y correcciones implementadas
+
+**Persistencia y actualización del contexto.** Se detectó que ciertas expresiones de cambio de modalidad reiniciaban los filtros, con respuestas correspondientes a las 770 ofertas mixtas o a las 1,657 escolarizadas de todo el catálogo. Se unificó la decisión de seguimiento utilizada por `app.py` y `motor_ia/contexto.py`. Se comprobó la conservación de programa e institución al alternar modalidades y el reinicio correcto del contexto cuando se formula una consulta independiente.
+
+**Consultas combinadas.** Se amplió el enrutamiento para combinar interés académico, institución y modalidad. Se verificó la recuperación de resultados restringidos a la institución solicitada y se evitó presentar la oferta completa de una universidad cuando no existe evidencia temática pertinente. Las siglas institucionales reconocidas se resuelven contra los identificadores reales del catálogo.
+
+**Reconocimiento de intereses interdisciplinarios.** Se ampliaron los patrones temáticos y los controles de cobertura para consultas relacionadas con ingeniería biomédica, genética, realidad aumentada, telecomunicaciones, aeronáutica, biotecnología y astrobiología. La respuesta distingue entre coincidencias directas sustentadas en el nombre del programa y alternativas académicas orientativas. La ausencia de cobertura documental no se interpreta como inexistencia de la especialidad fuera del catálogo.
+
+**Distinción entre programa exacto y exploración temática.** Se identificó que una pregunta sobre opciones «relacionadas con ciencia de datos» podía activar la búsqueda del título exacto *Ciencia de Datos* y omitir *Ingeniería en Ciencia de Datos*. Se incorporó una condición de exploración explícita que permite recuperar programas temáticamente relacionados sin alterar las consultas que solicitan un nombre académico concreto.
+
+**Interacción y límites de información.** Se ampliaron las reglas de reconocimiento de saludos, consultas sobre capacidades, agradecimientos y despedidas compuestas. Asimismo, se corrigió el manejo de preguntas que solicitan simultáneamente costos y becas. Para estos datos, y para la vigencia actual de la oferta, la respuesta explicita las limitaciones de las fuentes consultadas.
+
+**Mantenimiento de pruebas de regresión.** Se revisaron pruebas que dependían de cadenas literales presentes en el código fuente y se sustituyeron por verificaciones del comportamiento esperado. También se incorporaron casos que contemplan la representación real de las instituciones como tuplas, después de identificar una excepción durante la resolución de la sigla ITAM.
+
+### Evidencia de pruebas de integración
+
+| Secuencia o consulta verificada | Resultado observado |
+|---|---|
+| Derecho en Universidad ICEL; filtro escolarizado; cambio a distancia | 11 ofertas iniciales, 5 escolarizadas y 1 no escolarizada, conservando programa e institución |
+| Mercadotecnia en UVM; cambio de no escolarizada a mixta | 15 ofertas iniciales, 1 no escolarizada y 8 mixtas, sin recuperar el catálogo general |
+| Robótica en Universidad La Salle y cambio de modalidades | Ingeniería Mecatrónica mixta; conservación del programa después de un filtro sin coincidencias |
+| Telecomunicaciones en ITAM y seguimiento presencial | Ingeniería en Telecomunicaciones e Ingeniería en Telemática, ambas escolarizadas en el catálogo consultado |
+| Biotecnología vinculada con desarrollo de medicamentos | Recuperación de dos programas registrados: Biotecnología e Ingeniero en Biotecnología |
+| Astrobiología en Universidad ICEL | Identificación del interés y comunicación de ausencia de cobertura directa, sin presentar las 313 ofertas generales |
+| Animación digital en Universidad Panamericana | Recuperación de Ingeniería en Animación y Videojuegos, escolarizada |
+| Exploración de ciencia de datos en UVM | Recuperación de Ingeniería en Ciencia de Datos, no escolarizada |
+| Costos y becas solicitados conjuntamente | Comunicación de ambas limitaciones sin proporcionar precios ni convocatorias no verificados |
+
+En la **última prueba de regresión conversacional de cinco turnos**, se comprobó una secuencia de Ciencia de Datos en UVM, cambio a modalidad escolarizada sin coincidencias, recuperación posterior de la opción no escolarizada, cambio a Ingeniería en Animación y Videojuegos de Universidad Panamericana y consulta de modalidad mixta. Los cinco turnos produjeron respuestas acordes con los filtros y el contexto observados.
+
+### Pruebas automatizadas
+
+La última ejecución registrada de la batería completa mediante Python 3.12 y `pytest` finalizó satisfactoriamente:
+
+```text
+266 passed in 6.75s
+```
+
+Esta cifra corresponde a la versión posterior a las correcciones de cobertura temática, consultas combinadas, memoria conversacional, interacción general y actualización de las pruebas. El resultado acredita el cumplimiento de los casos automatizados disponibles, **no una tasa de acierto del 100 % ante preguntas no evaluadas**.
+
+### Limitaciones y alcance del cierre
+
+La detección temática continúa dependiendo de reglas auxiliares y de indicios presentes en los nombres de los programas; por tanto, existen formulaciones que podrían no reconocerse o que requieren aclaración. La pertinencia de áreas afines no acredita equivalencia curricular, contenidos específicos, acreditación actual ni adecuación individual para un estudiante. Los registros de origen conservan la fecha del 30 de abril de 2021 y no contienen información verificada de precios, becas o convocatorias vigentes.
+
+La presentación de resultados por plantel puede repetir un mismo plantel cuando aparecen modalidades distintas; esta estructura refleja ofertas educativas y no una lista deduplicada de sedes. La evaluación con preguntas nuevas continúa siendo necesaria para caracterizar mejor la generalización del sistema.
+
+**Estado del corte:** se completó la fase de corrección y validación funcional de los escenarios documentados en la etapa 4. Permanecen como actividades posteriores la automatización de la instalación del modelo semántico, la comprobación de ejecución desde un entorno limpio, el desarrollo de la interfaz gráfica de escritorio y la integración de la documentación, la base de datos y la demostración de entrega.

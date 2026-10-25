@@ -113,6 +113,36 @@ SENALES = {
         r"\bactividad sismica\b", r"\bgeociencias\b",
         r"\bciencias de la tierra\b",
     ),
+    # Intereses interdisciplinarios: las expresiones de estudiantes se
+    # distinguen de la evidencia disponible en títulos de licenciatura.
+    "biomedica": (
+        r"\bbiomedic[a-z]*\b", r"\bingenieria medica\b",
+        r"\bprotesis? (?:roboticas?|bionicas?|inteligentes?)\b",
+        r"\b(?:disenar|construir|desarrollar) protesis?\b",
+        r"\btecnologias? asistivas?\b",
+    ),
+    "biotecnologia": (
+        r"\bbiotecnologia\b", r"\bbiotecnologic[a-z]*\b",
+        r"\bdesarroll\w* (?:nuevos? )?medicamentos? utilizando biotecnologia\b",
+    ),
+    "astrobiologia": (
+        r"\bastrobiologia\b", r"\bastrobiologic[a-z]*\b",
+        r"\bvida extraterrestre\b",
+    ),
+    "genetica": (
+        r"\bgenetic[a-z]*\b", r"\badn\b", r"\bgenomas?\b",
+        r"\bgenes\b", r"\bbioinformatica\b",
+    ),
+    "realidad_aumentada": (
+        r"\brealidad aumentada\b", r"\brealidad mixta digital\b",
+        r"\baplicaciones? de realidad aumentada\b",
+    ),
+    "telecomunicaciones": (
+        r"\btelecomunicaciones?\b", r"\btelematica\b",
+        r"\b(?:transmitir|transmiten|transmision|comunicacion)"
+        r".{0,65}\b(?:senales|antenas|satelites)\b",
+        r"\bsenales? entre antenas? y satelites?\b",
+    ),
     # La referencia a datos debe ser temática: no basta mencionar un número.
     "ciencia_datos": (
         r"\bciencia(?:s)? de datos\b", r"\banalisis de datos\b",
@@ -145,6 +175,9 @@ def detectar_temas(pregunta):
 ESPECIALIDADES_PRIORITARIAS = {
     "videojuegos": ("software",),
     "ciencia_datos": ("software",),
+    "biomedica": ("robotica", "medicina"),
+    "telecomunicaciones": ("aeroespacial",),
+    "astrobiologia": ("astronomia",),
 }
 
 
@@ -198,6 +231,7 @@ def es_exploracion_tematica(interpretacion):
 # y arqueología con paleontología. Para la COBERTURA DIRECTA separamos
 # esas especialidades usando únicamente palabras presentes en el título.
 PISTAS_TITULO = {
+    "astrobiologia": (r"\bastrobiologia\b",),
     "astronomia": (r"\bastronomia\b", r"\bastrofisica\b"),
     "aeroespacial": (
         r"\baeroespacial\b", r"\bastronautic[a-z]*\b",

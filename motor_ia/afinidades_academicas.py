@@ -24,6 +24,13 @@ AREAS_AFINES = {
     'arqueologia': ('antropologia', 'historia'),
     'geologia': ('fisica', 'matematicas', 'biologia'),
     'ciencia_datos': ('matematicas', 'software'),
+    'aeronautica': ('mecanica', 'fisica', 'telecomunicaciones'),
+    'biomedica': ('mecatronica', 'biotecnologia'),
+    'genetica': ('biotecnologia', 'biologia'),
+    'biotecnologia': ('biotecnologia', 'biologia'),
+    'astrobiologia': ('biologia', 'fisica'),
+    'realidad_aumentada': ('interactiva', 'software'),
+    'telecomunicaciones': ('telecomunicaciones', 'electronica'),
 }
 
 # Coincidencias CONSERVADORAS sobre el nombre completo del programa.
@@ -58,6 +65,26 @@ PATRONES_TITULO = {
     'historia': (
         r'^(?:en )?historia$',
     ),
+    'mecatronica': (
+        r'^(?:en )?ingenieria (?:en )?mecatronica$',
+        r'^(?:en )?ingeniero en mecatronica$',
+    ),
+    'biotecnologia': (
+        r'^(?:en )?biotecnologia$',
+        r'^(?:en )?ingenieria (?:en )?biotecnologia$',
+    ),
+    'interactiva': (
+        r'^(?:en )?ingenieria en tecnologia interactiva en animacion digital$',
+        r'^(?:en )?desarrollo de software interactivo y videojuegos$',
+    ),
+    'telecomunicaciones': (
+        r'^(?:en )?ingenieria (?:en )?telecomunicaciones$',
+        r'^(?:en )?ingenieria (?:en )?telematica$',
+        r'^(?:en )?ingenieria electronica y comunicaciones$',
+    ),
+    'electronica': (
+        r'^(?:en )?ingenieria (?:en )?electronica$',
+    ),
     'software': (
         r'^(?:en )?ingenieria (?:en |de )?software$',
         r'^(?:en )?ingenieria (?:en )?desarrollo de software$',
@@ -79,13 +106,22 @@ NOMBRES_AREAS = {
     'fisica': 'Física',
     'matematicas': 'Matemáticas',
     'mecanica': 'Ingeniería mecánica o mecatrónica',
-    'geologia': 'Geología o ciencias de la Tierra',
     'biologia': 'Biología',
     'antropologia': 'Antropología',
     'historia': 'Historia',
     'geologia': 'Geología y ciencias de la Tierra',
     'ciencia_datos': 'Ciencia de datos',
     'software': 'Software e informática',
+    'aeronautica': 'Aeronáutica',
+    'biomedica': 'Ingeniería biomédica',
+    'genetica': 'Genética',
+    'realidad_aumentada': 'Realidad aumentada',
+    'telecomunicaciones': 'Telecomunicaciones',
+    'mecatronica': 'Mecatrónica',
+    'biotecnologia': 'Biotecnología',
+    'astrobiologia': 'Astrobiología',
+    'interactiva': 'Tecnologías interactivas',
+    'electronica': 'Electrónica',
 }
 
 
