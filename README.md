@@ -10,18 +10,18 @@ El proyecto utiliza como fuente documentos PDF con registros oficiales de instit
 
 La arquitectura está preparada para ampliar posteriormente la cobertura al resto de México.
 
-## Estado actual del proyecto (octubre de 2026)
+## Estado actual del proyecto (noviembre de 2026)
 
-Se dispone de un **prototipo conversacional funcional en Python** para consultar la oferta de licenciaturas de Ciudad de México registrada en documentos de la Secretaría de Educación Pública (SEP). La aplicación integra PostgreSQL, clasificación supervisada de intenciones mediante TF-IDF y regresión logística, reconocimiento de entidades, búsqueda semántica con MiniLM multilingüe, controles de cobertura temática, alternativas académicas afines, filtros de modalidad y memoria conversacional durante la sesión.
+Se dispone de un **prototipo conversacional con interfaz gráfica de escritorio** para consultar las licenciaturas de Ciudad de México incorporadas al catálogo histórico de la Secretaría de Educación Pública (SEP). El sistema integra PostgreSQL 16, clasificación supervisada de intenciones (TF-IDF y regresión logística), reconocimiento de entidades, búsqueda semántica con MiniLM multilingüe, reglas de cobertura temática, memoria conversacional y visualización de ofertas mediante CustomTkinter.
 
-- **Datos y persistencia:** se completaron los procesos de extracción, normalización, carga y verificación. La capa de consulta comprende **588 nombres de programas académicos** y **2,616 ofertas educativas normalizadas**, vinculadas con sus registros documentales de origen.
-- **Etapa 3 — integración del motor conversacional:** se implementaron y probaron las búsquedas estructuradas y semánticas, la recuperación de información desde PostgreSQL, la generación de respuestas basadas en registros y la administración del contexto.
-- **Etapa 4 — evaluación y estabilización funcional:** se realizaron una evaluación inicial de 30 consultas y tres baterías posteriores de 20 consultas, además de pruebas exploratorias y de regresión. Las evaluaciones detectaron limitaciones en la interpretación temática, las consultas con múltiples restricciones y el seguimiento conversacional. Se introdujeron correcciones y se verificaron los escenarios conocidos afectados. **La última ejecución completa de `pytest` registró 266 pruebas satisfactorias, sin fallos**, y una prueba final de regresión conversacional de cinco turnos produjo cinco respuestas satisfactorias.
-- **Estado de la implementación:** la validación funcional de los escenarios corregidos permite establecer un corte estable del motor conversacional. La instalación reproducible desde un entorno limpio, la automatización de la descarga de MiniLM, la interfaz gráfica de escritorio y la preparación de los entregables finales constituyen actividades posteriores.
+- **Datos y persistencia:** se completaron la extracción, normalización y carga documental. La capa de consulta comprende **588 nombres de programas** y **2,616 ofertas normalizadas**, vinculadas con sus registros de origen.
+- **Etapa 4 — validación funcional:** se efectuaron evaluaciones integrales, correcciones de interpretación y pruebas de regresión. La última batería completa cuya ejecución se registró con resultado verificable alcanzó **266 pruebas automatizadas satisfactorias**. Las mejoras posteriores de la etapa 5 requieren una nueva ejecución integral antes de registrar una cifra actualizada.
+- **Etapa 5 — aplicación de escritorio:** se incorporó `MotorEducativo` como componente reutilizable por la consola y la interfaz. La aplicación gráfica permite formular consultas, consultar las ofertas verificables, conservar filtros entre turnos, distinguir instituciones y modalidades en fichas, reiniciar conversaciones y utilizar el logotipo del proyecto. La rama de desarrollo es `feat/interfaz-escritorio`; el primer corte funcional se registró en el commit `750d62c`.
+- **Estado de trabajo:** se continúa verificando la interpretación de formulaciones cotidianas, las consultas que combinan especialidades académicas y el comportamiento de los resultados sin cobertura suficiente. Permanecen pendientes la consolidación de pruebas, la instalación reproducible desde un entorno limpio y los entregables de presentación.
 
-**Alcance documental:** los datos proceden de registros SEP del **30 de abril de 2021**. La aplicación no acredita la vigencia de los programas, las modalidades o las instituciones en 2026. Las relaciones temáticas y las alternativas afines son criterios auxiliares inferidos de los nombres académicos y no equivalen a una revisión oficial de planes de estudio.
+**Alcance documental:** las fuentes SEP corresponden al **30 de abril de 2021**. El prototipo no comprueba si las ofertas permanecen vigentes en 2026. La búsqueda semántica y las afinidades no constituyen certificaciones de equivalencia curricular ni recomendaciones vocacionales definitivas. La ausencia de una institución pública autónoma en este catálogo de registros federales no permite concluir que carezca de oferta educativa.
 
-**Interpretación de resultados:** las tasas observadas en evaluaciones distintas no constituyen una medición universal de exactitud. Los casos repetidos después de una corrección se consideran pruebas de regresión y no sustituyen las calificaciones originales. El desarrollo experimental y los resultados de cada corte se conservan en las secciones históricas y en la actualización final de este documento.
+**Interpretación de resultados:** las cifras de evaluación se presentan por conjunto y momento de ejecución. Las repeticiones de preguntas utilizadas para desarrollar correcciones se registran como pruebas de regresión y no modifican las calificaciones originales.
 
 ## Proceso realizado
 
@@ -1441,3 +1441,80 @@ La detección temática continúa dependiendo de reglas auxiliares y de indicios
 La presentación de resultados por plantel puede repetir un mismo plantel cuando aparecen modalidades distintas; esta estructura refleja ofertas educativas y no una lista deduplicada de sedes. La evaluación con preguntas nuevas continúa siendo necesaria para caracterizar mejor la generalización del sistema.
 
 **Estado del corte:** se completó la fase de corrección y validación funcional de los escenarios documentados en la etapa 4. Permanecen como actividades posteriores la automatización de la instalación del modelo semántico, la comprobación de ejecución desde un entorno limpio, el desarrollo de la interfaz gráfica de escritorio y la integración de la documentación, la base de datos y la demostración de entrega.
+
+
+---
+
+## Etapa 5. Desarrollo e integración de la interfaz de escritorio (noviembre de 2026)
+
+### Objetivo y alcance
+
+Se desarrolló una aplicación gráfica local para Windows que permite utilizar el asistente de consulta educativa sin depender de la terminal. La interfaz fue implementada con Python, Tkinter y CustomTkinter y reutiliza los componentes de clasificación, búsqueda semántica, contexto conversacional y recuperación de ofertas desde PostgreSQL.
+
+La implementación mantiene el alcance del catálogo de licenciaturas de Ciudad de México, basado en registros SEP fechados el **30 de abril de 2021**. La interfaz no representa un nuevo modelo de inteligencia artificial ni modifica los pesos de MiniLM.
+
+### Arquitectura e integración
+
+La integración inicial utilizó la ejecución de `app.py` como proceso independiente y mostró sus respuestas en la ventana. Posteriormente se reorganizó `app.py` para incorporar la clase `MotorEducativo`, utilizada tanto por la consola como por la interfaz de escritorio. Esta reorganización evita implementar dos motores conversacionales separados y permite reutilizar una sesión de consulta con sus filtros y memoria.
+
+El procesamiento de las preguntas y la inicialización del modelo se ejecutan en un hilo de trabajo, mientras que la interfaz actualiza sus controles desde el hilo gráfico. Esto evita bloquear la ventana durante la carga del catálogo, la preparación de MiniLM y las consultas. La conexión con PostgreSQL y el modelo semántico permanecen disponibles durante la sesión activa.
+
+Los archivos principales involucrados son `app.py` y `interfaz_escritorio.py`. La primera integración funcional de la etapa 5 quedó registrada en Git mediante el commit **`750d62c`** de la rama **`feat/interfaz-escritorio`**. Las modificaciones posteriores a ese corte deberán verificarse y registrarse en un nuevo commit.
+
+### Tecnologías incorporadas
+
+| Componente | Tecnología | Función |
+|---|---|---|
+| Aplicación gráfica | Tkinter y CustomTkinter | Ventana principal, navegación, entrada de consultas y presentación de respuestas |
+| Procesamiento paralelo | `threading` y `queue` de Python | Mantener la respuesta de la interfaz durante la ejecución del motor |
+| Motor conversacional | Clase `MotorEducativo` en `app.py` | Procesamiento de consultas y conservación de la sesión |
+| Persistencia | PostgreSQL 16 y psycopg2 | Recuperación de programas, instituciones, planteles y modalidades |
+| IA | scikit-learn, Sentence Transformers y MiniLM | Clasificación de intenciones y representación semántica |
+| Credenciales locales | `keyring` | Recuperación de la contraseña de PostgreSQL mediante el almacén local de Windows |
+| Pruebas | pytest | Verificación automatizada de módulos y regresiones |
+| Control de versiones | Git y GitHub | Registro de cambios y aislamiento de la etapa 5 en una rama de desarrollo |
+
+### Evolución de la presentación gráfica
+
+Se integró un diseño de alto contraste, con encabezado azul marino, panel de navegación gris y área de conversación blanca, orientado a conservar la legibilidad durante una proyección en aula. Los mensajes del estudiante y del asistente tienen superficies diferenciadas. Los resultados educativos se presentan en fichas con el nombre del programa, institución, plantel y modalidad.
+
+Se ajustaron la tipografía, los saltos automáticos de línea y los bordes de las fichas. El área de conversación utiliza un lienzo con barra de desplazamiento vinculada a la altura real del contenido, con soporte para la rueda del mouse y el touchpad. Se incorporó también el **logotipo del birrete morado** al encabezado de la interfaz, conservando sus recursos gráficos dentro de `recursos/`.
+
+### Mejoras funcionales comprobadas
+
+**Continuidad conversacional.** En una sesión de escritorio se consultaron las carreras de Universidad ICEL y, mediante una pregunta de seguimiento, sus modalidades mixtas. La aplicación recuperó **313 ofertas generales y 75 mixtas**, manteniendo el contexto institucional en la misma sesión.
+
+**Presentación de ofertas semánticas.** Se identificó que el generador anterior utilizaba una única oferta representativa por programa, lo que ocultaba otras modalidades e instituciones registradas. Se modificó el resumen para agrupar las ofertas por programa e institución, mostrando las modalidades y planteles disponibles de cada grupo. En una consulta sobre atención médica se verificó la presencia de Enfermería en instituciones con ofertas escolarizadas, mixtas y no escolarizadas, sin atribuir una modalidad a una institución distinta.
+
+**Nueva conversación después de una despedida.** Se detectó que un mensaje como «adiós» finalizaba el hilo de trabajo y cerraba el motor, dejando la ventana sin capacidad de iniciar otra consulta. Se corrigió el ciclo de vida de la sesión para que el botón de nueva conversación reinicie el contexto sin requerir una nueva carga de MiniLM.
+
+**Reconocimiento de expresiones cotidianas.** Se amplió el vocabulario de cobertura temática para interpretar formulaciones como «quiero algo de curar gente» y «quiero algo de curar con medicinas» como intereses asociados con Medicina. También se mejoró el reconocimiento de siglas institucionales, entre ellas UVM, UNAM e ITAM. Las siglas se interpretan como referencias a instituciones, pero solo se recuperan ofertas verificables que figuren en el catálogo.
+
+### Pruebas y evidencia
+
+El corte inicial de la integración de escritorio mantuvo la ejecución de la suite de **266 pruebas automatizadas satisfactorias**, observada en la rama `feat/interfaz-escritorio`. Las correcciones posteriores incorporaron comprobaciones específicas, pero no se ha documentado aquí una nueva ejecución completa de la batería sobre el conjunto final de archivos; por tanto, **266 no debe interpretarse como el total actualizado de pruebas de esta revisión**.
+
+| Escenario | Resultado observado |
+|---|---|
+| Universidad ICEL y seguimiento de modalidad | 313 ofertas; posteriormente, 75 ofertas mixtas |
+| Interés expresado como «curar con medicinas» | Reconocimiento de Medicina y recuperación de programas académicos relacionados |
+| Recuperación de Enfermería | Visualización de instituciones y modalidades diferentes desde la búsqueda inicial |
+| Despedida y reinicio | Nueva conversación disponible sin reiniciar toda la aplicación |
+| Siglas institucionales | Identificación explícita de UVM, UNAM e ITAM en los casos probados |
+| Consulta sobre UNAM | Comunicación de ausencia de esa institución en el catálogo consultado, sin atribuirle una oferta no verificada |
+
+Los resultados anteriores representan comprobaciones funcionales de situaciones observadas durante el desarrollo; no constituyen una evaluación independiente de exactitud del asistente completo.
+
+### Incidencias y limitaciones pendientes
+
+- **Cobertura temática compuesta:** una consulta como «quiero estudiar Enfermería y Obstetricia» puede activar un área de Medicina demasiado general. Se requiere distinguir el nombre explícito de una especialidad del interés temático y comprobar su presencia real en el catálogo.
+- **Expresiones no reconocidas:** el tratamiento de frases ambiguas, abreviaturas y errores de escritura continúa dependiendo parcialmente de reglas explícitas. La respuesta debe solicitar aclaración cuando no exista evidencia suficiente.
+- **Cobertura institucional:** los PDF federales de origen no representan necesariamente todas las universidades públicas autónomas. La ausencia de la UNAM en el catálogo utilizado no prueba la inexistencia de sus licenciaturas ni la ausencia absoluta de menciones en los documentos fuente. Una ampliación requeriría consultar y normalizar fuentes oficiales adicionales.
+- **Representación de ofertas:** las búsquedas exactas utilizan un límite de visualización histórico de 15 ofertas por respuesta; las búsquedas semánticas pueden presentar un conjunto más amplio de fichas agrupadas. La diferencia corresponde al mecanismo de generación de resultados y debe tenerse en cuenta durante la evaluación de la interfaz.
+- **Instalación y reproducibilidad:** permanece pendiente consolidar el registro de dependencias, comprobar la ejecución desde un entorno limpio y preparar, si procede, un ejecutable de escritorio.
+- **Evaluación final:** falta registrar el resultado actualizado de la suite completa y efectuar nuevas pruebas con formulaciones no utilizadas para desarrollar las reglas recientes.
+
+### Estado de la etapa
+
+La aplicación de escritorio dispone de integración directa con el motor de inteligencia artificial, memoria conversacional, recuperación de ofertas desde PostgreSQL y presentación gráfica de resultados. La etapa 5 continúa en desarrollo y validación; los resultados del catálogo deben interpretarse como **registros históricos de 2021**, no como oferta educativa vigente confirmada.
+
