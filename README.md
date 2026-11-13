@@ -180,6 +180,24 @@ Los scripts de `sql/` permiten revisar conteos, integridad referencial, posibles
 
 ## Arquitectura del asistente
 
+### Correspondencia con las 11 preguntas de estudio
+
+El índice siguiente permite localizar las explicaciones sin duplicar los apartados del informe. Los ejemplos numéricos añadidos son didácticos y no representan mediciones del modelo entrenado; los detalles de las bibliotecas se respaldan con las referencias técnicas finales.
+
+| Pregunta | Tema | Apartado de consulta |
+|---|---|---|
+| 1 | Manejo de la cadena de entrada | [Recepción de la pregunta](#recepción-de-la-pregunta) y [normalización del texto](#normalización-del-texto). |
+| 2 | TF-IDF y transformación a números | [TF-IDF: del texto al vector](#tf-idf-del-texto-al-vector) y [uso en el proyecto](#dónde-se-utiliza-tf-idf-en-el-proyecto). |
+| 3 | Regresión logística e intención | [Pesos, sesgos y puntuaciones](#regresión-logística-pesos-sesgos-y-puntuaciones), [Softmax](#softmax-de-las-puntuaciones-a-las-probabilidades) y [pérdida](#función-de-pérdida-durante-el-entrenamiento). |
+| 4 | Reconocimiento de entidades | [Entidades y modalidades](#entidades-y-modalidades). |
+| 5 | Memoria conversacional | [Memoria de sesión](#memoria-de-sesión). |
+| 6 | Selección de SQL o MiniLM | [Cinco etapas de procesamiento](#cinco-etapas-de-procesamiento), [pipeline de clasificación](#pipeline-de-clasificación) y [cobertura temática](#cobertura-temática). |
+| 7 | MiniLM, embeddings y coseno | [MiniLM y comparación semántica](#minilm-y-comparación-semántica) y [diferencia entre representaciones](#diferencia-entre-el-vector-tf-idf-y-el-embedding-de-minilm). |
+| 8 | Recuperación y respuesta final | [Consultas estructuradas](#consultas-estructuradas), [generación de respuestas](#generación-de-respuestas) y [paginación de ofertas](#paginación-de-ofertas). |
+| 9 | Cobertura y pertinencia | [Cobertura temática](#cobertura-temática) y [alternativas afines y confirmación](#alternativas-afines-y-confirmación). |
+| 10 | Entrenamiento, evaluación y mejora | [Entrenamiento y evaluación: funciones distintas](#entrenamiento-y-evaluación-funciones-distintas) y [evaluaciones y resultados](#evaluaciones-y-resultados). |
+| 11 | SELECT, JOIN, WHERE y ejecución SQL | [Lectura de una consulta SQL](#lectura-de-una-consulta-sql). |
+
 ### Componentes y responsabilidades
 
 | Componente | Archivo o directorio | Función |
@@ -252,6 +270,12 @@ Contexto y selección del procedimiento
                                            Generación y presentación
 ```
 
+### Recepción de la pregunta
+
+La interfaz recibe una cadena de texto, no una consulta SQL escrita por el estudiante. En `interfaz_escritorio.py`, `enviar()` obtiene esa cadena y la entrega al procesamiento mediante la cola de solicitudes. `MotorEducativo.procesar()`, en `app.py`, coordina su interpretación y la búsqueda. El resultado regresa a la cola de eventos; `_procesar_eventos()` atiende la actualización gráfica y `_mostrar_mensaje()` presenta el mensaje y las fichas.
+
+La entrada original y su forma normalizada cumplen funciones diferentes: la primera permite mostrar lo escrito; la segunda facilita reconocer palabras y nombres. Por ejemplo, `"  ¿Dónde estudiar Computación?  "` puede analizarse como `"donde estudiar computacion"` después de aplicar las operaciones de normalización documentadas. Esto todavía no asigna una intención ni selecciona una carrera.
+
 ### Inicialización y reutilización de recursos
 
 Al crear `MotorEducativo` se entrena el clasificador, se establece la conexión con PostgreSQL, se cargan los catálogos, se lee MiniLM desde su directorio local, se calculan los embeddings de los programas y se inicializa el contexto.
@@ -267,6 +291,76 @@ Los embeddings del catálogo se generan en memoria a partir de los nombres recup
 `normalizar_texto()` convierte el texto a minúsculas, aplica descomposición Unicode NFD, elimina marcas diacríticas, sustituye signos ajenos al patrón admitido y normaliza espacios. `.strip()` elimina espacios en blanco de los extremos; la reducción de espacios internos se realiza mediante expresiones regulares.
 
 La normalización de las preguntas es distinta de la normalización relacional de la base de datos. La primera facilita la comparación de cadenas; la segunda organiza entidades y dependencias de los datos.
+
+### TF-IDF: del texto al vector
+
+TF-IDF significa *frecuencia del término por frecuencia inversa de documento*. Convierte las características textuales de una pregunta en números que puede utilizar el clasificador. En este componente, cada pregunta de entrenamiento es un documento: el conjunto de referencia es el CSV de intenciones, no los PDF de la SEP ni los 588 programas del catálogo.
+
+**TF** mide la presencia de un término dentro de una pregunta. **IDF** considera cuántas preguntas del conjunto contienen ese mismo término. Una característica que aparece en pocas preguntas recibe una ponderación IDF mayor que otra presente en casi todas. Ambos factores se calculan para el mismo término: el TF de «computacion» se multiplica por el IDF de «computacion».
+
+Una formulación teórica sencilla es:
+
+$$
+\mathrm{TF}(t,d)=\frac{f(t,d)}{L_d}
+$$
+
+$$
+\mathrm{IDF}(t)=\ln\left(\frac{N}{\mathrm{df}(t)}\right)
+$$
+
+$$
+\mathrm{TFIDF}(t,d)=\mathrm{TF}(t,d)\,\mathrm{IDF}(t)
+$$
+
+Aquí, $t$ es el término, $d$ la pregunta, $f(t,d)$ sus apariciones en esa pregunta, $L_d$ el total de palabras, $N$ el número de preguntas del conjunto y $\mathrm{df}(t)$ el número de preguntas que contienen el término. Repetir una palabra varias veces en una sola pregunta aumenta su frecuencia local, pero esa pregunta sigue contando una sola vez en $\mathrm{df}(t)$.
+
+#### Ejemplo didáctico: una posición por característica
+
+Se considera un conjunto reducido de cuatro preguntas normalizadas, únicamente con palabras individuales:
+
+```text
+1. quiero estudiar computacion
+2. quiero estudiar derecho
+3. quiero aprender computacion
+4. quiero aprender medicina
+```
+
+Para la primera pregunta, «computacion» aparece una vez entre tres palabras y está presente en dos de las cuatro preguntas:
+
+$$
+\mathrm{TFIDF}(\mathrm{computacion},d_1)
+=\frac{1}{3}\ln\left(\frac{4}{2}\right)
+\approx 0.2310
+$$
+
+Este resultado corresponde a **una característica**, no al vector completo. El mismo cálculo se realiza para cada posición del vocabulario:
+
+| Posición | Característica | Valor teórico en «quiero estudiar computacion» |
+|---|---|---:|
+| 1 | `aprender` | 0; no aparece en la pregunta. |
+| 2 | `computacion` | 0.2310 |
+| 3 | `derecho` | 0; no aparece en la pregunta. |
+| 4 | `estudiar` | 0.2310 |
+| 5 | `medicina` | 0; no aparece en la pregunta. |
+| 6 | `quiero` | 0; su IDF teórico es cero porque aparece en las cuatro preguntas. |
+
+En ese orden ilustrativo, el vector es:
+
+$$
+x=[0,\;0.2310,\;0,\;0.2310,\;0,\;0]
+$$
+
+Las posiciones se mantienen entre preguntas: no se crea un vocabulario diferente para cada consulta. El número de posiciones depende de las características aprendidas, no del número de palabras escritas por el estudiante.
+
+#### Diferencia entre el ejemplo teórico y la implementación
+
+El cálculo anterior explica la idea, pero no reproduce exactamente `TfidfVectorizer`. Con los valores predeterminados de la configuración documentada, la biblioteca utiliza recuentos de términos, IDF suavizado y normalización L2. El IDF utilizado es:
+
+$$
+\mathrm{IDF}(t)=\ln\left(\frac{1+N}{1+\mathrm{df}(t)}\right)+1
+$$
+
+La normalización L2 divide cada componente por la magnitud del vector. Por ello, los valores reales no son los del ejemplo teórico; una palabra presente en todas las preguntas no recibe un IDF de cero en esta configuración. Cada vectorizador normaliza su propia salida y `FeatureUnion` concatena las dos representaciones. La documentación de [ponderación TF-IDF](https://scikit-learn.org/stable/modules/feature_extraction.html#tf-idf-term-weighting) y de [TfidfTransformer](https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfTransformer.html) precisa estas diferencias.
 
 ### Pipeline de clasificación
 
@@ -288,6 +382,81 @@ El clasificador operativo combina dos representaciones TF-IDF:
 
 El motor no decide exclusivamente a partir de la etiqueta predicha. También intervienen las entidades, las reglas de exploración, las restricciones de modalidad y el contexto previo.
 
+### Dónde se utiliza TF-IDF en el proyecto
+
+TF-IDF forma parte de `preparar_clasificador()` en `motor_ia/interpretar_consulta.py`. Durante `modelo.fit(preguntas, intenciones)`, los vectorizadores aprenden el vocabulario y las ponderaciones IDF de las preguntas de entrenamiento. Sus vectores permiten ajustar la regresión logística con las etiquetas de intención.
+
+Cuando `interpretar_pregunta()` recibe una consulta nueva, la normaliza y llama al pipeline mediante `modelo.predict([texto])` y `modelo.predict_proba([texto])`. **El pipeline realiza internamente la transformación TF-IDF antes de aplicar el clasificador.** No necesita una llamada adicional escrita a mano a `transform()` en esa función.
+
+```text
+Entrenamiento:
+preguntas etiquetadas -> vocabulario e IDF -> vectores -> ajuste del clasificador
+
+Consulta nueva:
+texto normalizado -> TF-IDF ya ajustado -> vector x -> intención y probabilidades
+```
+
+En la consulta se reutilizan el vocabulario y el IDF aprendidos; no se vuelven a calcular a partir de esa única pregunta. Los términos ajenos al vocabulario de un vectorizador no crean columnas nuevas. La representación de caracteres puede aportar coincidencias de fragmentos aunque una palabra completa no figure en el vocabulario de palabras.
+
+Para «quiero estudiar computacion», el componente de palabras considera términos individuales y pares como `quiero estudiar` o `estudiar computacion`. El componente de caracteres considera fragmentos de tres a cinco caracteres dentro de cada palabra. Solo contribuyen las características presentes en sus vocabularios aprendidos.
+
+**Su uso operativo es clasificar la intención, no consultar PostgreSQL ni comparar semánticamente carreras.** Esa comparación corresponde a MiniLM. Los ensayos de TF-IDF para ranking de programas se documentan por separado como experimentos, no como la ruta de recuperación integrada. Véanse [TfidfVectorizer](https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html) y [Pipeline](https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html) para la transformación y predicción encadenadas.
+
+### Regresión logística: pesos, sesgos y puntuaciones
+
+La regresión logística es un clasificador supervisado: aprende de preguntas que ya tienen una intención etiquetada. Después de recibir el vector TF-IDF de una consulta, calcula una puntuación para cada intención:
+
+$$
+z_k=w_{k1}x_1+w_{k2}x_2+\cdots+w_{kn}x_n+b_k
+$$
+
+Los valores $x_i$ describen la consulta. Los pesos $w_{ki}$ indican cómo contribuye cada característica a la intención $k$; el sesgo $b_k$ es un término adicional aprendido para esa intención. Si el vector contiene $n$ características, cada intención tiene $n$ pesos y un sesgo. Para las cuatro clases se tienen cuatro conjuntos de pesos y cuatro sesgos.
+
+**Los pesos del clasificador no son los vectores TF-IDF de las preguntas de entrenamiento.** Se ajustan utilizando esos vectores y sus etiquetas. Al clasificar una consulta se multiplican sus valores TF-IDF por los pesos aprendidos; no por el vector de una pregunta de entrenamiento seleccionada previamente.
+
+Como ejemplo numérico independiente del anterior, se suponen dos características de entrada, $x=[0.2,0.5]$, pesos $w=[5,3]$ y sesgo $b=0.5$ para una clase:
+
+$$
+z=5(0.2)+3(0.5)+0.5=3
+$$
+
+El resultado es una puntuación, no una probabilidad. Se calculan las puntuaciones de las cuatro intenciones; no se elige un único sesgo antes de compararlas. `max_iter=2000` establece el máximo de iteraciones del optimizador, no el número de preguntas ni la obligación de realizar exactamente 2,000 iteraciones. La formulación se desarrolla en la documentación de [regresión logística multiclase](https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression).
+
+### Softmax: de las puntuaciones a las probabilidades
+
+Softmax transforma las cuatro puntuaciones en valores positivos que suman uno:
+
+$$
+p_k=\frac{e^{z_k}}{\sum_{j=1}^{4}e^{z_j}}
+$$
+
+En un ejemplo ilustrativo con puntuaciones $[3,2,1,0]$, se obtiene:
+
+| Intención del ejemplo | Puntuación | Probabilidad aproximada |
+|---|---:|---:|
+| `buscar_programa` | 3 | 0.6439 |
+| `buscar_institucion` | 2 | 0.2369 |
+| `filtrar_modalidad` | 1 | 0.0871 |
+| `explorar_area` | 0 | 0.0321 |
+
+Para la primera clase, el cálculo es $e^3/(e^3+e^2+e^1+e^0)$. La mayor probabilidad corresponde a `buscar_programa`; en este ejemplo sería la intención predicha. Las probabilidades suman uno salvo diferencias de redondeo.
+
+En la regresión logística multinomial de scikit-learn, Softmax se aplica internamente al obtener las probabilidades: **no hace falta una función `softmax()` propia en `app.py`**. El orden de las probabilidades debe leerse con las etiquetas `classes_` del clasificador, no suponerse a partir del orden de esta tabla. `confianza = float(max(probabilidades))` conserva la mayor probabilidad; no calcula la pérdida. Véase [LogisticRegression](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html).
+
+### Función de pérdida durante el entrenamiento
+
+Para una pregunta etiquetada, la pérdida logarítmica considera la probabilidad asignada a la **intención verdadera**:
+
+$$
+L=-\ln(p_y)
+$$
+
+Si la clase correcta del ejemplo anterior es `buscar_programa`, entonces $p_y\approx0.6439$ y $L\approx0.4402$. Si la clase correcta fuera `buscar_institucion`, habría que utilizar su probabilidad, aproximadamente 0.2369, y la pérdida sería mayor: aproximadamente 1.4402. **No se utiliza siempre la probabilidad máxima**, sino la de la etiqueta correcta.
+
+El entrenamiento busca pesos y sesgos que reduzcan la pérdida agregada de las preguntas etiquetadas. La función objetivo de la biblioteca incluye además regularización para controlar los coeficientes; la expresión de una sola pregunta no describe por sí sola todo el optimizador.
+
+En una consulta nueva normalmente no se conoce la intención verdadera. El asistente obtiene una predicción y una confianza, pero no calcula automáticamente una pérdida supervisada ni aprende de ese mensaje. Esta función se explica como fundamento del entrenamiento, no como una etapa adicional de cada respuesta. Referencia: [pérdida logarítmica](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.log_loss.html).
+
 ### Entidades y modalidades
 
 Las instituciones y los programas se reconocen mediante comparación de nombres normalizados con los catálogos cargados desde PostgreSQL. La información reconocida incluye identificadores que se utilizan posteriormente en las consultas. Las siglas UVM, UNAM e ITAM se resuelven contra las instituciones disponibles; reconocer una sigla no crea registros nuevos.
@@ -302,6 +471,12 @@ El módulo de modalidades diferencia solicitudes de exclusiones. «No quiero mod
 
 Se amplió la interpretación de consultas académicas formuladas con «estudiar», «aprender», «cursar», «imparten», «enseñan» y «ofrecen». Cuando no se reconoce un programa exacto, una consulta temática puede continuar a la exploración manteniendo restricciones de institución o modalidad. Esta ampliación no garantiza reconocer cualquier formulación ni sustituye el control de cobertura.
 
+#### Diferencia entre intención y entidad
+
+La intención describe **qué operación se solicita**; las entidades indican **sobre qué datos se solicita**. En «¿Dónde puedo estudiar Medicina en modalidad mixta?», Medicina es un posible programa y MIXTA es la modalidad. La intención corresponde a la acción de consulta, no al nombre de la carrera. Este ejemplo ilustra las responsabilidades de los componentes, sin atribuir una salida medida al clasificador.
+
+En `motor_ia/entidades.py`, `cargar_instituciones()` y `cargar_programas()` preparan los nombres de referencia; `extraer_institucion()`, `extraer_programa()` y `extraer_modalidad()` reconocen los datos de la pregunta. `analizar_modalidades()` y `ajustar_interpretacion()`, en `motor_ia/interpretar_modalidades.py`, completan el tratamiento de solicitudes y negaciones.
+
 ## Recuperación SQL, MiniLM y cobertura temática
 
 ### Consultas estructuradas
@@ -311,6 +486,21 @@ Se amplió la interpretación de consultas académicas formuladas con «estudiar
 Las ofertas recuperadas incluyen institución, programa, plantel y modalidad, además de los identificadores utilizados por los módulos correspondientes. Cuando falta un nombre de plantel, la interfaz presenta «Plantel no especificado».
 
 La base de datos se seleccionó en función de las relaciones entre esas entidades, la integridad referencial y las consultas requeridas. JSON se utiliza como representación de intercambio y conservación de origen; su utilización no determina que el catálogo de consulta deba ser documental.
+
+#### Lectura de una consulta SQL
+
+Los módulos de recuperación contienen las instrucciones SQL que Python envía a PostgreSQL. La regresión logística y MiniLM ayudan a identificar la consulta o sus candidatos; no redactan libremente el SQL ni ejecutan instrucciones proporcionadas por el estudiante.
+
+| Elemento | Explicación aplicada a una búsqueda |
+|---|---|
+| `SELECT` | Indica los datos que se desean recibir: programa, institución, plantel o modalidad. |
+| `JOIN ... ON` | Relaciona las tablas mediante sus identificadores. Una oferta referencia a un programa y a un plantel; el plantel permite llegar a la institución. |
+| `WHERE` | Conserva solo las filas que cumplen los filtros, por ejemplo, un identificador de programa y modalidad MIXTA. |
+| `ORDER BY` | Organiza el resultado, por ejemplo, por nombre de programa e institución. |
+| `cursor.execute(consulta, parametros)` | Envía la instrucción y los valores de sus parámetros a PostgreSQL. |
+| `cursor.fetchall()` | Recupera las filas resultantes para que Python prepare la respuesta. |
+
+En las consultas parametrizadas, los valores se entregan separados del texto SQL, mediante marcadores como `%s` en psycopg2. La consulta completa no debe construirse concatenando directamente la pregunta del estudiante. Este mecanismo de ejecución se documenta en [psycopg2](https://www.psycopg.org/docs/usage.html#passing-parameters-to-sql-queries).
 
 ### MiniLM y comparación semántica
 
@@ -333,6 +523,39 @@ $$
 `util.cos_sim()` obtiene las puntuaciones y `topk()` permite seleccionar las de mayor valor. El flujo integrado llama a la búsqueda con un límite de **hasta cinco programas candidatos**. Este límite no es una restricción de MiniLM ni significa cinco instituciones o cinco ofertas: cada programa puede tener varias ofertas.
 
 La similitud del coseno expresa una relación entre representaciones vectoriales; no es una probabilidad de idoneidad de la carrera. Los experimentos de ranking híbrido y descripciones enriquecidas se conservan en `scripts/`, pero no se presentan como mecanismos incorporados automáticamente al flujo operativo.
+
+#### Lectura sencilla de un embedding y del coseno
+
+MiniLM es una red Transformer preentrenada que permite obtener representaciones de texto. Un embedding es una lista de números que resume características aprendidas por el modelo. Sus posiciones no corresponden a una lista explícita de palabras como la del vector TF-IDF; no puede asignarse, en general, un nombre de carrera o un concepto único a cada coordenada. La distribución empleada proporciona representaciones de oraciones, según su [ficha técnica](https://huggingface.co/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2).
+
+La similitud del coseno compara la orientación de dos vectores. En un ejemplo didáctico de tres coordenadas, $A=[1,2,2]$ y $B=[2,1,2]$:
+
+$$
+A\cdot B=1(2)+2(1)+2(2)=8
+$$
+
+$$
+\lVert A\rVert=\sqrt{1^2+2^2+2^2}=3,
+\qquad
+\lVert B\rVert=\sqrt{2^2+1^2+2^2}=3
+$$
+
+$$
+\mathrm{sim}(A,B)=\frac{8}{3\cdot3}=\frac{8}{9}\approx0.8889
+$$
+
+La misma operación se extiende a las 384 coordenadas del modelo utilizado. Un valor cercano a uno indica direcciones cercanas; **0.8889 no equivale a 88.89 % de probabilidad de que una carrera sea adecuada**. La puntuación ordena candidatos y no sustituye la comprobación de cobertura.
+
+#### Diferencia entre el vector TF-IDF y el embedding de MiniLM
+
+| Aspecto | TF-IDF del clasificador | MiniLM de la búsqueda semántica |
+|---|---|---|
+| Qué representan las posiciones | Características del vocabulario aprendido: palabras, pares y fragmentos de caracteres. | Coordenadas de una representación aprendida por la red. |
+| Dimensión | Depende de los vocabularios ajustados al entrenamiento. | 384 valores en el modelo utilizado. |
+| Uso en el asistente | Entrada de la regresión logística para clasificar intenciones. | Comparación de la consulta con programas permitidos mediante coseno. |
+| Preparación | Se ajustan los vectorizadores con las preguntas de entrenamiento. | Se carga el modelo preentrenado y se codifican los nombres del catálogo. |
+
+Son representaciones distintas. **El vector TF-IDF no se entrega como entrada a MiniLM**: la rama semántica codifica el texto mediante su propio modelo.
 
 ### Cobertura temática
 
@@ -413,6 +636,23 @@ El panel no sustituye el código fuente como referencia de implementación: sus 
 ## Evaluaciones y resultados
 
 Las evaluaciones de clasificación, las conversaciones completas, las pruebas automatizadas y las demostraciones manuales se registran por separado. Sus porcentajes miden aspectos distintos y no deben combinarse en una única cifra de exactitud del sistema.
+
+### Entrenamiento y evaluación: funciones distintas
+
+`cargar_entrenamiento()` lee las preguntas y sus etiquetas; `preparar_clasificador()` crea el pipeline y `modelo.fit()` lo ajusta. El clasificador operativo utiliza las 136 preguntas al preparar el motor. En cambio, la evaluación necesita preguntas separadas de las utilizadas para ajustar el modelo.
+
+En `motor_ia/clasificador.py`, `cargar_datos()` prepara los datos, `entrenar_modelo()` realiza la separación mediante `train_test_split()` y calcula resultados, y `probar_modelo()` permite introducir consultas. En una evaluación con partición, el vocabulario, el IDF y los pesos deben aprenderse únicamente con la parte de entrenamiento; la parte de prueba se transforma utilizando ese ajuste, sin volver a entrenar con ella.
+
+| Medida | Qué permite interpretar |
+|---|---|
+| Exactitud (`accuracy_score`) | Proporción de preguntas cuya intención predicha coincide con la etiqueta verdadera. |
+| Precisión por clase | De las preguntas asignadas a una intención, qué proporción realmente pertenece a ella. |
+| Recall por clase | De las preguntas que pertenecen a una intención, qué proporción logró reconocer el modelo. |
+| F1-score | Media armónica de precisión y recall; resume ambas medidas. |
+
+`classification_report()` reúne medidas por clase. `construir_modelo()` y `ejecutar_comparacion()`, en `scripts/comparar_intenciones_actualizado.py`, permiten comparar configuraciones. Las cifras observadas se mantienen en los apartados siguientes, sin atribuir nuevos resultados a esta explicación. Referencia: [informe de clasificación](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.classification_report.html).
+
+Las **136 preguntas de entrenamiento** no son las **286 pruebas automatizadas**: las primeras proporcionan ejemplos para aprender intenciones; las segundas verifican comportamientos del software, incluidas reglas, contexto y simulaciones. La pérdida, la confianza y la exactitud tampoco son equivalentes: sirven, respectivamente, para el objetivo de entrenamiento, la estimación de una predicción y la evaluación de un conjunto etiquetado.
 
 ### Comparación inicial de clasificadores
 
@@ -860,3 +1100,11 @@ Las siguientes fuentes identifican las herramientas y los modelos utilizados. Su
 7. **CustomTkinter.** [Distribución en PyPI](https://pypi.org/project/customtkinter/). Consulta de disponibilidad para la revisión documental: 13 de noviembre de 2026.
 8. **Python Packaging Authority.** [Formato de archivos de requisitos de pip](https://pip.pypa.io/en/stable/reference/requirements-file-format/).
 9. **OpenAI. (2026).** *ChatGPT*. Herramienta de apoyo para explicaciones técnicas, revisión de integración y preparación documental. [Sitio del servicio](https://chatgpt.com/).
+
+### Referencias de las explicaciones complementarias
+
+Los fundamentos añadidos de vectorización, clasificación y evaluación se distinguen de los resultados experimentales del proyecto. Sus ejemplos numéricos son construcciones didácticas; no se han extraído de ejecuciones del asistente.
+
+- **scikit-learn.** [Extracción de características y ponderación TF-IDF](https://scikit-learn.org/stable/modules/feature_extraction.html#tf-idf-term-weighting), [TfidfVectorizer](https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html) y [TfidfTransformer](https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfTransformer.html).
+- **scikit-learn.** [Pipeline](https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html), [regresión logística](https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression), [LogisticRegression](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html), [pérdida logarítmica](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.log_loss.html) e [informe de clasificación](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.classification_report.html).
+- **Psycopg.** [Parámetros de consultas SQL](https://www.psycopg.org/docs/usage.html#passing-parameters-to-sql-queries).
