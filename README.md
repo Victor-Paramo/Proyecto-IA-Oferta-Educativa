@@ -327,7 +327,7 @@ En el prototipo se utilizan los pesos preentrenados sin ajuste adicional. El cat
 La similitud se calcula mediante:
 
 $$
-\operatorname{sim}(A,B)=\frac{A\cdot B}{\lVert A\rVert\,\lVert B\rVert}
+\mathrm{sim}(A,B)=\frac{A\cdot B}{\lVert A\rVert\,\lVert B\rVert}
 $$
 
 `util.cos_sim()` obtiene las puntuaciones y `topk()` permite seleccionar las de mayor valor. El flujo integrado llama a la búsqueda con un límite de **hasta cinco programas candidatos**. Este límite no es una restricción de MiniLM ni significa cinco instituciones o cinco ofertas: cada programa puede tener varias ofertas.
