@@ -4,7 +4,6 @@
 -- PostgreSQL 16
 
 
--- Ejecutar conectado a la base postgres
 
 CREATE DATABASE oferta_educativa
     WITH

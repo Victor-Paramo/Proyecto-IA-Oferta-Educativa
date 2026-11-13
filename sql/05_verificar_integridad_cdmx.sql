@@ -1,6 +1,5 @@
 -- Proyecto IA - Oferta Educativa
 -- Verificacion posterior a limpiezas de catalogo (solo lectura).
--- Ejecutar conectado a la base oferta_educativa.
 -- No requiere cambios en la codificacion de la terminal: nombres sin acentos.
 
 SELECT

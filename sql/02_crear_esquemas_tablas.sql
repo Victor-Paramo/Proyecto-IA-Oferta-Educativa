@@ -1,19 +1,17 @@
--- ============================================================
+
 -- PROYECTO IA - OFERTA EDUCATIVA
 -- 02. CREACION DE ESQUEMAS Y TABLAS
 -- PostgreSQL 16 | Modelo relacional preliminar
 -- Ejecutar conectado a la base oferta_educativa.
 -- No ejecutarlo de nuevo si ya se crearon las tablas.
--- ============================================================
+
 
 BEGIN;
 
 CREATE SCHEMA catalogo;
 CREATE SCHEMA origen;
 
--- ============================================================
 -- ESQUEMA CATALOGO: entidades normalizadas
--- ============================================================
 
 CREATE TABLE catalogo.estado (
     id_estado INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -76,9 +74,7 @@ CREATE TABLE catalogo.autorizacion (
         UNIQUE (id_autorizacion, id_oferta)
 );
 
--- ============================================================
 -- ESQUEMA ORIGEN: procedencia y trazabilidad documental
--- ============================================================
 
 CREATE TABLE origen.documento_fuente (
     id_documento BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -95,9 +91,9 @@ CREATE TABLE origen.registro_origen (
         CHECK (pagina IS NULL OR pagina > 0)
 );
 
--- Un registro de origen puede no tener vinculo mientras se revisa.
--- Si existe, solo puede vincularse a una oferta y opcionalmente
--- a una autorizacion que pertenezca a esa misma oferta.
+-- un registro de origen puede no tener vinculo mientras se revisa.
+-- si existe solo puede vincularse a una oferta y opcionalmente a una autorizacion que pertenezca a esa misma oferta.
+
 CREATE TABLE origen.vinculo_registro (
     id_registro BIGINT PRIMARY KEY
         REFERENCES origen.registro_origen(id_registro),

@@ -1,2 +1,182 @@
+
+# PROYECTO IA - OFERTA EDUCATIVA CDMX 2.0
+# REQUISITOS Y DEPENDENCIAS DEL SISTEMA
+
+
+# Sistema operativo de desarrollo: Windows 11
+# Version de Python utilizada: 3.12
+# Gestor de base de datos: PostgreSQL 16
+
+# ------------------------------------------------------------
+# 1. INTERFAZ GRAFICA
+# ------------------------------------------------------------
+
+# Interfaz de escritorio basada en CustomTkinter.
 customtkinter>=6.0,<7
+
+# Almacenamiento local de credenciales de PostgreSQL.
 keyring>=25,<27
+
+# Procesamiento y visualizacion de imagenes.
+Pillow
+
+# Tkinter forma parte de la instalacion habitual de Python
+# para Windows y no requiere instalacion mediante pip.
+
+
+# ------------------------------------------------------------
+# 2. BASE DE DATOS POSTGRESQL
+# ------------------------------------------------------------
+
+# Conector entre Python y PostgreSQL.
+psycopg2-binary
+
+# Sistema gestor utilizado: PostgreSQL 16
+# Sitio oficial:
+# https://www.postgresql.org/download/windows/
+
+# Nombre de la base de datos:
+# oferta_educativa
+
+# Es necesario restaurar los registros y las tablas del
+# proyecto antes de ejecutar el asistente.
+
+
+# ------------------------------------------------------------
+# 3. CLASIFICADOR DE INTENCIONES
+# ------------------------------------------------------------
+
+# TF-IDF, regresion logistica y evaluacion del clasificador.
+scikit-learn
+
+# Componentes:
+# TfidfVectorizer
+# FeatureUnion
+# LogisticRegression
+# train_test_split
+# accuracy_score
+# classification_report
+
+# Conjunto de entrenamiento:
+# datos/intenciones_entrenamiento.csv
+# 136 preguntas etiquetadas en cuatro intenciones.
+
+
+# ------------------------------------------------------------
+# 4. BUSQUEDA SEMANTICA - MINILM
+# ------------------------------------------------------------
+
+# Carga de modelos Transformer, embeddings y similitud.
+sentence-transformers
+
+# Motor de computacion utilizado por MiniLM.
+torch
+
+# Modelo utilizado:
+# sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+
+# Fuente de distribucion del modelo:
+# https://huggingface.co/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+
+# Proyecto MiniLM original de Microsoft:
+# https://github.com/microsoft/unilm/tree/master/minilm
+
+# Biblioteca Sentence Transformers:
+# https://www.sbert.net/
+
+# Caracteristicas del modelo:
+# - Transformer multilingue preentrenado.
+# - Genera embeddings de 384 dimensiones.
+# - Permite comparar textos mediante similitud del coseno.
+# - No se reentrenaron sus pesos en este proyecto.
+
+# Directorio local esperado:
+# modelos_ia/minilm/
+
+# Preparacion y descarga inicial:
+# python motor_ia/12_probar_embeddings.py
+
+# El script descarga el modelo desde Hugging Face si
+# no encuentra una copia local y lo guarda en ese directorio.
+
+
+
+# ------------------------------------------------------------
+# 5. EXTRACCION Y PROCESAMIENTO DE DATOS
+# ------------------------------------------------------------
+
+# Extraccion de tablas y datos de documentos PDF.
+pdfplumber
+
+# Los modulos csv, json, re, pathlib, unicodedata,
+# collections y otros similares forman parte de la
+# biblioteca estandar de Python.
+
+
+# ------------------------------------------------------------
+# 6. PRUEBAS AUTOMATIZADAS
+# ------------------------------------------------------------
+
+# Ejecucion de pruebas unitarias y de integracion.
+pytest
+
+# Comando de evaluacion:
+# python -m pytest tests/
+
+
+# ------------------------------------------------------------
+# 7. HERRAMIENTAS EXTERNAS
+# ------------------------------------------------------------
+
+# Python 3.12:
+# https://www.python.org/downloads/
+
+# PostgreSQL:
+# https://www.postgresql.org/download/
+
+# pgAdmin:
+# https://www.pgadmin.org/download/
+
+# pgAdmin es opcional. PostgreSQL tambien puede
+# administrarse mediante psql.
+
+# Git:
+# https://git-scm.com/
+
+# Git es opcional para la ejecucion del asistente.
+
+
+# ------------------------------------------------------------
+# 8. INSTALACION DE DEPENDENCIAS
+# ------------------------------------------------------------
+
+# Ejecutar desde la carpeta principal del proyecto:
+#
+# python -m venv .venv
+#
+# .\.venv\Scripts\python.exe -m pip install --upgrade pip
+#
+# .\.venv\Scripts\python.exe -m pip install -r requirements_interfaz.txt
+
+
+# ------------------------------------------------------------
+# 9. EJECUCION DEL SISTEMA
+# ------------------------------------------------------------
+
+# Requisitos previos:
+# - PostgreSQL instalado y en ejecucion.
+# - Base de datos oferta_educativa restaurada.
+# - Dependencias de Python instaladas.
+# - Modelo MiniLM disponible en modelos_ia/minilm/.
+# - Recursos graficos del proyecto presentes.
+
+# Aplicacion grafica principal:
+# .\.venv\Scripts\python.exe interfaz_escritorio.py
+
+# Asistente mediante consola:
+# .\.venv\Scripts\python.exe app.py
+
+# Panel de apoyo para exposicion:
+# .\.venv\Scripts\python.exe exposicion.py
+
+

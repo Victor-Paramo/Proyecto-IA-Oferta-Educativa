@@ -1,14 +1,12 @@
 -- Proyecto IA - Oferta Educativa
 -- Auditoria de nombres para el recomendador de licenciaturas CDMX
--- PostgreSQL 16 | SOLO LECTURA | Ejecutar conectado a oferta_educativa
 -- No certifica que un nombre sea correcto; identifica candidatos a revision.
 
 \echo '============================================================'
 \echo 'AUDITORIA DE NOMBRES - LICENCIATURAS CDMX'
 \echo '============================================================'
 
--- Trabajamos sobre registros de ORIGEN que efectivamente cumplen el alcance.
--- Para evitar problemas de acentos de la consola, construimos MEXICO con CHR(201).
+
 CREATE TEMP VIEW auditoria_ia_cdmx AS
 SELECT
     r.id_registro,
@@ -99,7 +97,7 @@ LIMIT 80;
 
 \echo ''
 \echo '4) Programas con nombres potencialmente incompletos/contaminados'
--- No marcamos el prefijo EN: es comun y legitimo en esta fuente.
+
 WITH programas AS (
  SELECT id_programa, programa_catalogo, COUNT(DISTINCT id_registro) AS registros
  FROM auditoria_ia_cdmx
@@ -117,7 +115,7 @@ LIMIT 80;
 
 \echo ''
 \echo '5) Nombres originales distintos para una misma institucion de catalogo'
--- Puede ser normal (varios campus), pero ayuda a revisar fusiones.
+
 SELECT id_institucion, institucion_catalogo AS institucion,
        COUNT(DISTINCT institucion_original) AS variantes_originales,
        COUNT(DISTINCT id_registro) AS registros
