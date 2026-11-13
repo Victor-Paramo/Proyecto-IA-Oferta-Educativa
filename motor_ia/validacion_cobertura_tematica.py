@@ -1,0 +1,362 @@
+"""Filtro EXPLORATORIO de cobertura temática para la búsqueda semántica.
+
+El vocabulario es una ayuda manual, no una clasificación oficial de la SEP.
+Solo se consideran coincidencias directas cuando hay pistas explícitas en el
+NOMBRE del programa. Un resultado 'sin_cobertura_directa' NO prueba que el
+programa no exista fuera del catálogo ni que no haya disciplinas afines.
+
+Este módulo NO modifica MiniLM ni PostgreSQL y NO asigna las etiquetas humanas
+0/1/2. Es un prototipo de abstención previo a la recomendación.
+"""
+import re
+from collections import defaultdict
+
+from motor_ia.descripciones_tematicas import describir_por_nombre, normalizar
+
+
+# Temas generales y expresiones comunes de estudiantes.
+# Estas equivalencias son reglas auxiliares editables, NO datos oficiales SEP.
+SENALES = {
+    "videojuegos": (
+        r"\bvideojuegos?\b", r"\bjuegos? (?:de video|digitales?)\b",
+        r"\bmundos? virtuales?\b",
+    ),
+    "animacion": (
+        r"\banimacion\b", r"\banimar\b", r"\bdibujos? animados?\b",
+    ),
+    "software": (
+        r"\bsoftware\b", r"\bprogramar\b", r"\bprogramacion\b",
+        r"\baplicaciones? (?:moviles?|informaticas?|para celular)\b",
+        r"\binformatica\b", r"\bcomputacion\b",
+    ),
+    "robotica": (
+        r"\brobots?\b", r"\brobotica\b", r"\bmecatronica\b",
+        r"\bautomatizaci[oó]n\b", r"\bautomatizados?\b",
+    ),
+    "electronica": (
+        r"\belectronica\b", r"\bcircuitos? (?:electronicos?|electricos?)\b",
+        r"\bcomponentes? electronicos?\b",
+    ),
+    "psicologia": (
+        r"\bpsicologia\b", r"\bcomportamiento humano\b",
+        r"\bproblemas? emocionales?\b", r"\bsalud mental\b",
+    ),
+    "derecho": (
+        r"\bderecho\b", r"\bderechos? (?:humanos?|de las personas|laborales?)\b",
+        r"\bleyes\b", r"\bjuridic[a-z]*\b", r"\babogad[oa]s?\b",
+    ),
+    "arquitectura": (
+        r"\barquitectura\b", r"\bdisen\w* (?:edificios?|casas|viviendas?)\b",
+        r"\bespacios? habitables?\b", r"\burbanismo\b",
+    ),
+    "administracion": (
+        r"\badministracion\b", r"\bgestion\w* empresas?\b",
+        r"\bgestionar empresas\b", r"\borganizar negocios\b",
+        r"\bdirigir empresas\b",
+    ),
+    "gastronomia": (
+        r"\bgastronomia\b", r"\bcocinar\b", r"\bcocina\b", r"\bchef\b",
+    ),
+    "turismo": (
+        r"\bturismo\b", r"\bturistic[a-z]*\b", r"\bhoteleria\b",
+        r"\bhoteles\b",
+    ),
+    "medicina": (
+        r"\bmedicina\b", r"\benfermeria\b", r"\bmedic[oa]s?\b",
+        r"\batender (?:a )?pacientes\b",
+        r"\bcurar (?:a )?(?:gente|personas|pacientes|enfermos)\b",
+        r"\bcurar (?:a )?(?:la gente|las personas|los pacientes|los enfermos)\b",
+        r"\bcurar (?:con |usando |mediante )(?:medicinas|medicamentos|farmacos)\b",
+        r"\b(?:tratar|atender) (?:a )?(?:personas enfermas|pacientes|enfermos)\b",
+        r"\b(?:ayudar|atender) a (?:personas|gente) enfermas?\b",
+        r"\bcurar enfermedades\b",
+    ),
+    "fisica": (
+        r"\bfisica\b", r"\bteoria cuantica\b",
+    ),
+    "matematicas": (
+        r"\bmatematic[a-z]*\b", r"\blogica matematica\b",
+        r"\bproblemas? de logica\b", r"\brazonamiento logico\b",
+        r"\blogica\b",
+    ),
+    "astronomia": (
+        r"\bastronomia\b", r"\bastrofisica\b", r"\bplanetas?\b",
+        r"\bexoplanetas?\b", r"\bestrellas?\b", r"\bcosmos\b",
+        r"\bespacio exterior\b", r"\bexploracion espacial\b",
+    ),
+    "aeroespacial": (
+        r"\baeroespacial\b", r"\bastronautic[a-z]*\b",
+        r"\bcohetes?\b", r"\bnaves? espaciales?\b",
+        r"\bingenieria espacial\b", r"\bsondas? espaciales?\b",
+        r"\bsatelites?\b", r"\btecnologia espacial\b",
+    ),
+    "aeronautica": (
+        r"\baeronautic[a-z]*\b", r"\baeronaves?\b",
+        r"\baviones?\b", r"\baviacion\b",
+        r"\bdisen[a-z]* (?:de )?aviones?\b",
+    ),
+    "meteorologia": (
+        r"\bmeteorologia\b", r"\bhuracanes?\b", r"\batmosfera\b",
+        r"\bclimatologia\b", r"\bpronostic\w* (?:el )?clima\b",
+        r"\bnubes? de tormenta\b", r"\bformacion de nubes\b",
+        r"\btormentas? (?:tropicales?|electricas?|en la costa)\b",
+        r"\bpronostic\w* (?:nubes?|tormentas?|lluvias?)\b",
+        r"\bfenomenos? atmosferic[a-z]*\b",
+        r"\btornados?\b", r"\bciclones? tropicales?\b",
+    ),
+    "arqueologia": (
+        r"\barqueologia\b", r"\barqueolog[a-z]*\b",
+        r"\bvestigios? arqueologic[a-z]*\b",
+    ),
+    "paleontologia": (
+        r"\bpaleontologia\b", r"\bpaleontolog[a-z]*\b",
+        r"\bfosiles\b", r"\bdinosaurios?\b",
+    ),
+    "geologia": (
+        r"\bgeologia\b", r"\bgeolog[oa]s?\b", r"\brocas? y minerales\b",
+        r"\bterremotos?\b", r"\bsismos?\b", r"\bvolcanes?\b",
+        r"\berupcion(?:es)? volcanicas?\b", r"\bplacas? tectonicas?\b",
+        r"\bactividad sismica\b", r"\bgeociencias\b",
+        r"\bciencias de la tierra\b",
+    ),
+    # Intereses interdisciplinarios: las expresiones de estudiantes se
+    # distinguen de la evidencia disponible en títulos de licenciatura.
+    "biomedica": (
+        r"\bbiomedic[a-z]*\b", r"\bingenieria medica\b",
+        r"\bprotesis? (?:roboticas?|bionicas?|inteligentes?)\b",
+        r"\b(?:disenar|construir|desarrollar) protesis?\b",
+        r"\btecnologias? asistivas?\b",
+    ),
+    "biotecnologia": (
+        r"\bbiotecnologia\b", r"\bbiotecnologic[a-z]*\b",
+        r"\bdesarroll\w* (?:nuevos? )?medicamentos? utilizando biotecnologia\b",
+    ),
+    "astrobiologia": (
+        r"\bastrobiologia\b", r"\bastrobiologic[a-z]*\b",
+        r"\bvida extraterrestre\b",
+    ),
+    "genetica": (
+        r"\bgenetic[a-z]*\b", r"\badn\b", r"\bgenomas?\b",
+        r"\bgenes\b", r"\bbioinformatica\b",
+    ),
+    "realidad_aumentada": (
+        r"\brealidad aumentada\b", r"\brealidad mixta digital\b",
+        r"\baplicaciones? de realidad aumentada\b",
+    ),
+    "telecomunicaciones": (
+        r"\btelecomunicaciones?\b", r"\btelematica\b",
+        r"\b(?:transmitir|transmiten|transmision|comunicacion)"
+        r".{0,65}\b(?:senales|antenas|satelites)\b",
+        r"\bsenales? entre antenas? y satelites?\b",
+    ),
+    # La referencia a datos debe ser temática: no basta mencionar un número.
+    "ciencia_datos": (
+        r"\bciencia(?:s)? de datos\b", r"\banalisis de datos\b",
+        r"\banalitica de datos\b", r"\bmineria de datos\b",
+        r"\bbig data\b", r"\bmodelos? predictivos?\b",
+        r"\b(?:usar|utilizar|analizar|estudiar|procesar|trabajar con)\s+datos\b"
+        r".{0,110}\b(?:patrones?|predicciones?|predecir|pronosticar)\b",
+        r"\bdescubrir patrones?\b.{0,65}\b(?:datos|informacion)\b",
+    ),
+}
+
+PATRONES = {
+    area: tuple(re.compile(p) for p in patrones)
+    for area, patrones in SENALES.items()
+}
+
+
+def detectar_temas(pregunta):
+    """Identifica temas explícitos; si faltan, prefiere pedir aclaración."""
+    texto = normalizar(pregunta)
+    return sorted(
+        area for area, patrones in PATRONES.items()
+        if any(p.search(texto) for p in patrones)
+    )
+
+
+# Si el estudiante menciona una especialidad y una habilidad general, damos
+# prioridad a la especialidad. Se conservan ambos temas para diagnóstico.
+# Ejemplo: "programar videojuegos" -> videojuegos, no software genérico.
+ESPECIALIDADES_PRIORITARIAS = {
+    "videojuegos": ("software",),
+    "ciencia_datos": ("software",),
+    "biomedica": ("robotica", "medicina"),
+    "telecomunicaciones": ("aeroespacial",),
+    "astrobiologia": ("astronomia",),
+}
+
+
+def priorizar_temas(temas):
+    """Evita mezclar una especialidad explícita con un área demasiado general."""
+    activos = set(temas)
+    for especialidad, generales in ESPECIALIDADES_PRIORITARIAS.items():
+        if especialidad in activos:
+            activos.difference_update(generales)
+    return sorted(activos)
+
+
+# Expresiones que indican intereses o actividades, no un filtro de modalidad.
+# Es una regla auxiliar: no reemplaza al clasificador ni sus puntuaciones.
+PATRON_INTERES = re.compile(
+    r"^(?:(?:cambiando de tema|cambio de tema|por otro lado)[, ]+)?"
+    r"(?:quiero|quisiera|deseo|me interesa|me gustaria|"
+    r"me gustan|me encanta|me llama la atencion|me apasiona|"
+    r"busco aprender)\b"
+)
+
+
+
+def es_exploracion_tematica(interpretacion):
+    """Reconoce intereses y consultas de estudio sin un programa exacto."""
+    # CONSULTAS_ACADEMICAS_TEMATICAS_V1
+    if interpretacion["intencion"] == "explorar_area":
+        return True
+
+    if interpretacion["intencion"] not in (
+        "filtrar_modalidad", "buscar_programa", "buscar_institucion"
+    ):
+        return False
+
+    # Un programa identificado conserva la busqueda estructurada.
+    if interpretacion.get("programa") is not None:
+        return False
+
+    pregunta = interpretacion["pregunta"]
+    if not detectar_temas(pregunta):
+        return False
+
+    texto = re.sub(r"[^a-z0-9\s]", " ", normalizar(pregunta))
+    texto = re.sub(r"\s+", " ", texto).strip()
+
+    accion_academica = re.search(
+        r"\b(?:estudiar|estudia|estudian|estudio|aprender|aprendo|"
+        r"aprenden|cursar|cursan|cursa|impartir|imparten|imparte|"
+        r"ensenar|ensenan|ensena|ofrecer|ofrecen|ofrece)\b",
+        texto,
+    )
+    consulta_lugar = re.search(
+        r"\b(?:donde|en que|que (?:universidad(?:es)?|escuelas?|"
+        r"institutos?|institucion(?:es)?|planteles?)|"
+        r"cuales (?:universidades|escuelas|institutos|"
+        r"instituciones|planteles))\b",
+        texto,
+    )
+    consulta_directa = re.match(
+        r"^(?:estudiar|aprender|cursar|imparten|imparte|"
+        r"ensenan|ensena|ofrecen|ofrece)\b",
+        texto,
+    )
+    interes = bool(PATRON_INTERES.search(texto))
+
+    # La ruta tematica conserva los filtros de institucion y modalidad.
+    if accion_academica and (consulta_lugar or consulta_directa or interes):
+        return True
+
+    # Mantener la regla previa para otras expresiones de interes.
+    if any(interpretacion.get(clave) is not None
+           for clave in ("institucion", "modalidad")):
+        return False
+    return bool(PATRON_INTERES.search(normalizar(pregunta)))
+
+
+# Las etiquetas auxiliares heredadas agrupan astronomía con aeroespacial
+# y arqueología con paleontología. Para la COBERTURA DIRECTA separamos
+# esas especialidades usando únicamente palabras presentes en el título.
+PISTAS_TITULO = {
+    "astrobiologia": (r"\bastrobiologia\b",),
+    "astronomia": (r"\bastronomia\b", r"\bastrofisica\b"),
+    "aeroespacial": (
+        r"\baeroespacial\b", r"\bastronautic[a-z]*\b",
+        r"\bingenieria espacial\b", r"\bingenieria de satelites\b",
+        r"\bcohetes?\b", r"\bnaves? espaciales?\b",
+    ),
+    "aeronautica": (
+        r"\baeronautic[a-z]*\b", r"\bingenieria en aeronaves\b",
+    ),
+    "arqueologia": (r"\barqueologia\b", r"\barqueolog[a-z]*\b"),
+    "paleontologia": (r"\bpaleontologia\b", r"\bpaleontolog[a-z]*\b"),
+}
+PISTAS_TITULO = {
+    area: tuple(re.compile(patron) for patron in patrones)
+    for area, patrones in PISTAS_TITULO.items()
+}
+
+
+def construir_indice(programas):
+    """Recibe (id_programa, nombre) y detecta pistas explícitas del título."""
+    indice = defaultdict(list)
+    for id_programa, nombre in programas:
+        titulo = normalizar(nombre)
+        _, etiquetas = describir_por_nombre(nombre)
+        areas = set(etiquetas)
+
+        especialidades = {
+            area for area, patrones in PISTAS_TITULO.items()
+            if any(p.search(titulo) for p in patrones)
+        }
+        # Estas áreas requieren una pista explícita en el título: una carrera
+        # de Astronomía no es equivalente a Aeronáutica o Ingeniería Espacial.
+        # Tampoco se considera Arqueología equivalente a Paleontología.
+        for especialidad in PISTAS_TITULO:
+            areas.discard(especialidad)
+        areas.update(especialidades)
+
+        for area in sorted(areas):
+            indice[area].append((int(id_programa), nombre))
+    return dict(indice)
+
+
+def comprobar_cobertura(pregunta, indice):
+    """Describe si existen programas con pistas explícitas del tema preguntado.
+
+    Estados:
+      aclaracion: no se pudo reconocer un tema específico
+      sin_cobertura_directa: se reconoció, sin títulos directos en el catálogo
+      cobertura_directa: existen títulos con pistas del área indicada
+    """
+    temas = detectar_temas(pregunta)
+    temas_prioritarios = priorizar_temas(temas)
+    if not temas:
+        return {
+            "estado": "aclaracion", "temas": [], "temas_prioritarios": [],
+            "ids_validos": set(),
+            "mensaje": (
+                "No reconocí un tema académico específico con mis reglas "
+                "actuales. ¿Podrías describir tus intereses con otras palabras "
+                "o indicar el área que te interesa?"
+            ),
+        }
+
+    temas_presentes = [area for area in temas_prioritarios if indice.get(area)]
+    temas_ausentes = [area for area in temas_prioritarios if not indice.get(area)]
+    ids = {
+        id_programa
+        for area in temas_presentes
+        for id_programa, _ in indice.get(area, ())
+    }
+    if not ids:
+        return {
+            "estado": "sin_cobertura_directa", "temas": temas,
+            "temas_prioritarios": temas_prioritarios,
+            "temas_sin_cobertura": temas_ausentes,
+            "ids_validos": set(),
+            "mensaje": (
+                "No identifiqué carreras cuyo nombre indique directamente esa "
+                "área en el catálogo SEP consultado (datos de abril de 2021). "
+                "Esto no significa que no existan otras opciones o carreras afines."
+            ),
+        }
+
+    mensaje = "Hay programas cuyo nombre ofrece pistas directas sobre el tema."
+    if temas_ausentes:
+        mensaje += (
+            " No encontré títulos con pistas directas de: "
+            + ", ".join(temas_ausentes) + "."
+        )
+    return {
+        "estado": "cobertura_directa", "temas": temas,
+        "temas_prioritarios": temas_prioritarios,
+        "temas_sin_cobertura": temas_ausentes, "ids_validos": ids,
+        "mensaje": mensaje,
+    }
