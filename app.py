@@ -81,13 +81,18 @@ SIGLAS_INSTITUCIONALES = {
     "itam": "INSTITUTO TECNOLÓGICO AUTÓNOMO DE MÉXICO",
     "uvm": "UNIVERSIDAD DEL VALLE DE MÉXICO",
     "unam": "UNIVERSIDAD NACIONAL AUTÓNOMA DE MÉXICO",
+    "ipn": "INSTITUTO POLITÉCNICO NACIONAL",
+    "uam": "UNIVERSIDAD AUTÓNOMA METROPOLITANA",
+    "itesm": "INSTITUTO TECNOLÓGICO Y DE ESTUDIOS SUPERIORES DE MONTERREY",
+    "tec de monterrey": "INSTITUTO TECNOLÓGICO Y DE ESTUDIOS SUPERIORES DE MONTERREY",
+    "tecnologico de monterrey": "INSTITUTO TECNOLÓGICO Y DE ESTUDIOS SUPERIORES DE MONTERREY",
 }
 
 
 def identificar_sigla_institucional(pregunta):
     """Detecta siglas institucionales completas en una pregunta."""
     texto = normalizar_texto(pregunta)
-    for sigla in SIGLAS_INSTITUCIONALES:
+    for sigla in sorted(SIGLAS_INSTITUCIONALES, key=len, reverse=True):
         if re.search(rf"\b{re.escape(sigla)}\b", texto):
             return sigla
     return None
@@ -126,11 +131,70 @@ def mensaje_sigla_sin_registro(pregunta, institucion):
     nombre = SIGLAS_INSTITUCIONALES[sigla]
     return (
         f"Reconocí {sigla.upper()} ({nombre}), pero no encontré esa institución "
-        "en el catálogo incorporado de registros SEP de abril de 2021. "
+        "en el catálogo cargado en esta sesión. "
         "Esto no significa que la universidad no ofrezca licenciaturas: "
         "la fuente consultada tiene una cobertura limitada. "
         "No puedo mostrar carreras de esa institución sin registros verificables."
     )
+
+
+def es_consulta_institucional_directa(pregunta, institucion):
+    """Reconoce nombres aislados y listados de una institución ya identificada.
+
+    No transforma en listados generales las consultas de carrera, intereses,
+    costos, becas o seguimientos sobre resultados anteriores.
+    """
+    if not institucion or not institucion.get("nombre"):
+        return False
+
+    texto = normalizar_texto(pregunta)
+    nombre_real = normalizar_texto(institucion["nombre"])
+    nombres = {nombre_real}
+    nombres.update(
+        alias for alias, nombre in SIGLAS_INSTITUCIONALES.items()
+        if normalizar_texto(nombre) == nombre_real
+    )
+
+    # Sustituir solo una denominación completa, nunca partes de otra palabra.
+    for nombre in sorted(nombres, key=len, reverse=True):
+        patron = rf"\b{re.escape(nombre)}\b"
+        if re.search(patron, texto):
+            texto = re.sub(patron, "institucion_objetivo", texto, count=1)
+            break
+    else:
+        return False
+
+    # Estos calificadores se conservan en la interpretación, no en la gramática.
+    lugar = r"(?:cdmx|(?:la )?ciudad de mexico|el distrito federal)"
+    modalidad = (
+        r"(?:no escolarizadas?|escolarizadas?|mixtas?|presenciales?|"
+        r"semipresenciales?|a distancia|en linea)"
+    )
+    for _ in range(2):
+        texto = re.sub(rf" en (?:la )?{lugar}$", "", texto).strip()
+        texto = re.sub(rf" (?:en (?:la )?)?modalidad {modalidad}$", "", texto).strip()
+        texto = re.sub(rf" {modalidad}$", "", texto).strip()
+
+    articulos = r"(?:(?:todas|todos) )?(?:(?:las|los|la|el) )?"
+    ofertas = (
+        r"(?:carreras?|licenciaturas?|programas?(?: academicos)?|"
+        r"ofertas?(?: educativas)?)"
+        rf"(?: (?:disponibles|registradas|registrados|{modalidad}))?"
+    )
+    institucion_texto = r"(?:(?:la|el) )?institucion_objetivo"
+    patrones = (
+        rf"(?:en )?{institucion_texto}",
+        rf"{articulos}{ofertas} (?:de|del|en|para) {institucion_texto}",
+        rf"(?:que|cuales)(?: son)? {articulos}{ofertas} "
+        rf"(?:ofrece|ofrecen|tiene|tienen|imparte|imparten|hay en|hay|"
+        rf"puedo estudiar en|puedo cursar en|estan disponibles en) {institucion_texto}",
+        rf"(?:que|cuales) son {articulos}{ofertas} (?:de|del|en) {institucion_texto}",
+        rf"(?:muestrame|muestra|mostrar|ensename|dame|quiero ver|ver) "
+        rf"{articulos}{ofertas} (?:de|del|en|para) {institucion_texto}",
+        rf"(?:lista|listado|catalogo) de {articulos}{ofertas} (?:de|del|en) {institucion_texto}",
+        rf"que (?:puedo estudiar en|puedo cursar en|ofrece|imparte) {institucion_texto}",
+    )
+    return any(re.fullmatch(patron, texto) for patron in patrones)
 
 
 def conservar_seguimiento_academico(pregunta, interpretacion, contexto):
@@ -177,16 +241,18 @@ def es_peticion_exploratoria_explicita(pregunta):
 # busquedas amplias v1
 def buscar_categoria_general(pregunta, interpretacion, conexion, programas):
     """Busca nombres de programas por categoría, sin inferir especialidades."""
-    if interpretacion.get('programa') is not None:
+    texto = normalizar_texto(pregunta)
+    # Una categoria aislada no debe bloquearse por una entidad inferida.
+    categoria_aislada = texto in {"ingenieria", "ingenierias", "idioma", "idiomas"}
+    if interpretacion.get('programa') is not None and not categoria_aislada:
         return None
 
-    texto = normalizar_texto(pregunta)
     if re.search(r"\bingenierias?\b", texto):
         categoria = 'ingenierías'
         patron = re.compile(r"\bingenieria\b")
     elif re.search(r"\bidiomas?\b", texto):
         categoria = 'idiomas'
-        patron = re.compile(r"\bidiomas\b")
+        patron = re.compile(r"\b(?:idiomas?|lenguas?)\b")
     else:
         return None
 
@@ -222,31 +288,30 @@ def buscar_categoria_general(pregunta, interpretacion, conexion, programas):
 
 # catalogo general v6
 def es_consulta_catalogo_general(pregunta, interpretacion):
+    """Identifica listados generales sin absorber carreras ni universidades."""
     texto = normalizar_texto(pregunta)
-
-    if any(interpretacion.get(c) is not None for c in
-           ("institucion", "programa", "modalidad")):
+    if detectar_temas(pregunta) or identificar_sigla_institucional(pregunta):
         return False
 
-    if detectar_temas(pregunta):
-        return False
+    articulos = r"(?:(?:todas|todos) )?(?:(?:las|los|la|el) )?"
+    programas = (
+        r"(?:licenciaturas?|carreras?|programas?(?: academicos)?|"
+        r"areas?(?: de (?:estudio|conocimiento))?)"
+    )
+    lugar = r"(?: en (?:la )?(?:cdmx|ciudad de mexico|distrito federal))?"
+    calificadores = r"(?: disponibles| registradas| registrados| del catalogo| en el catalogo)?"
+    patrones = (
+        rf"(?:que|cuales|cuantas|cuantos)(?: son)? {articulos}{programas}"
+        rf"(?: puedo (?:estudiar|cursar)| hay| existen| se ofrecen)?{calificadores}{lugar}",
+        rf"(?:muestrame|muestra|mostrar|ensename|dame|quiero ver|ver) "
+        rf"{articulos}{programas}{calificadores}{lugar}",
+        rf"(?:lista|listado|catalogo)(?: general)?(?: de)? "
+        rf"{articulos}{programas}{calificadores}{lugar}",
+        rf"(?:todas las|todos los) {programas}{calificadores}{lugar}",
+    )
+    # Una petición completa e inequívoca prevalece sobre entidades espurias.
+    return any(re.fullmatch(patron, texto) for patron in patrones)
 
-    if re.search(
-        r"\b(?:ingenierias?|idiomas?|universidad|institucion|instituto|escuela|plantel)\b",
-        texto
-    ):
-        return False
-
-    if not re.search(
-        r"\b(?:licenciaturas?|carreras?|programas?|areas?)\b",
-        texto
-    ):
-        return False
-
-    return bool(re.search(
-        r"\b(?:que|cuales|cuantas|muestrame|mostrar|muestra|lista|listado|catalogo|todas?|disponibles|puedo|ofrecen|hay|existen)\b",
-        texto
-    ))
 
 class MotorEducativo:
     """Servicio único para consola e interfaz de escritorio.
@@ -537,6 +602,14 @@ class MotorEducativo:
             return finalizar()
         interpretacion = interpretar_pregunta(pregunta, modelo, instituciones, programas)
         interpretacion['institucion'] = resolver_institucion_mencionada(pregunta, interpretacion.get('institucion'), instituciones)
+        consulta_institucional_directa = es_consulta_institucional_directa(
+            pregunta, interpretacion.get('institucion')
+        )
+        if consulta_institucional_directa:
+            # El nombre aislado o listado institucional es una petición SQL.
+            interpretacion = dict(interpretacion)
+            interpretacion['intencion'] = 'buscar_institucion'
+            interpretacion['programa'] = None
         aviso_sigla = mensaje_sigla_sin_registro(pregunta, interpretacion['institucion'])
         if aviso_sigla is not None:
             contexto = crear_contexto()
@@ -573,7 +646,10 @@ class MotorEducativo:
         if MODO_DIAGNOSTICO:
             registrar('\nIntencion:', interpretacion['intencion'])
             registrar('Confianza:', f"{interpretacion['confianza']:.2%}")
-        seguimiento_academico = conservar_seguimiento_academico(pregunta, interpretacion, contexto)
+        seguimiento_academico = (
+            False if consulta_institucional_directa
+            else conservar_seguimiento_academico(pregunta, interpretacion, contexto)
+        )
         if seguimiento_academico and contexto['programas_semanticos']:
             nuevo_contexto = actualizar_contexto(contexto, interpretacion, conservar=seguimiento_academico)
             nuevo_contexto['programas_semanticos'] = list(contexto['programas_semanticos'])
@@ -596,13 +672,14 @@ class MotorEducativo:
             registrar('\n' + self._respuesta_ofertas_paginada(resultados, contexto))
             return finalizar()
         # busquedas amplias v1 categorias generales y singular o plural.
-        busqueda_amplia = buscar_categoria_general(
+        busqueda_amplia = None if consulta_institucional_directa else buscar_categoria_general(
             pregunta, interpretacion, conexion, programas
         )
         if busqueda_amplia is not None:
             contexto = crear_contexto()
             contexto['modalidad'] = interpretacion.get('modalidad')
             contexto['institucion'] = interpretacion.get('institucion')
+            contexto['programas_semanticos'] = list(busqueda_amplia['ids'])
             ofertas_amplias = busqueda_amplia['ofertas']
             if ofertas_amplias:
                 registrar('\nBúsqueda amplia por categoría: ' + busqueda_amplia['categoria'] + '.')
@@ -616,7 +693,10 @@ class MotorEducativo:
         hay_tema = bool(detectar_temas(pregunta))
         exploracion_explicita = hay_tema and es_peticion_exploratoria_explicita(pregunta) and (not seguimiento_estructurado)
         consulta_combinada = hay_tema and interpretacion.get('institucion') is not None and (interpretacion.get('programa') is None or exploracion_explicita) and (not seguimiento_estructurado)
-        explorar_tema = False if seguimiento_estructurado else exploracion_explicita or consulta_combinada or es_exploracion_tematica(interpretacion)
+        explorar_tema = (
+            False if seguimiento_estructurado or consulta_institucional_directa
+            else exploracion_explicita or consulta_combinada or es_exploracion_tematica(interpretacion)
+        )
         if not explorar_tema and (not seguimiento_estructurado):
             mensaje_aclaracion = validar_consulta(interpretacion)
             if mensaje_aclaracion is not None:

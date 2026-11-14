@@ -3,19 +3,52 @@
 No requiere datos privados, PostgreSQL ni descarga de MiniLM.
 """
 import ast
+import re
 from pathlib import Path
 
 import pytest
 
 
-APP = Path(__file__).resolve().parents[1] / 'app.py'
-ARBOL = ast.parse(APP.read_text(encoding='utf-8'))
-NOMBRES = {'filtrar_ofertas_combinadas', 'seleccionar_programas_de_institucion'}
-FUNCIONES = [n for n in ARBOL.body if isinstance(n, ast.FunctionDef) and n.name in NOMBRES]
-AMBIENTE = {}
-exec(compile(ast.Module(body=FUNCIONES, type_ignores=[]), str(APP), 'exec'), AMBIENTE)
+RAIZ = Path(__file__).resolve().parents[1]
+APP = RAIZ / 'app.py'
+ENTIDADES = RAIZ / 'motor_ia' / 'entidades.py'
+ARBOL = ast.parse(APP.read_text(encoding='utf-8-sig'))
+ARBOL_ENTIDADES = ast.parse(ENTIDADES.read_text(encoding='utf-8-sig'))
+
+# Cargar las funciones reales sin importar conexiones ni modelos externos.
+NORMALIZADOR = [
+    n for n in ARBOL_ENTIDADES.body
+    if isinstance(n, ast.FunctionDef) and n.name == 'normalizar_texto'
+]
+assert len(NORMALIZADOR) == 1, 'No se encontró normalizar_texto en entidades.py'
+
+NOMBRES = {
+    'filtrar_ofertas_combinadas',
+    'seleccionar_programas_de_institucion',
+    'es_consulta_institucional_directa',
+}
+FUNCIONES = [
+    n for n in ARBOL.body
+    if isinstance(n, ast.FunctionDef) and n.name in NOMBRES
+]
+assert {n.name for n in FUNCIONES} == NOMBRES
+
+CONSTANTES = [
+    n for n in ARBOL.body
+    if isinstance(n, ast.Assign)
+    and any(isinstance(t, ast.Name) and t.id == 'SIGLAS_INSTITUCIONALES'
+            for t in n.targets)
+]
+assert len(CONSTANTES) == 1, 'No se encontró SIGLAS_INSTITUCIONALES en app.py'
+
+AMBIENTE = {'re': re}
+exec(compile(ast.Module(body=NORMALIZADOR, type_ignores=[]),
+             str(ENTIDADES), 'exec'), AMBIENTE)
+exec(compile(ast.Module(body=CONSTANTES + FUNCIONES, type_ignores=[]),
+             str(APP), 'exec'), AMBIENTE)
 filtrar = AMBIENTE['filtrar_ofertas_combinadas']
 seleccionar = AMBIENTE['seleccionar_programas_de_institucion']
+
 
 OFERTAS = [
     {'institucion': 'UNIVERSIDAD ICEL', 'modalidad': 'ESCOLARIZADA'},
@@ -53,23 +86,31 @@ def test_seleccion_de_programas_antes_de_ordenar():
 
 def evaluar_enrutamiento(pregunta, interpretacion, temas, seguimiento=False,
                          exploracion_por_clasificador=False):
-    """Ejecuta las decisiones reales de enrutamiento sin importar app.py.
+    """Evalúa las decisiones reales y sus dependencias en el orden del motor.
 
-    Solo se evalúan las asignaciones pertinentes del AST, usando funciones
-    simuladas; no depende del formato textual ni inicia PostgreSQL/MiniLM.
+    La clasificación y la detección de temas se simulan para aislar la ruta.
+    La detección institucional utiliza la función y las siglas de app.py.
     """
+    orden = (
+        'consulta_institucional_directa',
+        'exploracion_explicita',
+        'consulta_combinada',
+        'explorar_tema',
+    )
+    clase = next(n for n in ARBOL.body
+                 if isinstance(n, ast.ClassDef) and n.name == 'MotorEducativo')
+    procesar = next(n for n in clase.body
+                    if isinstance(n, ast.FunctionDef) and n.name == 'procesar')
     asignaciones = {}
-    for nodo in ast.walk(ARBOL):
+    for nodo in ast.walk(procesar):
         if isinstance(nodo, ast.Assign) and len(nodo.targets) == 1:
             objetivo = nodo.targets[0]
-            if isinstance(objetivo, ast.Name) and objetivo.id in {
-                'exploracion_explicita', 'consulta_combinada', 'explorar_tema'
-            }:
+            if isinstance(objetivo, ast.Name) and objetivo.id in orden:
+                assert objetivo.id not in asignaciones, (
+                    f'Asignación duplicada en el escenario: {objetivo.id}'
+                )
                 asignaciones[objetivo.id] = nodo.value
-
-    assert set(asignaciones) == {
-        'exploracion_explicita', 'consulta_combinada', 'explorar_tema'
-    }
+    assert set(asignaciones) == set(orden)
 
     ambiente = {
         'hay_tema': bool(temas),
@@ -78,8 +119,9 @@ def evaluar_enrutamiento(pregunta, interpretacion, temas, seguimiento=False,
         'seguimiento_estructurado': seguimiento,
         'es_peticion_exploratoria_explicita': lambda texto: 'algo relacionado con' in texto.lower(),
         'es_exploracion_tematica': lambda _inter: exploracion_por_clasificador,
+        'es_consulta_institucional_directa': AMBIENTE['es_consulta_institucional_directa'],
     }
-    for nombre in ('exploracion_explicita', 'consulta_combinada', 'explorar_tema'):
+    for nombre in orden:
         expresion = ast.Expression(body=asignaciones[nombre])
         ast.fix_missing_locations(expresion)
         ambiente[nombre] = eval(compile(expresion, str(APP), 'eval'), ambiente)

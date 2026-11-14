@@ -1,9 +1,46 @@
 # Proyecto de Inteligencia Artificial — Oferta Educativa Ciudad de México 2.0
 
-**Informe técnico y documentación del prototipo**  
-**Asignatura:** Inteligencia Artificial  
-**Fecha de actualización:** 13 de noviembre de 2026  
-**Estado:** prototipo local con interfaz de escritorio, presentado en clase y en preparación para su entrega.
+**README del repositorio: instalación, ejecución y documentación técnica**  
+**Autor:** González Jiménez Victor Yotecatl  
+**Asignatura:** Inteligencia Artificial · **Grupo:** 5 · **Semestre:** 2027-1  
+**Profesor:** Dr. en C. José Fidel Urquiza Yllescas  
+**Fecha de actualización:** 14 de noviembre de 2026  
+**Estado:** prototipo local con interfaz de escritorio y consola; respaldo de PostgreSQL restaurado en una base de prueba local. La instalación integral en un segundo equipo permanece pendiente.
+
+**Repositorio:** [Proyecto IA — Oferta Educativa](https://github.com/Victor-Paramo/Proyecto-IA-Oferta-Educativa).
+
+Este archivo reúne las instrucciones necesarias para preparar el entorno, restaurar los datos, cargar MiniLM, ejecutar las aplicaciones y comprobar las pruebas. También conserva el proceso de desarrollo, los fundamentos de las 11 preguntas de estudio, las fórmulas, los resultados y los experimentos históricos.
+
+El documento [README_Informe_Final.md](README_Informe_Final.md) organiza el contenido como informe académico para su conversión a Word y PDF. **No sustituye a este README ni es necesario para ejecutar el programa.**
+
+> **Primera instalación:** requisitos → entorno Python → restauración de PostgreSQL → preparación de MiniLM → ejecución → pruebas.  
+> **Instalación local que ya funciona:** no es necesario recrear `.venv`, restaurar nuevamente la base ni repetir las cargas de datos.
+
+## Índice
+
+- [Objetivo](#objetivo)
+- [Estado actual del proyecto](#estado-actual-del-proyecto)
+- [Tecnologías y requisitos](#tecnologías-y-requisitos)
+- [Instalación en un equipo nuevo](#instalación-en-un-equipo-nuevo)
+- [Ejecución y verificación](#ejecución-y-verificación)
+- [Pruebas manuales y consultas de comprobación](#pruebas-manuales-y-consultas-de-comprobación)
+- [Diagnóstico de problemas frecuentes](#diagnóstico-de-problemas-frecuentes)
+- [Estructura del proyecto](#estructura-del-proyecto)
+- [Entregables y reproducción de la instalación](#entregables-y-reproducción-de-la-instalación)
+- [Proceso realizado](#proceso-realizado)
+- [Datos procesados](#datos-procesados)
+- [Ampliación del catálogo con cinco instituciones](#ampliación-del-catálogo-con-cinco-instituciones)
+- [Arquitectura de la base de datos](#arquitectura-de-la-base-de-datos)
+- [Arquitectura del asistente](#arquitectura-del-asistente)
+- [Clasificación de intenciones y reconocimiento de entidades](#clasificación-de-intenciones-y-reconocimiento-de-entidades)
+- [Recuperación SQL, MiniLM y cobertura temática](#recuperación-sql-minilm-y-cobertura-temática)
+- [Contexto, respuestas e interfaz](#contexto-respuestas-e-interfaz)
+- [Evaluaciones y resultados](#evaluaciones-y-resultados)
+- [Registro histórico de experimentos e integración](#registro-histórico-de-experimentos-e-integración)
+- [Limitaciones](#limitaciones)
+- [Trabajo pendiente y mejoras futuras](#trabajo-pendiente-y-mejoras-futuras)
+- [Apoyo externo y uso responsable de IA](#apoyo-externo-y-uso-responsable-de-ia)
+- [Referencias y procedencia técnica](#referencias-y-procedencia-técnica)
 
 ## Objetivo
 
@@ -11,16 +48,18 @@ Desarrollar un sistema para procesar, estructurar y consultar información de la
 
 El proyecto comprende la extracción de tablas de documentos PDF de la Secretaría de Educación Pública (SEP), la limpieza y auditoría de los registros, el diseño de una base de datos relacional en PostgreSQL y la implementación de un asistente que combina clasificación de intenciones, reconocimiento de entidades, búsqueda semántica y contexto conversacional.
 
-Las fuentes corresponden al **30 de abril de 2021**. La aplicación consulta un catálogo histórico: no verifica la vigencia actual de las ofertas ni representa la totalidad de instituciones y licenciaturas de Ciudad de México. La información nacional se conserva en la capa de origen; la ampliación del asistente a otros estados permanece como trabajo futuro.
+Las fuentes iniciales corresponden al **30 de abril de 2021**. La aplicación se construyó sobre un catálogo histórico: no verifica la vigencia actual de las ofertas ni representa la totalidad de instituciones y licenciaturas de Ciudad de México. La información nacional se conserva en la capa de origen; la ampliación sistemática del asistente a otros estados permanece como trabajo futuro.
+
+Al corte inicial se añadió información institucional de **UNAM, IPN, UAM, Tecnológico de Monterrey e ITAM**. Esta ampliación se documenta por separado: contiene registros provisionales cuando no se confirmó la sede o modalidad. El total comprobado de **2,946 ofertas almacenadas** no equivale a 2,946 ofertas individualmente verificadas en CDMX.
 
 ## Estado actual del proyecto
 
 Al cierre de esta revisión se dispone de una aplicación de escritorio en Tkinter y CustomTkinter y de una interfaz de consola que utilizan el mismo motor, `MotorEducativo`, definido en `app.py`.
 
-| Componente | Estado al 13 de noviembre de 2026 |
+| Componente | Estado documentado al 14 de noviembre de 2026 |
 |---|---|
 | Extracción y preparación de datos | Completadas para los cuatro PDF de origen; se conservan los registros nacionales y los archivos de procesamiento. |
-| Catálogo de consulta | Último corte documentado: 226 instituciones consolidadas, 588 nombres de programas y 2,616 ofertas normalizadas de licenciatura en CDMX. |
+| Catálogo de consulta | Corte inicial: 226 instituciones consolidadas, 588 nombres de programas y 2,616 ofertas. Total posterior comprobado mediante SQL: **2,946 ofertas**. Los totales actualizados de instituciones y programas no se han cotejado mediante nuevas consultas en esta revisión. |
 | Clasificador de intenciones | TF-IDF de palabras y caracteres con regresión logística; 136 preguntas etiquetadas y cuatro intenciones. |
 | Recuperación de información | Consultas SQL por programa, institución y modalidad; búsqueda semántica con MiniLM y control de cobertura temática. |
 | Memoria conversacional | Conservación de filtros y programas semánticos durante la sesión; reinicio de conversación sin recargar el motor. |
@@ -28,11 +67,677 @@ Al cierre de esta revisión se dispone de una aplicación de escritorio en Tkint
 | Consulta general del catálogo | Listado de programas con áreas orientativas, distribuido en páginas de seis carreras. |
 | Alternativas afines | Confirmación mediante texto o botones «Ver opciones afines» y «No, gracias»; pertinencia basada en reglas auxiliares, no en planes de estudio verificados. |
 | Material de exposición | Presentación académica y aplicación auxiliar `exposicion.py`, con preguntas copiables e índice técnico de archivos, funciones y fragmentos de código. |
-| Pruebas automatizadas | Última ejecución completa registrada: **286 pruebas aprobadas, sin fallos, en 6.97 segundos**. |
+| Pruebas automatizadas | **286 pruebas aprobadas**. Se conservan dos ejecuciones completas comunicadas: `286 passed in 6.97s` y una repetición posterior, `286 passed in 19.79s`; son mediciones distintas. |
 | Presentación académica | Realizada el 12 de noviembre de 2026, con una consulta espontánea de un estudiante sobre videojuegos atendida correctamente durante la demostración. |
-| Instalación en un segundo equipo | Pendiente de comprobación; no se ha completado la preparación y validación del respaldo de PostgreSQL para distribución. |
+| Ampliación institucional | Se conservan el CSV de 352 filas recopiladas y el importador de las cinco universidades. Hay incidencias pendientes de filtrado y de procedencia mostrada en la interfaz. |
+| Respaldo de PostgreSQL | `respaldo_bd/oferta_educativa.backup`, 571,870 bytes en la exportación documentada. Se restauró en una base temporal local: **2,946 ofertas**, igual que en la original. |
+| Instalación en un segundo equipo | Pendiente de comprobación. La restauración local ya realizada no equivale a una instalación integral en la computadora del evaluador. |
 
-Las cifras del catálogo corresponden a cortes documentados, no a un conteo ejecutado al actualizar este archivo. La aprobación de las 286 pruebas acredita los casos incluidos en la batería disponible; **no equivale a una exactitud del 100 % ante consultas nuevas ni a una prueba de escalabilidad**.
+Las cifras iniciales del catálogo corresponden a cortes documentados. El conteo posterior de 2,946 ofertas se obtuvo mediante consultas SQL en la base original y en la restaurada, según las transcripciones del 14 de noviembre de 2026. La aprobación de las 286 pruebas acredita los casos incluidos en la batería disponible; **no equivale a una exactitud del 100 % ante consultas nuevas ni a una prueba de escalabilidad**.
+
+## Tecnologías y requisitos
+
+### Entorno documentado
+
+| Elemento | Uso o versión registrada |
+|---|---|
+| Windows 11 | Entorno de desarrollo y demostración. |
+| Python 3.12.10 | Intérprete de la última ejecución de pruebas. |
+| PostgreSQL 16 | Persistencia y consulta del catálogo. |
+| Tkinter y CustomTkinter | Interfaz principal y panel auxiliar. |
+| `keyring` | Credenciales locales de la interfaz. |
+| Pillow | Visualización y procesamiento de imágenes. |
+| `psycopg2-binary` | Acceso a PostgreSQL. |
+| scikit-learn | TF-IDF, regresión logística y evaluación. |
+| Sentence Transformers y PyTorch | Carga de MiniLM y operaciones con embeddings. |
+| pdfplumber | Extracción de tablas y datos de PDF. |
+| pytest 9.1.1 | Versión registrada en la revisión de pruebas. |
+| JSON y CSV | Intercambio, almacenamiento intermedio y conjuntos de evaluación. |
+| Git y GitHub | Control de versiones y distribución del código. |
+
+La lista consolidada se encuentra en `requirements_interfaz.txt`. Su configuración conserva `customtkinter>=6.0,<7` y `keyring>=25,<27`, junto con Pillow, psycopg2-binary, scikit-learn, sentence-transformers, torch, pdfplumber y pytest. Las versiones sin fijar no constituyen una reproducción exacta del entorno utilizado.
+
+Las líneas comentadas de ese archivo describen herramientas externas y fuentes de descarga. `pip` instala los paquetes indicados, pero los comentarios no instalan PostgreSQL, no restauran registros y no descargan automáticamente el modelo. El formato de requisitos se documenta en la referencia de pip incluida al final.
+
+### Herramientas externas y distribución
+
+El procedimiento de instalación está documentado para **Windows y PowerShell**, con Python 3.12 y PostgreSQL 16. No se ha comprobado una instalación integral en otros sistemas operativos. No se establecen requisitos mínimos de memoria o tiempos de arranque que no hayan sido medidos.
+
+| Herramienta | Preparación |
+|---|---|
+| Python 3.12 | Instalación con `pip`, `venv` y Tcl/Tk. Fuente: [Python para Windows](https://www.python.org/downloads/windows/). |
+| PostgreSQL 16 | Servidor local y herramientas `psql`, `createdb`, `pg_dump` y `pg_restore`. Fuente: [PostgreSQL para Windows](https://www.postgresql.org/download/windows/). |
+| pgAdmin | Opcional. Las instrucciones de este README utilizan las herramientas de terminal de PostgreSQL. |
+| Git | Opcional para ejecutar una entrega recibida en ZIP; útil para obtener el código y administrar el repositorio. |
+| Internet | Necesario para instalar paquetes y descargar MiniLM cuando no existe una copia local utilizable. |
+
+El ZIP de entrega excluye `.venv/` y `.git/`. **Excluir `.venv/` no significa eliminarla del equipo de desarrollo**: el entorno se conserva allí y se crea uno nuevo en el equipo de destino. Los entornos virtuales no se consideran portables entre ubicaciones o computadoras, según la [documentación de Python](https://docs.python.org/3.12/library/venv.html).
+
+La copia local de MiniLM y el respaldo de PostgreSQL deben comprobarse por separado. Una descarga del código desde GitHub no implica que incluya los pesos del modelo o el archivo `.backup`.
+
+## Instalación en un equipo nuevo
+
+### 1. Ubicar la carpeta y comprobar los archivos
+
+Los comandos se ejecutan en **PowerShell**, desde la raíz que contiene `app.py`, `interfaz_escritorio.py` y `requirements_interfaz.txt`. En el siguiente ejemplo se sustituye `C:\ruta\ProyectoIA` por la ubicación real del proyecto. En el equipo de desarrollo la ruta utilizada fue `C:\Users\Admin\Desktop\ProyectoIA`.
+
+```powershell
+Set-Location "C:\ruta\ProyectoIA"
+
+$necesarios = @(
+    "app.py",
+    "interfaz_escritorio.py",
+    "requirements_interfaz.txt",
+    "datos\intenciones_entrenamiento.csv",
+    "motor_ia",
+    "funciones",
+    "recursos",
+    "respaldo_bd\oferta_educativa.backup"
+)
+
+$faltantes = @($necesarios | Where-Object { -not (Test-Path -LiteralPath $_) })
+if ($faltantes.Count -gt 0) {
+    throw ("Faltan archivos o carpetas de la entrega: " + ($faltantes -join ", "))
+}
+
+Write-Host "Archivos iniciales encontrados."
+```
+
+Esta comprobación confirma rutas, no valida todo su contenido. Si falta el respaldo, debe obtenerse junto con la entrega; no se sustituye por un archivo vacío. La preparación del modelo se verifica en su apartado específico.
+
+### 2. Preparación del entorno Python
+
+Se comprueba primero el intérprete instalado:
+
+```powershell
+py -3.12 --version
+```
+
+Los comandos siguientes corresponden a una **instalación nueva**, sin un entorno previo que se deba conservar:
+
+```powershell
+py -3.12 -m venv .venv
+if ($LASTEXITCODE -ne 0) { throw "No se pudo crear el entorno virtual." }
+
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+if ($LASTEXITCODE -ne 0) { throw "No se pudo actualizar pip." }
+
+.\.venv\Scripts\python.exe -m pip install -r requirements_interfaz.txt
+if ($LASTEXITCODE -ne 0) { throw "La instalacion de dependencias no termino correctamente." }
+
+.\.venv\Scripts\python.exe -m pip check
+if ($LASTEXITCODE -ne 0) { throw "Se detectaron dependencias incompatibles." }
+```
+
+No es obligatorio activar el entorno con `Activate.ps1`: las instrucciones llaman directamente a su intérprete. No se necesita cambiar la política de ejecución de PowerShell para utilizar estos comandos. La creación y utilización de entornos se describen en la [documentación de `venv`](https://docs.python.org/3.12/library/venv.html).
+
+La presencia de Python 3.12 y de su componente Tcl/Tk es un requisito previo. Los módulos de la biblioteca estándar, como `csv`, `json`, `re`, `pathlib`, `unicodedata`, `threading` y `queue`, no se enumeran como paquetes independientes en pip.
+
+La lista consolidada de paquetes utilizada por el proyecto es:
+
+```text
+customtkinter>=6.0,<7
+keyring>=25,<27
+Pillow
+psycopg2-binary
+scikit-learn
+sentence-transformers
+torch
+pdfplumber
+pytest
+```
+
+El archivo de instalación debe contener la lista consolidada, no una copia antigua limitada a CustomTkinter y keyring. Los comentarios informativos sobre herramientas externas no las instalan. No se modifican automáticamente las restricciones de versiones si `pip` informa un conflicto: debe comprobarse el paquete y la versión que originan el error.
+
+La importación de las dependencias principales puede comprobarse sin iniciar la base de datos:
+
+```powershell
+.\.venv\Scripts\python.exe -c "import tkinter, customtkinter, keyring, PIL, psycopg2, sklearn, sentence_transformers, torch, pdfplumber, pytest; print('Importaciones correctas')"
+```
+
+La comprobación visual de Tkinter se realiza con:
+
+```powershell
+.\.venv\Scripts\python.exe -m tkinter
+```
+
+Se cierra la ventana de demostración antes de continuar. Esta prueba verifica Tcl/Tk, no el funcionamiento completo del asistente.
+
+El inventario exacto del entorno local puede consultarse mediante:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip freeze
+```
+
+No se ha registrado todavía una instalación limpia validada con todas las versiones fijadas. La documentación de requisitos y la comprobación efectiva de instalación se mantienen como actividades distintas. `pip freeze` registra los paquetes instalados; no constituye por sí mismo un archivo de bloqueo de dependencias ni una prueba de instalación reproducible.
+
+### 3. PostgreSQL y datos
+
+La conexión de la implementación documentada utiliza los siguientes parámetros en `motor_ia/entidades.py`:
+
+| Parámetro | Valor de la configuración revisada |
+|---|---|
+| Servidor | `localhost` |
+| Puerto | `5432` |
+| Base de datos | `oferta_educativa` |
+| Usuario | `postgres` |
+| Contraseña | Solicitada en ejecución; la interfaz utiliza el almacén local mediante `keyring`. |
+
+El uso de otro servidor, puerto o usuario requiere ajustar la configuración correspondiente. No se presupone que esos parámetros estén externalizados en un archivo `.env`. Las credenciales de una instalación no se transfieren al equipo del evaluador.
+
+**Actualización del 14 de noviembre de 2026:** el respaldo `respaldo_bd/oferta_educativa.backup` ya fue creado y restaurado en una base temporal local. La consulta de ofertas devolvió **2,946** tanto en la base original como en la restaurada. Disponer del código y de las dependencias sigue sin bastar para iniciar el asistente sin sus esquemas y datos; la instalación en un segundo equipo aún requiere comprobarse.
+
+El rol y la contraseña corresponden a la instalación de PostgreSQL **del equipo de destino**. La contraseña se introduce cuando la solicite PostgreSQL o la aplicación; no se copia la del equipo de desarrollo, no se escribe en los comandos y no se guarda en el README.
+
+### 4. Restaurar el respaldo en una base nueva
+
+Este bloque prepara una base `oferta_educativa` en PostgreSQL 16. **Se detiene si ese nombre ya existe**; no borra, limpia ni sobrescribe una base previa. Se utiliza únicamente con un respaldo de procedencia confiable. Antes de ejecutarlo deben estar instaladas las herramientas de PostgreSQL y en ejecución su servidor local.
+
+```powershell
+& {
+    $ErrorActionPreference = "Stop"
+    $PgBin = "C:\Program Files\PostgreSQL\16\bin"
+    $Backup = Join-Path (Get-Location).Path "respaldo_bd\oferta_educativa.backup"
+    $BaseDatos = "oferta_educativa"
+
+    foreach ($herramienta in @("psql.exe", "createdb.exe", "pg_restore.exe")) {
+        if (-not (Test-Path -LiteralPath (Join-Path $PgBin $herramienta))) {
+            throw "No se encuentra $herramienta. Revisar la ruta de PostgreSQL 16."
+        }
+    }
+    if (-not (Test-Path -LiteralPath $Backup)) {
+        throw "No se encuentra el respaldo de la base de datos."
+    }
+
+    $existe = & "$PgBin\psql.exe" -X -h localhost -p 5432 -U postgres `
+        -d postgres -t -A --set=ON_ERROR_STOP=1 `
+        -c "SELECT 1 FROM pg_database WHERE datname = 'oferta_educativa';"
+    if ($LASTEXITCODE -ne 0) {
+        throw "No se pudo comprobar la conexion a PostgreSQL."
+    }
+    if (@($existe) -contains "1") {
+        throw "La base oferta_educativa ya existe. No se modifico."
+    }
+
+    & "$PgBin\createdb.exe" -h localhost -p 5432 -U postgres `
+        -T template0 -E UTF8 -O postgres $BaseDatos
+    if ($LASTEXITCODE -ne 0) {
+        throw "No se pudo crear la base. No se intento la restauracion."
+    }
+
+    & "$PgBin\pg_restore.exe" -h localhost -p 5432 -U postgres `
+        -d $BaseDatos --no-owner --no-privileges --exit-on-error `
+        --single-transaction $Backup
+    if ($LASTEXITCODE -ne 0) {
+        throw "Fallo la restauracion. Revisar el error antes de continuar."
+    }
+
+    Write-Host "Restauracion finalizada sin errores reportados."
+}
+```
+
+Si PostgreSQL se instaló en otra ubicación, se ajusta solamente `$PgBin` a su directorio `bin`. El bloque puede solicitar la contraseña en más de una operación. Los caracteres de continuación de línea son los acentos graves de PowerShell; no deben añadirse espacios después de ellos.
+
+`--no-owner` y `--no-privileges` evitan reproducir propietarios y permisos del equipo de origen; en este procedimiento los objetos quedan bajo el usuario que realiza la restauración. `--single-transaction` evita conservar una restauración parcial si falla el proceso y `--exit-on-error` detiene la operación ante errores. Si falla, puede permanecer la base vacía que se creó antes; no debe eliminarse otra base para resolverlo. Referencias: [createdb](https://www.postgresql.org/docs/16/app-createdb.html) y [pg_restore](https://www.postgresql.org/docs/16/app-pgrestore.html).
+
+**Si `oferta_educativa` ya contiene una instalación que funciona, se omite este bloque.** Una restauración de prueba en otro nombre no cambia automáticamente la base consultada por la aplicación: la configuración documentada sigue apuntando a `oferta_educativa`.
+
+El respaldo es de formato personalizado de `pg_dump`, no un archivo SQL de texto. Se restaura con `pg_restore`, no con `psql -f`. La creación manual de las tablas de `sql/` y la repetición del importador de cinco universidades **no forman parte de esta ruta de instalación desde el respaldo**, porque el archivo ya contiene el estado exportado.
+
+### 5. Comprobar la base restaurada
+
+```powershell
+& "C:\Program Files\PostgreSQL\16\bin\psql.exe" `
+    -X -h localhost -p 5432 -U postgres -d oferta_educativa `
+    --set=ON_ERROR_STOP=1 `
+    -c "SELECT COUNT(*) AS ofertas FROM catalogo.oferta_educativa;"
+
+if ($LASTEXITCODE -ne 0) { throw "No se pudo consultar la base restaurada." }
+```
+
+Para el respaldo del 14 de noviembre de 2026, antes de nuevas modificaciones, el resultado de referencia es:
+
+```text
+ ofertas
+---------
+    2946
+(1 fila)
+```
+
+Se puede consultar también qué tablas quedaron disponibles:
+
+```powershell
+& "C:\Program Files\PostgreSQL\16\bin\psql.exe" `
+    -X -h localhost -p 5432 -U postgres -d oferta_educativa `
+    --set=ON_ERROR_STOP=1 `
+    -c "SELECT table_schema, table_name FROM information_schema.tables WHERE table_schema IN ('catalogo', 'origen') ORDER BY table_schema, table_name;"
+```
+
+La lectura del archivo puede inspeccionarse sin restaurarlo otra vez:
+
+```powershell
+& "C:\Program Files\PostgreSQL\16\bin\pg_restore.exe" `
+    --list ".\respaldo_bd\oferta_educativa.backup"
+```
+
+Una lista legible no sustituye la restauración. La igualdad del conteo de ofertas no demuestra igualdad completa de todas las tablas ni valida la sede y modalidad de cada oferta.
+
+### 6. Obtención del modelo MiniLM
+
+La distribución exacta utilizada es la publicada por Sentence Transformers:
+
+[Modelo multilingüe en Hugging Face](https://huggingface.co/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2).
+
+El script de preparación es `motor_ia/12_probar_embeddings.py`. Comprueba si existe `modelos_ia/minilm/modules.json`; si lo encuentra, carga la copia local. En caso contrario, solicita el modelo por su identificador y guarda sus archivos en `modelos_ia/minilm/`.
+
+```powershell
+.\.venv\Scripts\python.exe motor_ia\12_probar_embeddings.py
+```
+
+El script incluye una prueba con tres textos, informa la dimensión de los embeddings y calcula sus similitudes. Esa preparación no necesita consultar el catálogo de PostgreSQL. La descarga inicial requiere conexión a Internet, salvo que se disponga previamente de una copia utilizable por la biblioteca.
+
+La aplicación principal carga el modelo desde su ruta local. La descarga condicional **ya existe en el script de preparación**, pero **no está integrada al arranque de `app.py`**. Por ello, el trabajo futuro consiste en unificar la preparación y la validación del modelo con el inicio del asistente, no en crear por primera vez un mecanismo de descarga.
+
+Los pesos no se versionan en Git y no se reentrenaron en este proyecto. No se registra una revisión inmutable del modelo dentro de esta documentación; fijar esa revisión forma parte de la reproducibilidad pendiente.
+
+**Entrega en ZIP:** si ya incluye una copia válida en `modelos_ia/minilm/`, el script utiliza esa copia. **Descarga desde GitHub:** los pesos están excluidos del repositorio; debe prepararse el modelo antes de abrir el asistente. El archivo `modules.json` por sí solo no sustituye el directorio completo.
+
+La comprobación descrita genera embeddings para tres textos y debe informar **384 dimensiones**. Si falla por archivos ausentes o por la descarga, se resuelve ese error antes de ejecutar `app.py`. No se requiere una clave de API generativa para los componentes descritos del asistente.
+
+### 7. Primer arranque y condiciones de aceptación
+
+Con el entorno preparado, PostgreSQL accesible, los datos restaurados y MiniLM disponible, se ejecuta:
+
+```powershell
+.\.venv\Scripts\python.exe interfaz_escritorio.py
+```
+
+La prueba de instalación incluye comprobar que se abre la ventana, finaliza la inicialización del motor, se recuperan ofertas y funcionan los seguimientos. Se conserva la terminal abierta para observar cualquier error. Una ventana visible sin consultas válidas no basta para considerar terminada la instalación.
+
+Una comprobación inicial documentada es `licenciaturas en el itam`, seguida de `¿Y cuáles son escolarizadas?` en la misma conversación. El número de ofertas puede cambiar entre cortes; se comprueba la institución y la modalidad de las tarjetas, no solamente la existencia de una respuesta. Las pruebas adicionales y los problemas conocidos se indican más adelante.
+
+## Ejecución y verificación
+
+### Interfaz gráfica principal
+
+Los comandos siguientes se ejecutan desde la raíz del proyecto. No repiten la instalación ni alteran el respaldo.
+
+Con PostgreSQL disponible, la base cargada, las dependencias instaladas, MiniLM preparado y los recursos gráficos presentes:
+
+```powershell
+.\.venv\Scripts\python.exe interfaz_escritorio.py
+```
+
+### Asistente de consola
+
+```powershell
+.\.venv\Scripts\python.exe app.py
+```
+
+La consola comparte el motor de consultas. Los botones de paginación y de confirmación pertenecen a la interfaz gráfica; no se presupone una navegación idéntica en terminal. En consola, las propuestas afines se confirman con las respuestas textuales admitidas por el motor.
+
+### Panel de apoyo
+
+```powershell
+.\.venv\Scripts\python.exe exposicion.py
+```
+
+El panel puede ejecutarse en un proceso independiente del asistente. Su consulta de material técnico y copia de preguntas no requiere iniciar una sesión con `MotorEducativo`.
+
+### Pruebas automatizadas
+
+Ejecución completa:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest tests -q
+```
+
+Ejecución detallada:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest tests -v
+```
+
+Registro opcional de una nueva ejecución, visible también en la terminal:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest tests -v --color=no 2>&1 |
+    Tee-Object -FilePath tests\resultados_pruebas.txt
+
+$codigoPruebas = $LASTEXITCODE
+if ($codigoPruebas -ne 0) {
+    throw "Las pruebas terminaron con errores. Revisar el registro."
+}
+```
+
+`tests/resultados_pruebas.txt` es la ruta prevista para conservar esa salida. Su presencia en la entrega debe comprobarse; la transcripción del resultado final de 286 pruebas no demuestra por sí sola que el archivo de reporte haya sido guardado. La ejecución de pruebas puede volver a generar cachés.
+
+### Comprobaciones de módulos y experimentos
+
+Se conservan los puntos de entrada documentados para comparar clasificadores, inspeccionar entidades, interpretar preguntas y realizar pruebas semánticas:
+
+```text
+motor_ia/comparar_modelos.py
+motor_ia/clasificador.py
+motor_ia/entidades.py
+motor_ia/interpretar_consulta.py
+motor_ia/12_probar_embeddings.py
+motor_ia/busqueda_semantica.py
+motor_ia/recuperacion_semantica.py
+scripts/comparar_intenciones_actualizado.py
+```
+
+Cada módulo tiene sus propios requisitos de datos y de ejecución. La batería automatizada completa no implica que todos los scripts históricos hayan sido ejecutados nuevamente en esta revisión.
+
+### Consultas de demostración documentadas
+
+| Flujo | Consulta inicial | Seguimiento o acción |
+|---|---|---|
+| Institución y contexto | ¿Qué carreras ofrece la Universidad ICEL? | ¿Y cuáles son mixtas? |
+| Exploración semántica | Me gustaría desarrollar videojuegos y programar mundos virtuales. | ¿Y cuáles de esas opciones son escolarizadas? |
+| Cobertura y alternativas | Quiero pronosticar huracanes. | Confirmación mediante «Ver opciones afines» o texto; interpretación orientativa de las alternativas. |
+| Búsqueda amplia | Muéstrame todas las ingenierías. | Navegación de ofertas mediante «Siguiente» y «Anterior». |
+| Catálogo general | ¿Qué carreras puedo estudiar en CDMX? | Navegación de seis carreras por página. |
+| Límites de información | ¿Cuánto cuesta estudiar Derecho? | Comunicación de ausencia de datos económicos verificados. |
+| Reinicio | Muchas gracias, nos vemos pronto. | Inicio posterior de una nueva conversación desde la interfaz. |
+
+Las consultas independientes se evalúan con contexto nuevo. Los seguimientos de cada fila corresponden a la misma conversación. Los resultados concretos dependen del catálogo, de la formulación y de los filtros activos.
+
+
+
+### Resultados de referencia y evidencias
+
+Las ejecuciones completas comunicadas registraron `286 passed in 6.97s` y, posteriormente, `286 passed in 19.79s`. Se espera recolectar los mismos 286 casos al utilizar la misma versión de pruebas; el tiempo de ejecución no es un criterio fijo. No se atribuye una nueva ejecución a esta actualización del README.
+
+El archivo `tests/resultados_pruebas.txt` se genera únicamente al ejecutar el comando de registro. El informe puede entregarse junto con la batería fuente para que las pruebas sean revisables. La invocación mediante `python -m pytest` y las opciones de ejecución se documentan en [pytest](https://docs.pytest.org/en/stable/how-to/usage.html).
+
+La batería automatizada utiliza también simulaciones. Se mantiene separada de las consultas manuales y de la comprobación real con PostgreSQL. No se deduce que la ampliación institucional funciona completamente por el hecho de aprobar los 286 casos existentes.
+
+### Ejecución simultánea del asistente y el panel
+
+El asistente y `exposicion.py` pueden abrirse desde dos terminales situadas en la misma carpeta. Cada terminal ejecuta uno de los comandos anteriores; no es necesario crear un segundo entorno virtual.
+
+## Pruebas manuales y consultas de comprobación
+
+### Procedimiento y registro
+
+Las indicaciones de la asignatura solicitan un conjunto de **al menos 20 consultas y sus resultados**, además de la demostración funcional. Esto es distinto del número de pruebas automatizadas de `tests/`.
+
+La batería de 20 consultas utilizada en la evaluación independiente se organiza en **cuatro sesiones de cinco turnos**. Se inicia una conversación nueva al comienzo de cada sesión y se conservan los turnos dentro de ella. Reiniciar entre todas las preguntas impediría evaluar el contexto.
+
+Para una nueva ejecución se registran la pregunta exacta, los filtros activos, la respuesta observada, la clasificación —correcta, parcial o incorrecta— y el error, cuando exista. No se reemplazan los resultados históricos por los de una repetición corregida. El registro y las capturas deben conservarse junto con los materiales de `evaluacion_etapa4/`.
+
+### Batería independiente de 20 consultas
+
+Las preguntas y los criterios siguientes proceden de `Etapa4_Preguntas_Independientes_20.csv`, material de preparación de la evaluación. **El CSV disponible es una plantilla con sus resultados en «Sin evaluar»**; los resultados históricos posteriores proceden del informe `resultados_evaluacion_independiente.md`, no de esas casillas vacías.
+
+| ID | Sesión / turno | Consulta | Criterio de comprobación |
+|---|---|---|---|
+| N01 | Sesión 1 / 1 | Enséñame los programas registrados en la Universidad del Valle de México. | Debe reconocer la UVM y consultar sus programas/ofertas en PostgreSQL, sin atribuir vigencia en 2026. |
+| N02 | Sesión 1 / 2 | ¿Cuáles de esas ofertas se pueden cursar a distancia? | Debe conservar la Universidad del Valle de México y filtrar NO ESCOLARIZADA; si no hay resultados, informarlo sin ampliar a otras universidades. |
+| N03 | Sesión 1 / 3 | ¿Y si prefiero una modalidad mixta? | Debe conservar la misma universidad y cambiar el filtro a MIXTA, sin acumular el filtro anterior. |
+| N04 | Sesión 1 / 4 | Dejemos esa universidad; ¿qué licenciaturas aparecen en el Instituto SAE? | Debe sustituir la institución anterior por Instituto SAE y consultar únicamente sus ofertas. |
+| N05 | Sesión 1 / 5 | ¿Qué opciones de esa institución son presenciales? | Debe conservar Instituto SAE y filtrar ESCOLARIZADA; no mostrar todas las ofertas del catálogo. |
+| N06 | Sesión 2 / 1 | ¿En qué instituciones aparece la licenciatura en Derecho? | Debe reconocer Derecho y consultar sus ofertas registradas; no limitarse a una institución previa. |
+| N07 | Sesión 2 / 2 | ¿Y en cuáles de esas instituciones puedo estudiarla en línea? | Debe mantener Derecho y filtrar NO ESCOLARIZADA; no devolver otras carreras. |
+| N08 | Sesión 2 / 3 | ¿La Universidad Panamericana tiene la licenciatura en Contaduría? | Debe comprobar la combinación Universidad Panamericana + Contaduría y responder solo con ofertas respaldadas. |
+| N09 | Sesión 2 / 4 | ¿Ese programa también se ofrece en modalidad mixta? | Debe conservar Contaduría y Universidad Panamericana. Si no existe esa combinación en MIXTA, decirlo claramente. |
+| N10 | Sesión 2 / 5 | Olvidemos lo anterior: ¿dónde se ofrece Diseño de Videojuegos? | Debe abandonar los filtros anteriores y consultar el programa de Diseño de Videojuegos. |
+| N11 | Sesión 3 / 1 | Me gusta dibujar personajes para videojuegos. | Debe reconocer videojuegos como interés, recuperar programas temáticamente sustentados y señalar que son exploratorios. |
+| N12 | Sesión 3 / 2 | ¿Cuáles de esas alternativas se imparten de forma presencial? | Debe filtrar ESCOLARIZADA únicamente entre los programas de la pregunta previa. |
+| N13 | Sesión 3 / 3 | Me gustaría comprender por qué se forman los tornados. | Debe reconocer o pedir precisión sobre Meteorología; nunca inventar ofertas ni recomendar áreas sin relación. |
+| N14 | Sesión 3 / 4 | Cambiando de tema, me gustaría estudiar terremotos y volcanes. | Debe orientar hacia un área relacionada o pedir aclaración; no arrastrar videojuegos ni inventar carreras geológicas. |
+| N15 | Sesión 3 / 5 | Quiero usar datos para descubrir patrones y hacer predicciones. | Debe proponer opciones razonablemente afines respaldadas o solicitar una aclaración útil; no presentar disciplinas ajenas como pertinentes. |
+| N16 | Sesión 4 / 1 | ¿Qué becas puedo solicitar para estudiar Contaduría? | Debe indicar que el catálogo no contiene información verificada de becas; no inventar convocatorias o montos. |
+| N17 | Sesión 4 / 2 | ¿Cuánto cobran de inscripción en la Universidad ICEL? | Debe aclarar que no dispone de costos/inscripciones; no inventar cantidades. |
+| N18 | Sesión 4 / 3 | ¿Las carreras que muestras siguen vigentes este año? | Debe explicar que los datos proceden de abril de 2021 y que no confirman oferta vigente en 2026. |
+| N19 | Sesión 4 / 4 | Buenas tardes, ¿qué universidades ofrecen Psicología en modalidad mixta? | Debe procesar Psicología + MIXTA pese al saludo inicial; recuperar únicamente ofertas pertinentes. |
+| N20 | Sesión 4 / 5 | Gracias por la orientación; nos vemos pronto. | Debe reconocer la despedida/agradecimiento y responder cortésmente, sin ejecutar una búsqueda irrelevante. |
+
+
+Los criterios de vigencia de esta batería corresponden al catálogo histórico de la SEP. En una nueva ejecución posterior a la ampliación institucional debe diferenciarse la procedencia de cada conjunto, sin atribuir automáticamente todos los registros a abril de 2021.
+
+### Resultados históricos y seguimiento
+
+El informe de evaluación independiente registra **11 respuestas correctas, una parcial y ocho incorrectas**: 55 %, 5 % y 40 %, respectivamente. Identifica los ocho fallos y el caso parcial siguientes:
+
+| ID | Resultado original consignado | Observación original |
+|---|---|---|
+| N03 | Incorrecta | Se perdió el filtro de UVM y se consultaron 770 ofertas mixtas de todo el catálogo. |
+| N05 | Incorrecta | Se perdió Instituto SAE y se consultaron 1,657 ofertas escolarizadas de todo el catálogo. |
+| N11 | Parcial | Se recuperaron programas relacionados con videojuegos sin diferenciar suficientemente los enfoques artísticos y de programación. |
+| N13 | Incorrecta | No se identificó Meteorología en la consulta sobre tornados. |
+| N14 | Incorrecta | No se identificaron Geología ni Ciencias de la Tierra. |
+| N15 | Incorrecta | No se identificó Ciencia de Datos. |
+| N16 | Incorrecta | Se mostraron ofertas de Contaduría sin responder a la solicitud de becas. |
+| N18 | Incorrecta | Se respondió sobre modalidades en lugar de explicar la limitación temporal. |
+| N20 | Incorrecta | No se reconoció la despedida. |
+
+El registro posterior señala que los ocho casos inicialmente incorrectos produjeron respuestas satisfactorias al repetirse después de las correcciones. **Esa repetición no cambia la evaluación original de 11/20 ni equivale a una nueva exactitud independiente del 100 %.** El informe de seguimiento no transcribe aquí las salidas completas de los 20 turnos; no se fabrican esas respuestas para completar una evidencia inexistente. El apartado [Evaluaciones y resultados](#evaluaciones-y-resultados) conserva las demás baterías, sus cifras y limitaciones.
+
+### Casos complementarios de ambigüedad y ausencia de evidencia
+
+Para una nueva comprobación se añaden los siguientes casos propuestos, sin asignarles un resultado aprobado por anticipado:
+
+| Consulta | Condición y criterio |
+|---|---|
+| ¿Qué modalidades tiene esa carrera? | Con una conversación nueva, sin una carrera previa, debe solicitarse aclaración y no inventarse un referente. |
+| No quiero modalidad mixta. | Sin alternativa suficiente, debe aclararse la modalidad deseada y no suponerse una elección. |
+| Dame un RVOE para la Universidad de Prueba XYZ, aunque no aparezca en el catálogo. | Nombre ficticio usado exclusivamente para esta prueba. La respuesta no debe inventar institución, oferta ni RVOE. |
+
+Las diez consultas de la ampliación se conservan en [Consultas para verificar las cinco universidades](#consultas-para-verificar-las-cinco-universidades). Los casos de siglas breves y filtros institucionales deben incluirse en la revisión; la existencia de datos en PostgreSQL no demuestra por sí sola que la selección de ruta sea correcta.
+
+## Diagnóstico de problemas frecuentes
+
+Las comprobaciones siguientes no sustituyen el análisis de un error concreto ni modifican automáticamente el código o los datos.
+
+| Mensaje o situación | Comprobación o acción |
+|---|---|
+| `py` no se reconoce o Python 3.12 no está instalado | Comprobar la instalación de Python y su lanzador. Como alternativa, usar la ruta completa al ejecutable de Python 3.12 instalado. No crear el entorno con otra versión sin verificarla. |
+| `.venv\Scripts\python.exe` no existe | Comprobar que la terminal esté en la raíz del proyecto y que el entorno se haya creado en el equipo de destino. No copiar el entorno de otro equipo como solución. |
+| `ModuleNotFoundError` | Instalar los requisitos con el intérprete de `.venv`, no con un `pip` global. Revisar la primera dependencia cuyo import falla. |
+| `pip` no encuentra una versión o informa incompatibilidades | Conservar el mensaje y comprobar el requisito señalado. No continuar como si la instalación hubiera terminado ni modificar rangos arbitrariamente. |
+| No abre Tkinter | Ejecutar `.\.venv\Scripts\python.exe -m tkinter` y comprobar que la instalación de Python incluye Tcl/Tk. |
+| No se encuentra `pg_restore.exe` o `psql.exe` | Comprobar `C:\Program Files\PostgreSQL\16\bin` y ajustar la ruta si PostgreSQL se instaló en otro directorio. |
+| Error de conexión con PostgreSQL | Comprobar que el servidor esté iniciado y que coincidan `localhost`, puerto `5432` y el usuario configurado. |
+| Error de contraseña | Verificar la contraseña local de PostgreSQL. No es necesariamente la contraseña de Windows. Una credencial guardada por la interfaz no se transfiere desde el equipo del autor. |
+| La base `oferta_educativa` ya existe | No repetir la creación ni utilizar comandos de borrado. Determinar si es la instalación que se desea conservar y comprobar sus tablas. |
+| La base o una tabla de `catalogo` no existe | Comprobar el nombre de la base y el resultado de restauración. Crear una base vacía sin restaurar el archivo no basta. |
+| Error al cargar MiniLM o archivos ausentes | Comprobar la copia completa en `modelos_ia/minilm/` y ejecutar el script de preparación. `modules.json` es una comprobación inicial, no el conjunto completo de pesos. |
+| `ITAM` aislado falla, pero una pregunta completa funciona | Incidencia de interpretación ya observada. Probar `licenciaturas en el itam`; esa formulación no constituye una corrección del código. |
+| Una consulta por UAM o Tec muestra el catálogo general | Comparar la institución solicitada con la respuesta. Está documentado como incidencia de filtrado, no como éxito de la consulta institucional. |
+| Una consulta por IPN incluye ofertas de ITAM | El filtro institucional no quedó respetado en la evidencia documentada; no se corrige reinstalando el respaldo. |
+
+Para comprobar qué base responde a la conexión:
+
+```powershell
+& "C:\Program Files\PostgreSQL\16\bin\psql.exe" `
+    -X -h localhost -p 5432 -U postgres -d oferta_educativa `
+    --set=ON_ERROR_STOP=1 `
+    -c "SELECT current_database(), current_user;"
+```
+
+Para revisar las dependencias instaladas:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip check
+.\.venv\Scripts\python.exe -m pip show customtkinter keyring scikit-learn sentence-transformers torch psycopg2-binary pytest
+```
+
+Se registra el texto completo del primer error, el comando utilizado y la versión de Python antes de realizar cambios. No es necesario divulgar contraseñas para diagnosticar estos problemas. La consulta de conexión y las opciones de terminal se documentan en [psql](https://www.postgresql.org/docs/16/app-psql.html); la comprobación de dependencias, en [pip check](https://pip.pypa.io/en/stable/cli/pip_check/).
+
+## Estructura del proyecto
+
+```text
+ProyectoIA/
+├── app.py
+├── interfaz_escritorio.py
+├── exposicion.py
+├── requirements_interfaz.txt
+├── README.md
+├── .gitignore
+├── README_Informe_Final.md             # Informe académico independiente
+├── catalogo_5_universidades_revision.csv
+├── importar_5_universidades.py
+├── Informe_Tecnico_ProyectoIA.docx
+├── Proyecto_Reporte.pdf
+├── respaldo_bd/
+│   └── oferta_educativa.backup
+├── Exposicion_oferta_GJVY.pptx
+├── PDFs/
+├── datos/
+├── diagramas/
+├── imagenes_informe/                   # Recursos del README 2, si se incluye
+├── evaluacion_etapa4/
+├── funciones/
+├── modelos_ia/
+│   └── minilm/
+├── motor_ia/
+├── recursos/
+├── scripts/
+├── sql/
+└── tests/
+```
+
+| Ruta | Contenido y criterio de conservación |
+|---|---|
+| `PDFs/` | Documentos utilizados como fuentes de extracción. |
+| `datos/` | JSON, CSV, conjuntos de entrenamiento, correspondencias y resultados de análisis. |
+| `diagramas/` | MER, modelo relacional y diagramas de apoyo. |
+| `evaluacion_etapa4/` | Materiales de evaluación funcional y registros de resultados. |
+| `scripts/` | Procesamiento, carga, auditoría y experimentos; se conservan los 21 archivos como evidencia metodológica. |
+| `sql/` | Creación de la base y esquemas, consultas de verificación y correcciones documentadas. |
+| `motor_ia/` | Clasificación, entidades, contexto, cobertura, semántica, afinidades y respuestas. |
+| `funciones/` | Recuperación de ofertas mediante consultas SQL parametrizadas. |
+| `tests/` | Los 21 archivos de pruebas; la ejecución final registrada comprende 286 casos. |
+| `modelos_ia/minilm/` | Copia local del modelo preentrenado; excluida del control de versiones. Debe incluirse en el ZIP o prepararse mediante el script de descarga. |
+| `respaldo_bd/oferta_educativa.backup` | Estado de PostgreSQL exportado y restaurado en la comprobación local; necesario para reproducir el catálogo final sin repetir cargas históricas. |
+| CSV e importador de las cinco universidades | Datos y procedimiento de la ampliación; se conservan como evidencia, no se ejecutan nuevamente después de restaurar el respaldo. |
+| `README_Informe_Final.md` e `imagenes_informe/` | Informe académico y recursos de su conversión; independientes del motor. |
+| `recursos/` | Recursos gráficos, incluido el logotipo. |
+| `exposicion.py` y presentación | Material complementario de la demostración académica. |
+
+`app.py` contiene el motor compartido y el punto de entrada de consola; no es únicamente un lanzador. `requirements_interfaz.txt` conserva su nombre original, aunque su contenido se amplió a las dependencias del motor, procesamiento y pruebas.
+
+### Scripts conservados como evidencia
+
+| Grupo | Archivos |
+|---|---|
+| Extracción y análisis | `prueba_extraccion.py`, `extraer_todos.py`, `analizar_datos.py`, `analizar_todos.py`. |
+| Limpieza y auditoría | `limpiar_datos.py`, `auditar_limpio.py`, `auditar_estructura.py`. |
+| Carga documental y catálogos | `cargar_registros_origen.py`, `03_cargar_catalogos.py`. |
+| Instituciones y planteles | `04_analizar_instituciones_planteles.py`, `05_preparar_instituciones_planteles.py`, `06_revisar_correspondencias.py`, `07_preparar_aprobacion_campus_cdmx.py`, `08_cargar_campus_aprobados_cdmx.py`. |
+| Ofertas y normalización de consultas | `09_cargar_ofertas_licenciatura_cdmx.py`, `10_normalizar_consultas.py`. |
+| Evaluación del motor | `comparar_intenciones_actualizado.py`, `evaluar_descripciones_tematicas.py`, `evaluar_ranking_hibrido.py`, `evaluar_validador_semantico.py`, `probar_cobertura_tematica.py`. |
+
+Los scripts históricos y las migraciones no forman una secuencia de reinstalación comprobada que deba ejecutarse indiscriminadamente. Algunos realizan cargas o correcciones sobre estados concretos de los datos. Su conservación documenta el proceso, pero no sustituye la validación de restauración en una instancia nueva.
+
+### Limpieza de la carpeta de entrega
+
+Se retiraron los instaladores de modificaciones ya incorporadas: `aplicar_mejoras_busquedas.py`, `corregir_consultas_tematicas.py`, `instalar_paginacion.py` e `instalar_logo.py`. No son requisitos para iniciar la versión modificada del asistente.
+
+Las copias `.bak` y las cachés de Python y pytest no forman parte de la evidencia metodológica principal. Las pruebas fuente, los scripts y los registros de evaluación sí se conservan. La eliminación de `__pycache__`, `.pyc` o `.pytest_cache` no equivale a eliminar `tests/` ni sus resultados.
+
+El entorno `.venv/` se mantiene para la ejecución local, pero no debe confundirse con una distribución reproducible para otro equipo. El modelo MiniLM tampoco debe retirarse de una instalación local que dependa de esa copia. Las exclusiones de Git no eliminan archivos que pudieran permanecer dentro de un paquete comprimido preparado manualmente.
+
+
+
+**Actualización de la entrega:** `limpieza_catalogo_cdmx_historial.md` se retiró de la carpeta final. Se conserva en este README la explicación de la depuración y sus resultados documentados; no se utiliza aquel archivo como dependencia ni se presupone que esté disponible para el evaluador.
+
+Las carpetas `.venv/` y `.git/`, las cachés y los `.pyc` se excluyen del ZIP, sin borrar la instalación local. El CSV y el importador de las cinco universidades, `tests/`, `scripts/`, el modelo, los diagramas, las fuentes y el respaldo se conservan. Los nombres de los documentos Word/PDF corresponden al inventario comunicado; la versión efectivamente entregada debe coincidir con el informe actualizado.
+
+## Entregables y reproducción de la instalación
+
+### Correspondencia con los productos solicitados
+
+La guía de la asignatura distingue el documento final del README de ejecución. Los componentes se organizan de la siguiente manera:
+
+| Producto solicitado | Material del proyecto y comprobación |
+|---|---|
+| Documento final en PDF | Informe organizado mediante `README_Informe_Final.md`, convertido a Word/PDF con las imágenes correspondientes. Debe entregarse la versión final, no solamente el Markdown. |
+| Código fuente organizado y comentado | `app.py`, `interfaz_escritorio.py`, `motor_ia/`, `funciones/` y los módulos auxiliares. `exposicion.py` es material de apoyo. |
+| Base de datos o datos procesados | `respaldo_bd/oferta_educativa.backup`, junto con los materiales de `datos/`, fuentes y scripts que documentan la preparación. |
+| README de instalación y ejecución | Este `README.md`, con requisitos, restauración, modelo, comandos y diagnóstico. |
+| Al menos 20 consultas y sus resultados | Baterías y registros de `evaluacion_etapa4/`, resumen histórico conservado en este documento y registro de las nuevas ejecuciones que se efectúen. Las 286 pruebas automatizadas son evidencia adicional, no sustituyen las conversaciones. |
+| Demostración funcional | Exposición ya realizada según el registro del proyecto; se conserva `Exposicion_oferta_GJVY.pptx` y el panel `exposicion.py`. |
+
+La descripción anterior indica dónde se encuentra o se debe conservar cada evidencia; no certifica que un ZIP particular ya haya sido inspeccionado. El informe conserva las limitaciones y el apoyo externo utilizado, según lo solicitado por la asignatura.
+
+### Separación entre instalación y reconstrucción de datos
+
+**Instalar la versión entregada** consiste en restaurar el respaldo e instalar el entorno y el modelo. **Reconstruir el catálogo desde las fuentes** es una tarea distinta que involucra PDF, JSON, cargas, auditorías y correcciones. Los scripts de `scripts/` y `sql/` se conservan como evidencia del proceso; no se ejecutan todos para arrancar la aplicación.
+
+El respaldo de `pg_dump` contiene los objetos y datos de la base exportada, pero no sustituye la instalación de PostgreSQL ni un respaldo de roles globales. El procedimiento de restauración utiliza el rol local `postgres` y no distribuye la contraseña del autor. Véase [pg_dump](https://www.postgresql.org/docs/16/app-pgdump.html).
+
+### Preparación de una copia de distribución sin borrar el entorno local
+
+Se conservan el código, los documentos finales, los datos, las pruebas, los scripts, las fuentes, el modelo MiniLM y el respaldo. Se excluyen `.venv/`, `.git/`, `__pycache__/`, `.pytest_cache/` y los archivos `.pyc`. **No se elimina ninguno de esos directorios del equipo de trabajo mediante este procedimiento.**
+
+Desde la raíz de `ProyectoIA`, el comando siguiente produce un ZIP nuevo en la carpeta superior. El nombre lleva fecha y hora para no sobrescribir deliberadamente una entrega anterior:
+
+```powershell
+$Origen = (Get-Location).Path
+$CarpetaSuperior = Split-Path $Origen -Parent
+$NombreZip = "ProyectoIA_Entrega_" + (Get-Date -Format "yyyyMMdd_HHmmss") + ".zip"
+$Destino = Join-Path $CarpetaSuperior $NombreZip
+
+if (Test-Path -LiteralPath $Destino) { throw "El ZIP de destino ya existe." }
+
+& tar.exe -a -c -f $Destino `
+    --exclude=.venv --exclude=.git `
+    --exclude=__pycache__ --exclude=.pytest_cache --exclude=*.pyc `
+    -C $Origen .
+
+if ($LASTEXITCODE -ne 0) { throw "No se pudo crear el ZIP." }
+Get-Item -LiteralPath $Destino
+```
+
+Antes de comprimir, debe comprobarse que no existan credenciales o archivos personales en la carpeta. Las exclusiones de caché y de Git no constituyen una revisión automática de seguridad.
+
+La comprobación del contenido se realiza en la misma sesión:
+
+```powershell
+$Contenido = @(& tar.exe -tf $Destino)
+if ($LASTEXITCODE -ne 0) { throw "No se pudo leer el ZIP." }
+
+$NoPermitidos = @($Contenido | Where-Object {
+    $_ -match '(^|/)(\.venv|\.git|__pycache__|\.pytest_cache)(/|$)|\.pyc$'
+})
+if ($NoPermitidos.Count -gt 0) {
+    $NoPermitidos
+    throw "El ZIP contiene elementos que debian excluirse."
+}
+
+$Contenido | Select-String 'oferta_educativa\.backup|README\.md|app\.py|interfaz_escritorio\.py|modelos_ia/minilm/modules\.json|tests/'
+```
+
+La inspección debe confirmar la presencia del respaldo, del modelo completo y de la documentación actualizada. No basta con que exista un archivo ZIP de tamaño distinto de cero. Este bloque utiliza la herramienta `tar.exe`, como en el procedimiento de empaquetado del proyecto.
+
+### Inventario opcional de dependencias efectivas
+
+Desde el entorno que funciona, puede registrarse una copia de las versiones instaladas sin reemplazar `requirements_interfaz.txt`:
+
+```powershell
+$Paquetes = .\.venv\Scripts\python.exe -m pip freeze
+if ($LASTEXITCODE -ne 0) { throw "No se pudo obtener el inventario de paquetes." }
+
+$Paquetes | Set-Content -LiteralPath ".\requirements_entorno.txt" -Encoding UTF8
+```
+
+Este archivo solo existe después de ejecutar el comando. Deben revisarse posibles referencias a rutas locales antes de distribuirlo. Según la [documentación de pip](https://pip.pypa.io/en/stable/cli/pip_freeze/), `freeze` informa lo instalado, no garantiza por sí solo una instalación reproducible ni resuelve la fijación de la revisión de MiniLM.
+
+### Lista de aceptación en el equipo de destino
+
+- [ ] Python 3.12 y PostgreSQL 16 instalados; herramientas accesibles por las rutas configuradas.
+- [ ] Entorno virtual creado en ese equipo y dependencias instaladas sin errores.
+- [ ] Respaldo restaurado en una base nueva; consulta de referencia con 2,946 ofertas para el corte entregado.
+- [ ] Modelo MiniLM completo y comprobación de embeddings satisfactoria.
+- [ ] Interfaz y consola capaces de procesar consultas reales con PostgreSQL.
+- [ ] Batería automatizada ejecutada y salida conservada; revisión de cualquier fallo.
+- [ ] Consultas manuales registradas, con seguimientos, ambigüedad y ausencia de evidencia.
+- [ ] Incidencias institucionales y registros provisionales identificados sin ocultar sus limitaciones.
+
+Estas casillas representan verificaciones que debe completar la instalación de destino. No se marcan como realizadas con base únicamente en los resultados del equipo de desarrollo.
 
 ## Proceso realizado
 
@@ -88,11 +793,19 @@ El siguiente registro conserva el orden de desarrollo. Las actividades completad
 40. Revisión de dependencias y documentación de PostgreSQL, Python y la distribución del modelo MiniLM.
 41. Limpieza de instaladores de modificaciones ya aplicadas, respaldos de trabajo y cachés; conservación de `scripts/`, `tests/`, evaluaciones y materiales de exposición.
 42. Mantenimiento de pruebas desactualizadas respecto de las consultas temáticas combinadas y la paginación; incorporación de una comprobación adicional de búsqueda estructurada.
-43. Ejecución final registrada de la batería completa: `286 passed in 6.97s`.
+43. Ejecución completa registrada en el corte anterior: `286 passed in 6.97s`.
+44. Repetición posterior de la batería completa: `286 passed in 19.79s`.
+45. Recopilación y preparación de la carga de UNAM, IPN, UAM, Tecnológico de Monterrey e ITAM, conservando el CSV y el importador.
+46. Comprobación posterior de `catalogo.oferta_educativa`: **2,946 filas**; los registros provisionales no se presentan como ofertas verificadas individualmente en CDMX.
+47. Exportación de PostgreSQL a `respaldo_bd/oferta_educativa.backup`.
+48. Restauración en una base temporal local y comparación del conteo de ofertas: **2,946 en ambas bases**.
+49. Preparación del paquete sin `.venv`, historial Git ni cachés, conservando la instalación local.
+50. Separación documental entre el README operativo del repositorio y el informe académico organizado según la estructura solicitada.
+51. Incorporación de instrucciones de instalación, restauración, ejecución, registro de pruebas y diagnóstico; la instalación integral en otro equipo continúa pendiente.
 
 ## Datos procesados
 
-Se procesaron cuatro documentos PDF de la SEP. Los resultados del procesamiento fueron los siguientes:
+Se procesaron cuatro documentos PDF de la SEP. Los resultados siguientes corresponden al **catálogo inicial**, anterior a la ampliación de las cinco instituciones:
 
 | Conjunto | Cantidad | Interpretación |
 |---|---:|---|
@@ -107,6 +820,95 @@ Se procesaron cuatro documentos PDF de la SEP. Los resultados del procesamiento 
 Los documentos nacionales incluyen licenciatura, maestría, especialidad, doctorado, técnico superior universitario y profesional asociado. La presencia de esos niveles en la capa de origen no implica que el asistente consulte todos ellos.
 
 Los **2,810 registros documentales no son 2,810 carreras distintas**. Varios registros pueden relacionarse con una misma oferta normalizada. A su vez, un programa puede generar múltiples ofertas si cambia el plantel o la modalidad. La diferencia entre 2,810 registros y 2,616 ofertas no representa una eliminación de la procedencia documental.
+
+
+
+**Corte posterior comprobado:** el 14 de noviembre de 2026, la base original y la restaurada devolvieron **2,946 ofertas**. La diferencia frente a las 2,616 iniciales es de 330 filas. Se conservan los conteos históricos de instituciones, programas y autorizaciones, sin presentarlos como totales posteriores a la ampliación que no se han vuelto a medir en esta revisión.
+
+## Ampliación del catálogo con cinco instituciones
+
+Se buscaron licenciaturas de cinco instituciones de amplio reconocimiento académico: **UNAM, IPN, UAM, Tecnológico de Monterrey e ITAM**. La ampliación se planteó para complementar la cobertura del catálogo federal original. La expresión «top 5» utilizada durante el desarrollo identifica la selección realizada; no constituye una clasificación oficial de prestigio.
+
+El reporte previo registra una revisión asistida por ChatGPT en la que no se identificaron menciones explícitas a la UNAM en los 27,054 registros JSON proporcionados. Esa revisión y la comparación de nombres motivaron la consulta de catálogos institucionales. La revisión consignada no sustituye una auditoría independiente de los documentos fuente.
+
+El registro visual de esta revisión se conserva en el informe académico complementario.
+
+| Universidad | Filas recopiladas | Coincidencias de nombre con SEP | Sin coincidencia |
+|----------------------------------|-----------------:|-----------------------------:|-----------------:|
+| UNAM | 126 | 0 | 126 |
+| IPN | 91 | 0 | 91 |
+| UAM | 75 | 0 | 75 |
+| Tecnológico de Monterrey | 44 | 13 | 31 |
+| ITAM | 16 | 9 | 7 |
+| **Total** | **352** | **22** | **330** |
+
+Las 352 filas incluyen carreras y, en algunos casos, combinaciones de carrera y plantel; no equivalen a 352 programas distintos. Las 22 coincidencias son por nombre frente a los JSON originales, no una confirmación de duplicados en PostgreSQL.
+
+Se preparó un paquete de carga única con `catalogo_5_universidades_revision.csv` e `importar_5_universidades.py`. El CSV reúne los datos y el script realiza su incorporación a PostgreSQL, omitiendo las coincidencias que identifica. Ambos archivos se conservaron en la entrega para documentar y permitir revisar la ampliación.
+
+Los registros sin sede o modalidad comprobada se identificaron como provisionales. Las fuentes institucionales no se deben atribuir a los documentos SEP de abril de 2021. En particular, una carrera tomada de un catálogo nacional no queda confirmada como oferta de CDMX por el solo hecho de almacenarse en la base.
+
+Las fuentes consignadas en el reporte previo son el árbol de oferta de UNAM, el catálogo de carreras y escuelas del IPN, el catálogo de licenciaturas y unidades de UAM, el catálogo de carreras profesionales del Tecnológico de Monterrey y los programas académicos del ITAM. Sus referencias se reúnen al final del informe.
+
+### Conteo posterior comprobado en PostgreSQL
+
+El 14 de noviembre de 2026 se ejecutó la consulta siguiente en la base original y en una base restaurada desde el respaldo:
+
+```sql
+SELECT COUNT(*) AS ofertas
+FROM catalogo.oferta_educativa;
+```
+
+Ambas devolvieron **2,946**. La diferencia respecto de las 2,616 ofertas del corte inicial es de **330 ofertas**. Este resultado confirma el total almacenado y su recuperación en la prueba de restauración; no demuestra por sí solo la correcta asignación de cada registro a institución, sede y modalidad.
+
+Las cifras de la tabla de ampliación representan la recopilación y la comparación de nombres. El conteo SQL representa filas de `catalogo.oferta_educativa`. La coincidencia numérica entre las 330 filas sin coincidencia y el incremento de 330 ofertas no reemplaza una conciliación individual de todos los registros.
+
+### Tratamiento durante la instalación
+
+El respaldo final reproduce el estado de la ampliación que quedó almacenado. No debe ejecutarse `importar_5_universidades.py` después de restaurarlo como un paso rutinario: se conserva para revisar el procedimiento o realizar una carga deliberada sobre una base apropiada. El CSV no se consulta en cada pregunta de la aplicación; el asistente recupera la información desde PostgreSQL.
+
+La presencia de registros importados y su recuperación correcta por institución son comprobaciones distintas. Se mantienen las advertencias de provisionalidad y las incidencias documentadas en el apartado siguiente.
+
+
+### Incidencias de consultas institucionales
+
+Las capturas conservadas en el informe académico documentan consultas posteriores a la ampliación. Los resultados siguientes se describen a partir de esas evidencias, no de una nueva ejecución durante la reorganización del README.
+
+**UNAM.** La captura muestra 126 ofertas asociadas a la Universidad Nacional Autónoma de México y una primera página de resultados. Esa salida acredita que la interfaz recuperó registros bajo ese nombre en la sesión capturada; no verifica que los 126 correspondan a sedes confirmadas en CDMX.
+
+
+**Tecnológico de Monterrey y UAM.** En las dos capturas del informe se presenta un catálogo general de 755 programas, no un listado expresamente filtrado para cada institución. Por tanto, estas evidencias no deben calificarse como comprobaciones satisfactorias del filtro institucional. Son casos pendientes de revisión de la interpretación o selección del procedimiento.
+
+
+
+**Ingeniería en Inteligencia Artificial.** La consulta que menciona al IPN recupera dos ofertas: una de IPN y otra de ITAM. La presencia de una oferta ajena a la institución solicitada evidencia que, en esa captura, no se respeta exclusivamente el filtro IPN. La tarjeta de ITAM muestra además una sede por confirmar y modalidad no especificada. La consulta general posterior, sin restringir institución, muestra las mismas dos opciones.
+
+
+
+Estas capturas también conservan el aviso «Fuente: registros SEP de abril de 2021». Después de la ampliación, ese aviso no describe por sí solo la procedencia de todos los datos. La documentación debe separar la fuente SEP de las fuentes institucionales y registrar como pendiente la actualización del aviso de la interfaz.
+
+La incorporación de filas a la base y el funcionamiento correcto de una consulta son comprobaciones diferentes. En esta revisión no se declara corregido el comportamiento observado en esas imágenes.
+
+### Consultas para verificar las cinco universidades
+
+Las diez preguntas siguientes se conservan como conjunto de comprobación de la ampliación. Son consultas propuestas; no se asigna un resultado satisfactorio a cada una sin su evidencia de ejecución.
+
+| N.º | Institución | Consulta |
+|------:|-------------------------|--------------------------------------------------------------------|
+| 1 | UNAM | ¿Qué carreras ofrece la UNAM en Ciudad de México? |
+| 2 | UNAM | Muéstrame las licenciaturas de la Universidad Nacional Autónoma de México. |
+| 3 | IPN | ¿Qué ingenierías ofrece el IPN? |
+| 4 | IPN | ¿Dónde puedo estudiar Ingeniería en Inteligencia Artificial en el IPN? |
+| 5 | UAM | ¿Qué carreras ofrece la UAM? |
+| 6 | UAM | Muéstrame las licenciaturas de la Universidad Autónoma Metropolitana. |
+| 7 | Tecnológico de Monterrey | ¿Qué carreras ofrece el Tecnológico de Monterrey en CDMX? |
+| 8 | Tecnológico de Monterrey | ¿Dónde puedo estudiar Ingeniería en Tecnologías Computacionales en el Tec de Monterrey? |
+| 9 | ITAM | ¿Qué licenciaturas ofrece el ITAM? |
+| 10 | ITAM | ¿Qué carreras ofrece el Instituto Tecnológico Autónomo de México? |
+
+Los criterios de comprobación son: reconocer la institución, recuperar sus programas sin sustituirlos por el catálogo general, mantener cualquier filtro adicional y no presentar como confirmadas las sedes o modalidades provisionales. Las preguntas independientes se ejecutan con una conversación nueva.
+
+Las entradas formadas únicamente por siglas pueden seguir rutas incorrectas. En las comprobaciones comunicadas, `ITAM` e `itam` no se interpretaron correctamente; en cambio, «licenciaturas en el itam» y la pregunta con el nombre completo recuperaron 18 ofertas del catálogo previo. Esta incidencia no se considera resuelta por la importación de nuevos datos.
 
 ## Arquitectura de la base de datos
 
@@ -174,9 +976,9 @@ En la carga inicial, los 2,810 vínculos se marcaron como `REVISAR`. No se ha do
 
 La depuración incluyó denominaciones y planteles asociados con el Tecnológico de Monterrey, UNITEC, Universidad de Londres, Universidad Insurgentes, Universidad La Salle y Universidad Panamericana. Se utilizaron transacciones SQL, reasignación de referencias y comprobaciones antes de retirar registros duplicados.
 
-El procedimiento conservó las ofertas, autorizaciones y vínculos documentales en los cortes verificados. Las operaciones están descritas en `limpieza_catalogo_cdmx_historial.md`; ese archivo constituye un registro de trabajo, no una migración que deba ejecutarse nuevamente por sus identificadores históricos.
+El procedimiento conservó las ofertas, autorizaciones y vínculos documentales en los cortes verificados. Las operaciones se documentaron durante el desarrollo en `limpieza_catalogo_cdmx_historial.md`, un registro de trabajo que fue retirado de la entrega final. Se conserva aquí la explicación de las correcciones; ese antecedente no es una migración ni debe ejecutarse nuevamente por sus identificadores históricos.
 
-Los scripts de `sql/` permiten revisar conteos, integridad referencial, posibles duplicados y correspondencias. La reproducción de la base final requiere considerar tanto la carga inicial como las correcciones posteriores.
+Los scripts de `sql/` permiten revisar conteos, integridad referencial, posibles duplicados y correspondencias. La reconstrucción desde las fuentes requeriría considerar tanto la carga inicial como las correcciones posteriores. Para la instalación de la versión entregada se utiliza el respaldo final, no la repetición indiscriminada de esos scripts.
 
 ## Arquitectura del asistente
 
@@ -712,7 +1514,7 @@ No se establece una exactitud global de «casi 90 %». Los valores 91.67 %, 92.5
 
 ### Pruebas automatizadas: corte del 13 de noviembre de 2026
 
-La última ejecución completa registrada se realizó desde la raíz del proyecto:
+La ejecución completa del corte indicado se realizó desde la raíz del proyecto:
 
 ```powershell
 .\.venv\Scripts\python.exe -m pytest tests -q
@@ -744,6 +1546,34 @@ Durante el desarrollo se ejecutaron conversaciones con PostgreSQL real para obse
 En noviembre se verificaron la paginación de ingenierías, la consulta general de seis carreras por página y la aceptación de alternativas mediante botones. La revisión de Meteorología también permitió identificar una limitación de pertinencia de las afinidades, aun cuando las ofertas mostradas existían en la base de datos.
 
 El 12 de noviembre de 2026 se realizó la exposición académica. Durante la demostración, otro estudiante formuló una consulta sobre dónde estudiar videojuegos y el asistente respondió correctamente según el registro de la sesión. Se trata de una prueba funcional espontánea individual, no de una nueva batería independiente ni de una medición porcentual del sistema.
+
+### Repetición posterior de las pruebas automatizadas
+
+Después de restaurar los archivos Python durante la preparación del repositorio, se repitió la batería completa y la salida comunicada fue:
+
+```text
+286 passed in 19.79s
+```
+
+El resultado confirma la aprobación de los casos disponibles en esa ejecución. No permite afirmar, por sí solo, que todas las nuevas ofertas de las cinco universidades estén verificadas ni que todos los filtros de la interfaz funcionen ante preguntas inéditas. Los tiempos de 6.97 y 19.79 segundos corresponden a ejecuciones distintas y no se utilizan como una comparación controlada de rendimiento.
+
+### Comprobación de restauración del 14 de noviembre de 2026
+
+La secuencia de exportación, lectura del archivo y restauración de prueba no reportó errores en las salidas compartidas. La comprobación posterior produjo los resultados siguientes:
+
+| Elemento comprobado | Resultado |
+|--------------------------------|--------------------------------------------------------------------|
+| Archivo | `respaldo_bd/oferta_educativa.backup` |
+| Tamaño registrado | 571,870 bytes |
+| Fecha de creación comunicada | 14 de noviembre de 2026 |
+| Lectura con `pg_restore --list` | Contenido reconocido; se mostraron restricciones de clave foránea de `catalogo` y `origen`. |
+| Base de origen | `oferta_educativa` |
+| Ofertas en la base original | 2,946 |
+| Base temporal restaurada | `prueba_restauracion_oferta_educativa` |
+| Ofertas en la base restaurada | 2,946 |
+| Diferencia de conteo | 0 |
+
+La prueba confirma una restauración utilizable en el entorno local y la coincidencia del conteo de ofertas. No certifica por sí sola la igualdad de todo el contenido ni la instalación completa en otro equipo. Tras la comprobación se retiró únicamente la base temporal.
 
 ## Registro histórico de experimentos e integración
 
@@ -830,251 +1660,35 @@ Los scripts examinados separan esas evaluaciones del funcionamiento de `app.py`.
 
 Estos valores no se suman: representan subconjuntos o versiones sucesivas. La cifra vigente de la ejecución completa es 286, mientras que 185 y 266 se conservan únicamente como historial.
 
-La primera integración de escritorio quedó documentada en la rama `feat/interfaz-escritorio`, commit `750d62c`. Ese identificador es un hito histórico; no identifica necesariamente el estado local posterior ni el commit final de entrega.
-
-## Estructura del proyecto
-
-```text
-ProyectoIA/
-├── app.py
-├── interfaz_escritorio.py
-├── exposicion.py
-├── requirements_interfaz.txt
-├── README.md
-├── .gitignore
-├── limpieza_catalogo_cdmx_historial.md
-├── Exposicion_oferta_GJVY.pptx
-├── PDFs/
-├── datos/
-├── diagramas/
-├── evaluacion_etapa4/
-├── funciones/
-├── modelos_ia/
-│   └── minilm/
-├── motor_ia/
-├── recursos/
-├── scripts/
-├── sql/
-└── tests/
-```
-
-| Ruta | Contenido y criterio de conservación |
-|---|---|
-| `PDFs/` | Documentos utilizados como fuentes de extracción. |
-| `datos/` | JSON, CSV, conjuntos de entrenamiento, correspondencias y resultados de análisis. |
-| `diagramas/` | MER, modelo relacional y diagramas de apoyo. |
-| `evaluacion_etapa4/` | Materiales de evaluación funcional y registros de resultados. |
-| `scripts/` | Procesamiento, carga, auditoría y experimentos; se conservan los 21 archivos como evidencia metodológica. |
-| `sql/` | Creación de la base y esquemas, consultas de verificación y correcciones documentadas. |
-| `motor_ia/` | Clasificación, entidades, contexto, cobertura, semántica, afinidades y respuestas. |
-| `funciones/` | Recuperación de ofertas mediante consultas SQL parametrizadas. |
-| `tests/` | Los 21 archivos de pruebas; la ejecución final registrada comprende 286 casos. |
-| `modelos_ia/minilm/` | Copia local del modelo preentrenado; excluida del control de versiones. |
-| `recursos/` | Recursos gráficos, incluido el logotipo. |
-| `exposicion.py` y presentación | Material complementario de la demostración académica. |
-
-`app.py` contiene el motor compartido y el punto de entrada de consola; no es únicamente un lanzador. `requirements_interfaz.txt` conserva su nombre original, aunque su contenido se amplió a las dependencias del motor, procesamiento y pruebas.
-
-### Scripts conservados como evidencia
-
-| Grupo | Archivos |
-|---|---|
-| Extracción y análisis | `prueba_extraccion.py`, `extraer_todos.py`, `analizar_datos.py`, `analizar_todos.py`. |
-| Limpieza y auditoría | `limpiar_datos.py`, `auditar_limpio.py`, `auditar_estructura.py`. |
-| Carga documental y catálogos | `cargar_registros_origen.py`, `03_cargar_catalogos.py`. |
-| Instituciones y planteles | `04_analizar_instituciones_planteles.py`, `05_preparar_instituciones_planteles.py`, `06_revisar_correspondencias.py`, `07_preparar_aprobacion_campus_cdmx.py`, `08_cargar_campus_aprobados_cdmx.py`. |
-| Ofertas y normalización de consultas | `09_cargar_ofertas_licenciatura_cdmx.py`, `10_normalizar_consultas.py`. |
-| Evaluación del motor | `comparar_intenciones_actualizado.py`, `evaluar_descripciones_tematicas.py`, `evaluar_ranking_hibrido.py`, `evaluar_validador_semantico.py`, `probar_cobertura_tematica.py`. |
-
-Los scripts históricos y las migraciones no forman una secuencia de reinstalación comprobada que deba ejecutarse indiscriminadamente. Algunos realizan cargas o correcciones sobre estados concretos de los datos. Su conservación documenta el proceso, pero no sustituye la validación de restauración en una instancia nueva.
-
-### Limpieza de la carpeta de entrega
-
-Se retiraron los instaladores de modificaciones ya incorporadas: `aplicar_mejoras_busquedas.py`, `corregir_consultas_tematicas.py`, `instalar_paginacion.py` e `instalar_logo.py`. No son requisitos para iniciar la versión modificada del asistente.
-
-Las copias `.bak` y las cachés de Python y pytest no forman parte de la evidencia metodológica principal. Las pruebas fuente, los scripts y los registros de evaluación sí se conservan. La eliminación de `__pycache__`, `.pyc` o `.pytest_cache` no equivale a eliminar `tests/` ni sus resultados.
-
-El entorno `.venv/` se mantiene para la ejecución local, pero no debe confundirse con una distribución reproducible para otro equipo. El modelo MiniLM tampoco debe retirarse de una instalación local que dependa de esa copia. Las exclusiones de Git no eliminan archivos que pudieran permanecer dentro de un paquete comprimido preparado manualmente.
-
-## Tecnologías y requisitos
-
-### Entorno documentado
-
-| Elemento | Uso o versión registrada |
-|---|---|
-| Windows 11 | Entorno de desarrollo y demostración. |
-| Python 3.12.10 | Intérprete de la última ejecución de pruebas. |
-| PostgreSQL 16 | Persistencia y consulta del catálogo. |
-| Tkinter y CustomTkinter | Interfaz principal y panel auxiliar. |
-| `keyring` | Credenciales locales de la interfaz. |
-| Pillow | Visualización y procesamiento de imágenes. |
-| `psycopg2-binary` | Acceso a PostgreSQL. |
-| scikit-learn | TF-IDF, regresión logística y evaluación. |
-| Sentence Transformers y PyTorch | Carga de MiniLM y operaciones con embeddings. |
-| pdfplumber | Extracción de tablas y datos de PDF. |
-| pytest 9.1.1 | Versión registrada en la revisión de pruebas. |
-| JSON y CSV | Intercambio, almacenamiento intermedio y conjuntos de evaluación. |
-| Git y GitHub | Control de versiones y distribución del código. |
-
-La lista consolidada se encuentra en `requirements_interfaz.txt`. Su configuración conserva `customtkinter>=6.0,<7` y `keyring>=25,<27`, junto con Pillow, psycopg2-binary, scikit-learn, sentence-transformers, torch, pdfplumber y pytest. Las versiones sin fijar no constituyen una reproducción exacta del entorno utilizado.
-
-Las líneas comentadas de ese archivo describen herramientas externas y fuentes de descarga. `pip` instala los paquetes indicados, pero los comentarios no instalan PostgreSQL, no restauran registros y no descargan automáticamente el modelo. El formato de requisitos se documenta en la referencia de pip incluida al final.
-
-### Preparación del entorno Python
-
-Los comandos siguientes corresponden a PowerShell, situado en la raíz del proyecto. La creación del entorno se aplica a una instalación nueva:
-
-```powershell
-py -3.12 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install --upgrade pip
-.\.venv\Scripts\python.exe -m pip install -r requirements_interfaz.txt
-```
-
-La presencia de Python 3.12 y de su componente Tcl/Tk es un requisito previo. Los módulos de la biblioteca estándar, como `csv`, `json`, `re`, `pathlib`, `unicodedata`, `threading` y `queue`, no se enumeran como paquetes independientes en pip.
-
-El inventario exacto del entorno local puede consultarse mediante:
-
-```powershell
-.\.venv\Scripts\python.exe -m pip freeze
-```
-
-No se ha registrado todavía una instalación limpia validada con todas las versiones fijadas. La documentación de requisitos y la comprobación efectiva de instalación se mantienen como actividades distintas.
-
-### PostgreSQL y datos
-
-La conexión de la implementación documentada utiliza los siguientes parámetros en `motor_ia/entidades.py`:
-
-| Parámetro | Valor de la configuración revisada |
-|---|---|
-| Servidor | `localhost` |
-| Puerto | `5432` |
-| Base de datos | `oferta_educativa` |
-| Usuario | `postgres` |
-| Contraseña | Solicitada en ejecución; la interfaz utiliza el almacén local mediante `keyring`. |
-
-El uso de otro servidor, puerto o usuario requiere ajustar la configuración correspondiente. No se presupone que esos parámetros estén externalizados en un archivo `.env`. Las credenciales de una instalación no se transfieren al equipo del evaluador.
-
-**La exportación de la base final y su procedimiento de restauración permanecen pendientes de preparación y comprobación.** Este README no acredita que ya exista un respaldo distribuible ni incluye instrucciones de restauración de un archivo aún no verificado. Disponer del código y de las dependencias no basta para iniciar el asistente sin sus esquemas y datos.
-
-### Obtención del modelo MiniLM
-
-La distribución exacta utilizada es la publicada por Sentence Transformers:
-
-[Modelo multilingüe en Hugging Face](https://huggingface.co/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2).
-
-El script de preparación es `motor_ia/12_probar_embeddings.py`. Comprueba si existe `modelos_ia/minilm/modules.json`; si lo encuentra, carga la copia local. En caso contrario, solicita el modelo por su identificador y guarda sus archivos en `modelos_ia/minilm/`.
-
-```powershell
-.\.venv\Scripts\python.exe motor_ia\12_probar_embeddings.py
-```
-
-El script incluye una prueba con tres textos, informa la dimensión de los embeddings y calcula sus similitudes. Esa preparación no necesita consultar el catálogo de PostgreSQL. La descarga inicial requiere conexión a Internet, salvo que se disponga previamente de una copia utilizable por la biblioteca.
-
-La aplicación principal carga el modelo desde su ruta local. La descarga condicional **ya existe en el script de preparación**, pero **no está integrada al arranque de `app.py`**. Por ello, el trabajo futuro consiste en unificar la preparación y la validación del modelo con el inicio del asistente, no en crear por primera vez un mecanismo de descarga.
-
-Los pesos no se versionan en Git y no se reentrenaron en este proyecto. No se registra una revisión inmutable del modelo dentro de esta documentación; fijar esa revisión forma parte de la reproducibilidad pendiente.
-
-## Ejecución y verificación
-
-### Interfaz gráfica principal
-
-Con PostgreSQL disponible, la base cargada, las dependencias instaladas, MiniLM preparado y los recursos gráficos presentes:
-
-```powershell
-.\.venv\Scripts\python.exe interfaz_escritorio.py
-```
-
-### Asistente de consola
-
-```powershell
-.\.venv\Scripts\python.exe app.py
-```
-
-La consola comparte el motor de consultas. Los botones de paginación y de confirmación pertenecen a la interfaz gráfica; no se presupone una navegación idéntica en terminal. En consola, las propuestas afines se confirman con las respuestas textuales admitidas por el motor.
-
-### Panel de apoyo
-
-```powershell
-.\.venv\Scripts\python.exe exposicion.py
-```
-
-El panel puede ejecutarse en un proceso independiente del asistente. Su consulta de material técnico y copia de preguntas no requiere iniciar una sesión con `MotorEducativo`.
-
-### Pruebas automatizadas
-
-Ejecución completa:
-
-```powershell
-.\.venv\Scripts\python.exe -m pytest tests -q
-```
-
-Ejecución detallada:
-
-```powershell
-.\.venv\Scripts\python.exe -m pytest tests -v
-```
-
-Registro opcional de una nueva ejecución, visible también en la terminal:
-
-```powershell
-.\.venv\Scripts\python.exe -m pytest tests -v --color=no 2>&1 |
-    Tee-Object -FilePath tests\resultados_pruebas.txt
-```
-
-`tests/resultados_pruebas.txt` es la ruta prevista para conservar esa salida. Su presencia en la entrega debe comprobarse; la transcripción del resultado final de 286 pruebas no demuestra por sí sola que el archivo de reporte haya sido guardado. La ejecución de pruebas puede volver a generar cachés.
-
-### Comprobaciones de módulos y experimentos
-
-Se conservan los puntos de entrada documentados para comparar clasificadores, inspeccionar entidades, interpretar preguntas y realizar pruebas semánticas:
-
-```text
-motor_ia/comparar_modelos.py
-motor_ia/clasificador.py
-motor_ia/entidades.py
-motor_ia/interpretar_consulta.py
-motor_ia/12_probar_embeddings.py
-motor_ia/busqueda_semantica.py
-motor_ia/recuperacion_semantica.py
-scripts/comparar_intenciones_actualizado.py
-```
-
-Cada módulo tiene sus propios requisitos de datos y de ejecución. La batería automatizada completa no implica que todos los scripts históricos hayan sido ejecutados nuevamente en esta revisión.
-
-### Consultas de demostración documentadas
-
-| Flujo | Consulta inicial | Seguimiento o acción |
-|---|---|---|
-| Institución y contexto | ¿Qué carreras ofrece la Universidad ICEL? | ¿Y cuáles son mixtas? |
-| Exploración semántica | Me gustaría desarrollar videojuegos y programar mundos virtuales. | ¿Y cuáles de esas opciones son escolarizadas? |
-| Cobertura y alternativas | Quiero pronosticar huracanes. | Confirmación mediante «Ver opciones afines» o texto; interpretación orientativa de las alternativas. |
-| Búsqueda amplia | Muéstrame todas las ingenierías. | Navegación de ofertas mediante «Siguiente» y «Anterior». |
-| Catálogo general | ¿Qué carreras puedo estudiar en CDMX? | Navegación de seis carreras por página. |
-| Límites de información | ¿Cuánto cuesta estudiar Derecho? | Comunicación de ausencia de datos económicos verificados. |
-| Reinicio | Muchas gracias, nos vemos pronto. | Inicio posterior de una nueva conversación desde la interfaz. |
-
-Las consultas independientes se evalúan con contexto nuevo. Los seguimientos de cada fila corresponden a la misma conversación. Los resultados concretos dependen del catálogo, de la formulación y de los filtros activos.
+La primera integración de escritorio se documentó en una rama de desarrollo anterior. Durante la preparación de entrega se retiraron las referencias antiguas y se reescribió el historial publicado de los archivos Python; por ello, aquellas referencias no se utilizan como instrucciones de instalación. Se conserva el registro metodológico de pruebas y resultados, independiente del historial Git disponible.
 
 ## Limitaciones
 
-1. **Vigencia y cobertura.** Los datos corresponden al 30 de abril de 2021. El catálogo federal consultado no representa necesariamente toda la oferta pública autónoma o privada de CDMX. La ausencia de una institución no acredita que carezca de licenciaturas.
+1. **Vigencia y cobertura.** Los datos iniciales corresponden al 30 de abril de 2021. El catálogo federal consultado no representa necesariamente toda la oferta pública autónoma o privada de CDMX. La ausencia de una institución no acredita que carezca de licenciaturas. La ampliación institucional procede de otras fuentes y conserva datos provisionales; no se atribuye íntegramente a la SEP de 2021.
 2. **Identidades y autorizaciones.** Se conserva información de procedencia y estados de revisión. Los conteos consolidados no certifican que todas las denominaciones, autorizaciones y relaciones hayan sido verificadas documentalmente.
 3. **Comprensión de consultas.** Las entidades y parte de la detección temática dependen de patrones y nombres normalizados. Persisten formulaciones ambiguas, errores de escritura y especialidades que pueden requerir aclaración. El caso «Enfermería y Obstetricia» se conserva como incidencia pendiente de verificación específica; no se declara resuelto únicamente por la aprobación de la batería existente.
 4. **Pertinencia semántica.** La similitud de embeddings y las reglas de afinidad no sustituyen planes de estudio ni orientación vocacional individual. Las relaciones generales pueden resultar poco apropiadas aunque los programas existan en PostgreSQL.
 5. **Límites de selección y presentación.** El máximo de cinco candidatos semánticos y los tamaños de página son decisiones de implementación. La paginación no garantiza recuperar más candidatos semánticos de los seleccionados inicialmente.
 6. **Evaluación.** Las baterías históricas corresponden a distintas versiones y conjuntos; las correcciones de casos conocidos no constituyen nueva evidencia independiente. Las pruebas con simulaciones no sustituyen la comprobación integral contra PostgreSQL y la interfaz real.
-7. **Reproducibilidad.** Falta validar el proyecto en un equipo limpio, fijar versiones y preparar el respaldo restaurable de la base final. Los pesos de MiniLM y los registros de PostgreSQL no están contenidos en los archivos Python.
+7. **Reproducibilidad.** El respaldo final ya fue restaurado y se cotejó el conteo de ofertas en una base de prueba local. Falta validar la instalación integral en un segundo equipo y fijar versiones. Los pesos de MiniLM y los registros de PostgreSQL no están contenidos en los archivos Python.
 8. **Despliegue.** El sistema es un prototipo local. No se ha implementado ni medido una infraestructura para miles de usuarios concurrentes, ni se ha documentado un servicio público con API, autenticación, operación continua y pruebas de carga.
+
+
+9. **Ampliación y filtros institucionales.** La documentación registra consultas por Tec y UAM que terminan en el catálogo general, y una consulta por IPN que también muestra ITAM. La aprobación de las pruebas existentes no acredita que esas incidencias estén resueltas.
+10. **Procedencia mostrada.** El aviso fijo «Fuente: registros SEP de abril de 2021» no es suficiente para describir las nuevas ofertas institucionales. Debe actualizarse por procedencia sin presentar información provisional como verificada.
 
 ## Trabajo pendiente y mejoras futuras
 
 | Prioridad | Actividad | Criterio de comprobación |
 |---|---|---|
-| Entrega reproducible | Preparar el respaldo final de PostgreSQL y un procedimiento de restauración. | Restauración satisfactoria en una instancia nueva, con comprobación de conteos e integridad. |
+| Entrega reproducible | Repetir la instalación y restauración en un segundo equipo. El respaldo y la prueba local ya se realizaron. | Arranque de la interfaz, consultas reales y pruebas en la instalación de destino; ampliar la comparación más allá del conteo de ofertas. |
 | Entrega reproducible | Registrar versiones efectivas de dependencias y revisión del modelo. | Instalación del entorno en otro equipo y ejecución de las pruebas y flujos principales. |
 | Entrega reproducible | Revisar los archivos finales y el registro de control de versiones. | Correspondencia entre código entregado, documentación, recursos, datos y evidencia de pruebas. |
 | Evaluación | Aplicar una batería de preguntas inéditas después de congelar la versión. | Resultados originales conservados y análisis de errores sin recalificación retroactiva. |
 | Evaluación | Ampliar las pruebas integrales de botones, filtros, catálogo general y paginación. | Verificación de resultados completos en el motor y la interfaz, además de las reglas aisladas. |
 | Calidad de datos | Continuar la validación de autorizaciones e identidades y actualizar fuentes. | Correspondencias documentadas y revisión de vigencia, sin alterar la procedencia original. |
+| Ampliación institucional | Verificar sede y modalidad de los registros provisionales y corregir filtros por universidad. | Casos de Tec, UAM, IPN y siglas breves comprobados sin ampliar indebidamente la consulta. |
+| Procedencia | Actualizar el aviso de fuente en las respuestas posteriores a la ampliación. | Distinción visible entre registros SEP de 2021, fuentes institucionales y datos pendientes de confirmación. |
 | Pertinencia | Revisar afinidades con información curricular y criterios explícitos. | Distinción sustentada entre coincidencias directas, relación general y ausencia de evidencia. |
 | Recuperación | Evaluar el límite fijo de cinco candidatos, umbrales y presentación de más resultados pertinentes. | Comparación con conjuntos de evaluación adecuados, sin sustituir pertinencia por cantidad. |
 | Inicio del motor | Guardar y reutilizar el clasificador entrenado. | Control de cambios del entrenamiento y carga reproducible sin reajustarlo innecesariamente. |
@@ -1085,9 +1699,19 @@ Las consultas independientes se evalúan con contexto nuevo. Los seguimientos de
 
 La presentación académica ya se realizó; no se mantiene como actividad pendiente. El cierre de la entrega técnica depende de la reproducibilidad en una instalación distinta, no solamente de la ejecución satisfactoria en el equipo de desarrollo.
 
+## Apoyo externo y uso responsable de IA
+
+Se utilizó ChatGPT como apoyo para explicaciones técnicas, revisión de integración, preparación de ejemplos, búsqueda y organización de información complementaria y elaboración y reorganización documental. La reorganización de este README también contó con esa asistencia.
+
+Este apoyo no debe confundirse con el motor que atiende las consultas dentro de la aplicación. El funcionamiento descrito utiliza TF-IDF, regresión logística, MiniLM, PostgreSQL y reglas del proyecto; ChatGPT no se presenta como un servicio integrado de generación de respuestas del asistente.
+
+Las indicaciones de la asignatura exigen declarar el apoyo externo y poder explicar, modificar y defender el trabajo. La revisión del contenido, la comprobación de los resultados y el cumplimiento de esas condiciones corresponden al autor. No se incorporan contraseñas ni claves de API a la documentación de entrega.
+
 ## Referencias y procedencia técnica
 
-Las cifras experimentales de este informe proceden de los registros de desarrollo y evaluación del proyecto, incluidos los materiales de `datos/`, `evaluacion_etapa4/` y `tests/`. El último resultado de pruebas corresponde a la salida de PowerShell registrada el 13 de noviembre de 2026. No se efectuó una nueva medición de la base de datos ni de la exactitud del asistente durante esta actualización documental.
+Las cifras experimentales proceden de los registros de desarrollo y evaluación, incluidos los materiales de `datos/`, `evaluacion_etapa4/` y `tests/`. Se conservan los cortes anteriores y la repetición de 286 pruebas en 19.79 segundos. Los totales de 2,946 ofertas y los datos del respaldo proceden de las transcripciones de PostgreSQL del 14 de noviembre de 2026. La reorganización de este archivo no ejecutó nuevamente el asistente, la batería ni la base local.
+
+La estructura y los requisitos de entrega se tomaron de las indicaciones de la asignatura, especialmente los apartados 7, 8 y 9. La documentación externa añadida abajo respalda los comandos de instalación; no sustituye las mediciones del prototipo.
 
 Las siguientes fuentes identifican las herramientas y los modelos utilizados. Su consulta no sustituye la evaluación del prototipo:
 
@@ -1108,3 +1732,24 @@ Los fundamentos añadidos de vectorización, clasificación y evaluación se dis
 - **scikit-learn.** [Extracción de características y ponderación TF-IDF](https://scikit-learn.org/stable/modules/feature_extraction.html#tf-idf-term-weighting), [TfidfVectorizer](https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html) y [TfidfTransformer](https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfTransformer.html).
 - **scikit-learn.** [Pipeline](https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html), [regresión logística](https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression), [LogisticRegression](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html), [pérdida logarítmica](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.log_loss.html) e [informe de clasificación](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.classification_report.html).
 - **Psycopg.** [Parámetros de consultas SQL](https://www.psycopg.org/docs/usage.html#passing-parameters-to-sql-queries).
+
+
+### Fuentes documentales de esta reorganización
+
+- `README(10).md`: versión de origen del README operativo, con el proceso, fundamentos, tablas y resultados conservados en esta revisión.
+- `README_Informe_Final.md`: informe académico complementario, ampliación institucional y lectura de las capturas de comprobación.
+- Indicaciones de la asignatura, «Oferta Educativa Ciudad de México 2.0»: requisitos de datos, interacciones, evaluación, uso responsable de IA y entregables.
+- `resultados_evaluacion_independiente.md` y `Etapa4_Preguntas_Independientes_20.csv`: registro histórico de evaluación y batería de consultas. Su relación se explica en el apartado de consultas manuales; no se presentan como una nueva ejecución.
+- Transcripciones de PowerShell de exportación, restauración y conteos de PostgreSQL del 14 de noviembre de 2026.
+
+Los nombres `README(10).md` y los archivos fuente de edición identifican los materiales empleados para reorganizar la documentación; no son dependencias que deban instalarse ni copias adicionales exigidas dentro de la carpeta de ejecución.
+
+### Documentación oficial para instalación y verificación
+
+Consultada el 14 de noviembre de 2026 para fundamentar las instrucciones añadidas:
+
+- **Python Software Foundation:** [entornos virtuales en Python 3.12](https://docs.python.org/3.12/library/venv.html) y [Tkinter](https://docs.python.org/3.12/library/tkinter.html).
+- **PostgreSQL Global Development Group:** [createdb](https://www.postgresql.org/docs/16/app-createdb.html), [pg_dump](https://www.postgresql.org/docs/16/app-pgdump.html), [pg_restore](https://www.postgresql.org/docs/16/app-pgrestore.html) y [psql](https://www.postgresql.org/docs/16/app-psql.html), documentación de la versión 16.
+- **Python Packaging Authority:** [formato de requisitos](https://pip.pypa.io/en/stable/reference/requirements-file-format/), [pip check](https://pip.pypa.io/en/stable/cli/pip_check/) y [pip freeze](https://pip.pypa.io/en/stable/cli/pip_freeze/).
+- **pytest:** [formas de ejecutar las pruebas](https://docs.pytest.org/en/stable/how-to/usage.html).
+- **CustomTkinter:** [distribución oficial del paquete en PyPI](https://pypi.org/project/customtkinter/). La disponibilidad de un paquete no demuestra, por sí sola, que la instalación completa del proyecto haya sido validada en otro equipo.
